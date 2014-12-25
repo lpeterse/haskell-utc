@@ -1,123 +1,105 @@
 module Data.Tempus
-  ( UnixTime
+  ( -- * Construction
+    Tempus ()
+  , getTime, setTime, getOffset, setOffset
+    -- * Gregorian Calendar
+    -- ** Getters
+  , getYears, getMonths, getDays, getHours, getMinutes, getSeconds, getMillis
+    -- * Modification
+    -- ** Adding Intervals
+  , addYears, addMonths, addDays, addHours, addMinutes, addSeconds, addMillis
   )
   where
 
-import           Data.Int
-import           Data.Word
-import Data.List
+import Data.Int
+import Data.Word
 
-class Tempus a where
-  toUnixTime   :: a -> UnixTime
-  fromUnixTime :: UnixTime -> a
-
-newtype UnixTime
-      = UnixTime Int64
-
-instance Tempus UnixTime where
-  toUnixTime
-    = id
-  fromUnixTime
-    = id
-
-data CalendarTime
-   = CalendarTime
-     { years     :: Word16
-     , months    :: Word8
-     , days      :: Word16
-     , hours     :: Word8
-     , minutes   :: Word8
-     , seconds   :: Word8
-     , millis    :: Word16
-     , tzMinutes :: Int16
-     , tzEnabled :: Bool
+data Tempus
+   = Tempus
+     { time   :: Word64
+     , offset :: Int16
      }
 
-instance Tempus CalendarTime where
-  toUnixTime ct
-    = UnixTime (x1 + x2 + x3 + x4 + x5 + x6)
-    where
-      x1 | years ct < 1970 = 0 - umsFromYears [years ct .. 1969]
-         | years ct > 1970 = 0 + umsFromYears [1970 .. years ct - 1]
-         | otherwise       = 0
-      x2 = umsFromMonths   (months ct) (years ct)
-      x3 = (i64 . hours)   ct * umsPerHour
-      x4 = (i64 . minutes) ct * umsPerMinute
-      x5 = (i64 . seconds) ct * umsPerSecond
-      x6 = (i64 . millis)  ct
-  fromUnixTime 
-    = undefined
+getTime :: Tempus -> Word64
+getTime
+  = undefined
 
--- helper functions
+setTime :: Word64 -> Tempus -> Tempus
+setTime
+  = undefined
 
-isLeapYear :: Word16 -> Bool
-isLeapYear year
-  = year `mod` 4 == 0 && (year `mod` 100 /= 0 || year `mod` 400 == 0)
+getOffset :: Integral a => Tempus -> a
+getOffset
+  = undefined
 
-daysFromYear :: Integral a => Word16 -> a
-daysFromYear year
-  | isLeapYear year = 366
-  | otherwise       = 365
+setOffset :: Integral a => a -> Tempus -> Tempus
+setOffset
+  = undefined
 
-daysFromMonth :: Integral a => Word8 -> Word16 -> a
-daysFromMonth
-  1  _ = 31
-daysFromMonth
-  2  y | isLeapYear y = 29
-       | otherwise    = 28
-daysFromMonth
-  3  _ = 31
-daysFromMonth
-  4  _ = 30
-daysFromMonth
-  5  _ = 31
-daysFromMonth
-  6  _ = 30
-daysFromMonth
-  7  _ = 31
-daysFromMonth
-  8  _ = 31
-daysFromMonth
-  9  _ = 30
-daysFromMonth
-  10 _ = 31
-daysFromMonth
-  11 _ = 30
-daysFromMonth
-  12 _ = 31
-daysFromMonth
-  _  _ = 0
 
-i64 :: Integral a => a -> Int64
-i64
-  = fromIntegral
+-- | > getYears   "2014-⁠12-⁠24T18:11:47Z" == 2014
+getYears      :: Integral a => Tempus -> a
+getYears
+  = undefined
 
-umsFromMonths :: Word8 -> Word16 -> Int64
-umsFromMonths m y
-  = foldl' (+) 0 $ map (\n-> daysFromMonth n y * umsPerDay) [1 .. m]
+-- | > getMonths  "2014-⁠12-⁠24T18:11:47Z" == 12
+getMonths     :: Integral a => Tempus -> a
+getMonths
+  = undefined
 
-umsFromYears :: [Word16] -> Int64
-umsFromYears years
-  = foldl' (+) 0 $ map (\y-> daysFromYear y * umsPerDay) years
+-- | > getDays    "2014-⁠12-⁠24T18:11:47Z" == 24
+getDays       :: Integral a => Tempus -> a
+getDays
+  = undefined
 
-umsFromHours :: Word8 -> Int64
-umsFromHours hours
-  = i64 hours * umsPerHour
+-- | > getHours   "2014-⁠12-⁠24T18:11:47Z" == 18
+getHours      :: Integral a => Tempus -> a
+getHours
+  = undefined
 
-umsPerDay    :: Int64
-umsPerDay
-  = 24 * umsPerHour
+-- | > getMinutes "2014-⁠12-⁠24T18:11:47Z" == 11
+getMinutes    :: Integral a => Tempus -> a
+getMinutes
+  = undefined
 
-umsPerHour   :: Int64
-umsPerHour
-  = 60 * umsPerMinute
+-- | > getSeconds "2014-⁠12-⁠24T18:11:47Z" == 47
+getSeconds    :: Integral a => Tempus -> a
+getSeconds
+  = undefined
 
-umsPerMinute :: Int64
-umsPerMinute
-  = 60 * umsPerSecond
+-- | > getMillis  "2014-⁠12-⁠24T18:11:47Z" == 0
+getMillis     :: Integral a => Tempus -> a
+getMillis
+  = undefined
 
-umsPerSecond :: Int64
-umsPerSecond
-  = 1000
+
+
+addYears   :: Integral a => a -> Tempus -> Tempus
+addYears
+  = undefined
+
+addMonths  :: Integral a => a -> Tempus -> Tempus
+addMonths
+  = undefined
+
+addDays    :: Integral a => a -> Tempus -> Tempus
+addDays
+  = undefined
+
+addHours   :: Integral a => a -> Tempus -> Tempus
+addHours
+  = undefined
+
+addMinutes :: Integral a => a -> Tempus -> Tempus
+addMinutes
+  = undefined
+
+addSeconds :: Integral a => a -> Tempus -> Tempus
+addSeconds
+  = undefined
+
+addMillis  :: Integral a => a -> Tempus -> Tempus
+addMillis
+  = undefined
 
 
