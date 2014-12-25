@@ -1,8 +1,10 @@
 {-# LANGUAGE FlexibleInstances #-}
 module Data.Tempus
-  ( -- * Construction
+  ( -- * Construction/Export
     Tempus ()
+  -- ** Unix Time
   , epoch
+  , fromUnixTime, toUnixTime
   --, getTime, setTime, getOffset, setOffset
     -- * Gregorian Calendar
     -- ** Getters
@@ -49,6 +51,14 @@ setOffset
 epoch :: Tempus
 epoch
   = Tempus 0 0
+
+fromUnixTime :: Word64 -> Tempus
+fromUnixTime w64
+  = setTime w64 epoch
+
+toUnixTime :: Tempus -> Word64
+toUnixTime t
+  = getTime t
 
 -- | > getYears   "2014-⁠12-⁠24T18:11:47Z" == 2014
 getYears      :: Integral a => Tempus -> a
