@@ -16,9 +16,7 @@ build-type:          Simple
 cabal-version:       >=1.10
 
 library
-  -- exposed-modules:     
-  -- other-modules:       
-  -- other-extensions:    
-  build-depends:       base >=4.7 && <4.8
-  -- hs-source-dirs:      
+  build-depends:       base < 5
+  hs-source-dirs:      src
   default-language:    Haskell98
+  exposed-modules:     Data.Tempus
