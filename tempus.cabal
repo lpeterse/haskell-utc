@@ -19,11 +19,9 @@ Library
 
 Test-Suite test
   type:              detailed-0.9
-  hs-source-dirs:    tests .
+  hs-source-dirs:    tests
   test-module:       Test
   build-depends:     Cabal >= 1.20.0.0,
                      base < 5,
-                     parsec,
-                     text,
-                     bytestring
+                     tempus == 0.1.0.0
   default-language:  Haskell98

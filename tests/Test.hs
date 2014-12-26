@@ -16,12 +16,10 @@ test001 = TestInstance
         , tags = []
         , options = []
         , setOption = \_ _ -> Right test001
-        , run = do let expect = "1970-01-01T00:00:00Z"
-                       actual = show epoch
-                   return $ Finished 
-                          $ if actual == expect
+        , run = do return $ Finished 
+                          $ if show epoch == "1970-01-01T00:00:00Z"
                               then Pass
-                              else Fail $ actual ++ " /= " ++ expect
+                              else Fail (show epoch)
         }
 
 test002 :: TestInstance
