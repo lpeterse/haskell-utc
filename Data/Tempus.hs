@@ -52,6 +52,9 @@ epoch :: Tempus
 epoch
   = Tempus 0 0
 
+instance Show Tempus where
+  show _ = "1970-undefined-FIXME"
+
 fromUnixTime :: Word64 -> Tempus
 fromUnixTime w64
   = setTime w64 epoch
