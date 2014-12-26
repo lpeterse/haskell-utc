@@ -12,7 +12,10 @@ build-type:          Simple
 cabal-version:       >=1.10
 
 Library
-  build-depends:     base < 5, parsec, text, bytestring
+  build-depends:     base < 5
+                   , parsec
+                   , text
+                   , bytestring
   hs-source-dirs:    .
   default-language:  Haskell98
   exposed-modules:   Data.Tempus
@@ -21,7 +24,9 @@ Test-Suite test
   type:              detailed-0.9
   hs-source-dirs:    tests
   test-module:       Test
-  build-depends:     Cabal >= 1.20.0.0,
-                     base < 5,
-                     tempus == 0.1.0.0
+  build-depends:     base < 5
+                   , tempus == 0.1.0.0
+                   , Cabal
+                   , cabal-test-quickcheck >= 0.1.2 && < 0.2
+                   , QuickCheck
   default-language:  Haskell98
