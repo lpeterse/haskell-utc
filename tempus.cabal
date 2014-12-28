@@ -13,12 +13,15 @@ cabal-version:       >=1.10
 
 Library
   build-depends:     base < 5
-                   , parsec
+                   , attoparsec
                    , text
                    , bytestring
   hs-source-dirs:    .
   default-language:  Haskell98
   exposed-modules:   Data.Tempus
+                   , Data.Tempus.GregorianDateTime
+                   , Data.Tempus.UnixTime
+                   , Data.Tempus.UnixOffset
 
 Test-Suite test
   type:              detailed-0.9

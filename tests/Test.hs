@@ -10,19 +10,16 @@ import Data.Tempus
 import Data.Word
 
 tests :: IO [Test]
-tests = return 
-         [ test001
-         , test002
-         ]
+tests 
+  = return [
 
-test001 :: Test
-test001
-  = testProperty "test001"
-  $ show epoch === "1970-01-01T00:00:00Z"
+    testProperty "epoch rendering"
+    $ show epoch === "1970-01-01T00:00:00Z"
 
-test002 :: Test
-test002
-  = testProperty "test002"
-  $ forAll 
-      (choose (0, 1000000000))
-      (\x-> x == toUnixTime (fromUnixTime x))
+  , testProperty "unixOffset from -2^48 to 2^48-1"
+    $ forAll 
+        (choose (negate (2 ^ 48), (2 ^ 48) - 1))
+        (\x-> x == toUnixTime (fromUnixTime x))
+
+  ]
+

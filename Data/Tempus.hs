@@ -1,12 +1,17 @@
 {-# LANGUAGE FlexibleInstances #-}
 module Data.Tempus
-  ( -- * Construction/Export
-    Tempus ()
-  -- ** Unix Time
-  , epoch
-  , fromUnixTime, toUnixTime
+  ( -- * Flavors
+  -- ** Unix Offset / Unix Time
+    UXO.UnixOffset (..)
+  , UXT.UnixTime (..)
+  -- ** Gregorian Date Time
+  , GDT.GregorianDateTime ()
+  -- * Unix Time Operations
+  , UXT.epoch
+  , UXT.fromUnixOffset, UXT.toUnixOffset
+  , UXT.fromUnixTime, UXT.toUnixTime
   --, getTime, setTime, getOffset, setOffset
-    -- * Gregorian Calendar
+    -- * Gregorian Calendar Operations
     -- ** Getters
   , getYears, getMonths, getDays, getHours, getMinutes, getSeconds, getMillis
     -- ** Adding Intervals
@@ -14,124 +19,94 @@ module Data.Tempus
     -- * Encoding
     -- ** RCF 3999
   , Rfc3999(..)
-  )
-  where
+  ) where
 
 import Data.Int
 import Data.Word
+import Data.Bits
 
 import qualified Data.Text as T
 import qualified Data.Text.Lazy as TL
 import qualified Data.ByteString as BS
 import qualified Data.ByteString.Lazy as BSL
 
-data Tempus
-   = Tempus
-     { time   :: Word64
-     , offset :: Int16
-     }
+import qualified Data.Tempus.UnixTime as UXT
+import qualified Data.Tempus.UnixOffset as UXO
+import qualified Data.Tempus.GregorianDateTime as GDT
 
-getTime :: Tempus -> Word64
-getTime
-  = undefined
 
-setTime :: Word64 -> Tempus -> Tempus
-setTime
-  = undefined
-
-getOffset :: Integral a => Tempus -> a
-getOffset
-  = undefined
-
-setOffset :: Integral a => a -> Tempus -> Tempus
-setOffset
-  = undefined
-
--- | > epoch == "1970-01-01T00:00:00Z"
-epoch :: Tempus
-epoch
-  = Tempus 0 0
-
-instance Show Tempus where
-  show _ = "1970-undefined-FIXME"
-
-fromUnixTime :: Word64 -> Tempus
-fromUnixTime w64
-  = setTime w64 epoch
-
-toUnixTime :: Tempus -> Word64
-toUnixTime t
-  = getTime t
+class Tempus a where
+  foobar :: Int -> a
 
 -- | > getYears   "2014-⁠12-⁠24T18:11:47Z" == 2014
-getYears      :: Integral a => Tempus -> a
+getYears      :: Integral a => UXT.UnixTime -> a
 getYears
   = undefined
 
 -- | > getMonths  "2014-⁠12-⁠24T18:11:47Z" == 12
-getMonths     :: Integral a => Tempus -> a
+getMonths     :: Integral a => UXT.UnixTime -> a
 getMonths
   = undefined
 
 -- | > getDays    "2014-⁠12-⁠24T18:11:47Z" == 24
-getDays       :: Integral a => Tempus -> a
+getDays       :: Integral a => UXT.UnixTime -> a
 getDays
   = undefined
 
 -- | > getHours   "2014-⁠12-⁠24T18:11:47Z" == 18
-getHours      :: Integral a => Tempus -> a
+getHours      :: Integral a => UXT.UnixTime -> a
 getHours
   = undefined
 
 -- | > getMinutes "2014-⁠12-⁠24T18:11:47Z" == 11
-getMinutes    :: Integral a => Tempus -> a
+getMinutes    :: Integral a => UXT.UnixTime -> a
 getMinutes
   = undefined
 
 -- | > getSeconds "2014-⁠12-⁠24T18:11:47Z" == 47
-getSeconds    :: Integral a => Tempus -> a
+getSeconds    :: Integral a => UXT.UnixTime -> a
 getSeconds
   = undefined
 
 -- | > getMillis  "2014-⁠12-⁠24T18:11:47Z" == 0
-getMillis     :: Integral a => Tempus -> a
+getMillis     :: Integral a => UXT.UnixTime -> a
 getMillis
   = undefined
 
 
 
-addYears   :: Integral a => a -> Tempus -> Tempus
+addYears   :: Integral a => a -> UXT.UnixTime -> UXT.UnixTime
 addYears
   = undefined
 
-addMonths  :: Integral a => a -> Tempus -> Tempus
+addMonths  :: Integral a => a -> UXT.UnixTime -> UXT.UnixTime
 addMonths
   = undefined
 
-addDays    :: Integral a => a -> Tempus -> Tempus
+addDays    :: Integral a => a -> UXT.UnixTime -> UXT.UnixTime
 addDays
   = undefined
 
-addHours   :: Integral a => a -> Tempus -> Tempus
+addHours   :: Integral a => a -> UXT.UnixTime -> UXT.UnixTime
 addHours
   = undefined
 
-addMinutes :: Integral a => a -> Tempus -> Tempus
+addMinutes :: Integral a => a -> UXT.UnixTime -> UXT.UnixTime
 addMinutes
   = undefined
 
-addSeconds :: Integral a => a -> Tempus -> Tempus
+addSeconds :: Integral a => a -> UXT.UnixTime -> UXT.UnixTime
 addSeconds
   = undefined
 
-addMillis  :: Integral a => a -> Tempus -> Tempus
+addMillis  :: Integral a => a -> UXT.UnixTime -> UXT.UnixTime
 addMillis
   = undefined
 
 
 class Rfc3999 a where
-  parseRfc3999  :: a -> Either String Tempus
-  renderRfc3999 :: Tempus -> a
+  parseRfc3999  :: a -> Either String UXT.UnixTime
+  renderRfc3999 :: UXT.UnixTime -> a
 
 instance Rfc3999 [Char] where
   parseRfc3999 s
@@ -162,3 +137,4 @@ instance Rfc3999 BSL.ByteString where
     = undefined
   renderRfc3999 t
     = undefined
+
