@@ -8,7 +8,6 @@ module Data.Tempus
   , GDT.GregorianDateTime ()
   -- * Tempus Class
   , Data.Tempus.Class.Tempus (..)
-  , epoch
   -- * Unix Time Operations
   , UXT.fromUnixOffset, UXT.toUnixOffset
   , UXT.fromUnixTime, UXT.toUnixTime
@@ -22,10 +21,6 @@ module Data.Tempus
     -- ** RCF 3999
   , Rfc3999(..)
   ) where
-
-import Data.Int
-import Data.Word
-import Data.Bits
 
 import qualified Data.Text as T
 import qualified Data.Text.Lazy as TL
@@ -109,32 +104,32 @@ class Rfc3999 a where
   renderRfc3999 :: UXT.UnixTime -> a
 
 instance Rfc3999 [Char] where
-  parseRfc3999 s
+  parseRfc3999 _
     = undefined
-  renderRfc3999 t
+  renderRfc3999 _
     = undefined
 
 instance Rfc3999 T.Text where
-  parseRfc3999 s
+  parseRfc3999 _
     = undefined
-  renderRfc3999 t
+  renderRfc3999 _
     = undefined
 
 instance Rfc3999 TL.Text where
-  parseRfc3999 s
+  parseRfc3999 _
     = undefined
-  renderRfc3999 t
+  renderRfc3999 _
     = undefined
 
 instance Rfc3999 BS.ByteString where
-  parseRfc3999 s
+  parseRfc3999 _
     = undefined
-  renderRfc3999 t
+  renderRfc3999 _
     = undefined
 
 instance Rfc3999 BSL.ByteString where
-  parseRfc3999 s
+  parseRfc3999 _
     = undefined
-  renderRfc3999 t
+  renderRfc3999 _
     = undefined
 

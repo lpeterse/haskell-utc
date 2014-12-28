@@ -23,14 +23,27 @@ Library
                    , Data.Tempus.GregorianDateTime
                    , Data.Tempus.UnixTime
                    , Data.Tempus.UnixOffset
+  other-modules:     Data.Tempus.GregorianDateTime.Internal
 
 Test-Suite test
   type:              detailed-0.9
-  hs-source-dirs:    tests
+  ghc-options:       -Wall
+  hs-source-dirs:    tests .
   test-module:       Test
+  other-modules:     Data.Tempus
+                   , Data.Tempus.Class
+                   , Data.Tempus.GregorianDateTime
+                   , Data.Tempus.UnixTime
+                   , Data.Tempus.UnixOffset
+                   -- in library unexposed modules
+                   , Data.Tempus.GregorianDateTime.Internal
   build-depends:     base < 5
-                   , tempus == 0.1.0.0
+                   , attoparsec
+                   , text
+                   , bytestring
+                   -- additional deps for testing
                    , Cabal
                    , cabal-test-quickcheck >= 0.1.2 && < 0.2
                    , QuickCheck
+                   , random
   default-language:  Haskell98
