@@ -8,11 +8,11 @@ import Data.Attoparsec.ByteString ( Parser, skipWhile, choice, option, satisfy )
 import Data.Attoparsec.ByteString.Char8 ( char, isDigit_w8 )
 
 -- | A time and date representation based on years, months and days.
--- This representation is closest to RFC 3399 (a stricter profile of ISO8601) strings. 
+-- This representation is closest to RFC3339 (a stricter profile of ISO8601) strings. 
 --
 -- Use it if
 --
---   * you are parsing and rendering RFC 3339 strings and only use
+--   * you are parsing and rendering RFC3339 strings and only use
 --     Gregorian operations in between.
 --   * you need to be able to represent leap seconds.
 --   * you need to be able to represent a local offset (timezone).

@@ -19,6 +19,7 @@ Library
   hs-source-dirs:    .
   default-language:  Haskell98
   exposed-modules:   Data.Tempus
+                   , Data.Tempus.Class
                    , Data.Tempus.GregorianDateTime
                    , Data.Tempus.UnixTime
                    , Data.Tempus.UnixOffset

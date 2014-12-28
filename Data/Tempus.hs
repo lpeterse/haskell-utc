@@ -6,8 +6,10 @@ module Data.Tempus
   , UXT.UnixTime (..)
   -- ** Gregorian Date Time
   , GDT.GregorianDateTime ()
+  -- * Tempus Class
+  , Data.Tempus.Class.Tempus (..)
+  , epoch
   -- * Unix Time Operations
-  , UXT.epoch
   , UXT.fromUnixOffset, UXT.toUnixOffset
   , UXT.fromUnixTime, UXT.toUnixTime
   --, getTime, setTime, getOffset, setOffset
@@ -30,13 +32,11 @@ import qualified Data.Text.Lazy as TL
 import qualified Data.ByteString as BS
 import qualified Data.ByteString.Lazy as BSL
 
+import Data.Tempus.Class
 import qualified Data.Tempus.UnixTime as UXT
 import qualified Data.Tempus.UnixOffset as UXO
 import qualified Data.Tempus.GregorianDateTime as GDT
 
-
-class Tempus a where
-  foobar :: Int -> a
 
 -- | > getYears   "2014-⁠12-⁠24T18:11:47Z" == 2014
 getYears      :: Integral a => UXT.UnixTime -> a

@@ -6,6 +6,7 @@ import Distribution.TestSuite.QuickCheck
 import Test.QuickCheck
 
 import Data.Tempus
+import Data.Tempus.Class
 
 import Data.Word
 
@@ -14,7 +15,7 @@ tests
   = return [
 
     testProperty "epoch rendering"
-    $ show epoch === "1970-01-01T00:00:00Z"
+    $ show (epoch :: UnixTime) === "1970-01-01T00:00:00Z"
 
   , testProperty "unixOffset from -2^48 to 2^48-1"
     $ forAll 

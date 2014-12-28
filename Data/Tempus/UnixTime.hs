@@ -1,11 +1,12 @@
 module Data.Tempus.UnixTime
   ( UnixTime (..)
-  , epoch
   , fromUnixOffset, toUnixOffset
   , fromUnixTime, toUnixTime
   ) where
 
 import Data.Word
+
+import Data.Tempus.Class
 
 -- | A time representation counting the seconds since 1970-01-01T00:00:00Z.
 --
@@ -16,10 +17,10 @@ import Data.Word
 newtype UnixTime
       = UnixTime Word32
 
--- | > epoch == "1970-01-01T00:00:00Z"
-epoch :: UnixTime
-epoch
-  = UnixTime 0
+instance Tempus UnixTime where
+  -- | Tempus instance doc.
+  epoch
+    = UnixTime 0
 
 fromUnixOffset :: Word32 -> UnixTime
 fromUnixOffset i64
