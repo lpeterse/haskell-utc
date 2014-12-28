@@ -4,8 +4,13 @@ module Data.Tempus.GregorianDateTime
   , rfc3339Parser
   ) where
 
+import Data.Bits
+import Data.Monoid
+
 import Data.Attoparsec.ByteString ( Parser, skipWhile, choice, option, satisfy )
 import Data.Attoparsec.ByteString.Char8 ( char, isDigit_w8 )
+
+import qualified Data.ByteString.Builder as BS
 
 -- | A time and date representation based on years, months and days.
 -- This representation is closest to RFC3339 (a stricter profile of ISO8601) strings. 
@@ -19,19 +24,69 @@ import Data.Attoparsec.ByteString.Char8 ( char, isDigit_w8 )
 --   * you don't care about a value's memory footprint.
 data GregorianDateTime
    = GregorianDateTime
-     { grYear    :: Int
-     , grMonth   :: Int
-     , grDay     :: Int
-     , grHour    :: Int
-     , grMinute  :: Int
-     , grSecond  :: Int
-     , grmSecond :: Int
-     , grOffset  :: Offset
+     { gdtYear    :: Int
+     , gdtMonth   :: Int
+     , gdtDay     :: Int
+     , gdtHour    :: Int
+     , gdtMinute  :: Int
+     , gdtSecond  :: Int
+     , gdtmSecond :: Int
+     , gdtOffset  :: Offset
      }
 
 data Offset
-   = Offset Int
+   = OffsetMinutes Int
    | OffsetUnknown
+
+rfc3339Builder :: GregorianDateTime -> BS.Builder
+rfc3339Builder gdt
+  = mconcat
+      [ BS.word16HexFixed (y3*8*8 + y2*8*8 + y1*8 + y0)
+      , BS.char7 '-'
+      , BS.word8HexFixed (m1*8 + m0)
+      , BS.char7 '-'
+      , BS.word8HexFixed (d1*8 + d0)
+      , BS.char7 'T'
+      , BS.word8HexFixed (d1*8 + d0)
+      , BS.char7 ':'
+      , BS.word8HexFixed (n1*8 + n0)
+      , BS.char7 ':'
+      , BS.word8HexFixed (s1*8 + s0)
+      , if gdtmSecond gdt /= 0
+          then BS.char7 '.' `mappend` BS.intDec (gdtmSecond gdt)
+          else mempty
+      , case gdtOffset gdt of
+          OffsetUnknown   -> BS.string7 "-00:00"
+          OffsetMinutes 0 -> BS.char7 'Z'
+          OffsetMinutes o -> let o'  = fromIntegral (abs o)
+                                 oh1 = o' `quot` 600 `rem` 10
+                                 oh0 = o' `quot` 60  `rem` 10
+                                 om1 = o' `quot` 10  `rem` 10
+                                 om0 = o'            `rem` 10
+                             in  mconcat
+                                   [ if o < 0
+                                       then BS.char7 '-'
+                                       else BS.char7 '+'
+                                   , BS.word8HexFixed (oh1*8 + oh0)
+                                   , BS.char7 ':'
+                                   , BS.word8HexFixed (om1*8 + om0)
+                                   ]
+      ]
+  where
+    y3 = fromIntegral $ gdtYear   gdt `quot` 1000 `rem` 10
+    y2 = fromIntegral $ gdtYear   gdt `quot` 100  `rem` 10
+    y1 = fromIntegral $ gdtYear   gdt `quot` 10   `rem` 10
+    y0 = fromIntegral $ gdtYear   gdt             `rem` 10
+    m1 = fromIntegral $ gdtMonth  gdt `quot` 10   `rem` 10
+    m0 = fromIntegral $ gdtMonth  gdt             `rem` 10
+    d1 = fromIntegral $ gdtDay    gdt `quot` 10   `rem` 10
+    d0 = fromIntegral $ gdtDay    gdt             `rem` 10
+    h1 = fromIntegral $ gdtHour   gdt `quot` 10   `rem` 10
+    h0 = fromIntegral $ gdtHour   gdt             `rem` 10
+    n1 = fromIntegral $ gdtMinute gdt `quot` 10   `rem` 10
+    n0 = fromIntegral $ gdtMinute gdt             `rem` 10
+    s1 = fromIntegral $ gdtSecond gdt `quot` 10   `rem` 10
+    s0 = fromIntegral $ gdtSecond gdt             `rem` 10
 
 -- | 
 rfc3339Parser :: Parser GregorianDateTime
@@ -40,14 +95,14 @@ rfc3339Parser
        char 'T'
        fullTime
        return GregorianDateTime
-              { grYear     = 0
-              , grMonth    = 0
-              , grDay      = 0
-              , grHour     = 0
-              , grMinute   = 0
-              , grSecond   = 0
-              , grmSecond  = 0
-              , grOffset   = Offset 0
+              { gdtYear     = 0
+              , gdtMonth    = 0
+              , gdtDay      = 0
+              , gdtHour     = 0
+              , gdtMinute   = 0
+              , gdtSecond   = 0
+              , gdtmSecond  = 0
+              , gdtOffset   = OffsetMinutes 0
               }
   where
     dateFullYear
@@ -83,14 +138,14 @@ rfc3339Parser
     timeOffset
       = choice
           [ do char 'Z'
-               return $ Offset 0
+               return $ OffsetMinutes 0
           , do char '+'
                x1 <- decimal2
                char ':'
                x2 <- decimal2
-               return $ Offset
-                      $ x1 * 360000
-                      + x2 * 60000
+               return $ OffsetMinutes
+                      $ x1 * 60
+                      + x2
           , do char '-'
                char '0'
                char '0'
@@ -102,7 +157,7 @@ rfc3339Parser
                x1 <- decimal2
                char ':'
                x2 <- decimal2
-               return $ Offset
+               return $ OffsetMinutes
                       $ negate
                       $ x1 * 360000
                       + x2 * 60000
