@@ -38,10 +38,10 @@ rfc3339Builder gdt
       , case gdtOffset gdt of
           OffsetUnknown   -> BS.string7 "-00:00"
           OffsetMinutes 0 -> BS.char7 'Z'
-          OffsetMinutes o -> let oh1 = fromIntegral $ abs o `quot` 600 `rem` 10
-                                 oh0 = fromIntegral $ abs o `quot` 60  `rem` 10
-                                 om1 = fromIntegral $ abs o `quot` 10  `rem` 10
-                                 om0 = fromIntegral $ abs o            `rem` 10
+          OffsetMinutes o -> let oh1 = fromIntegral $ abs o `quot` 600          `rem` 10
+                                 oh0 = fromIntegral $ abs o `quot` 60           `rem` 10
+                                 om1 = fromIntegral $ abs o `rem`  60 `quot` 10 `rem` 10
+                                 om0 = fromIntegral $ abs o `rem`  60           `rem` 10
                              in  mconcat
                                    [ if o < 0
                                        then BS.char7 '-'
