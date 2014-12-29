@@ -27,8 +27,7 @@ instance Random GregorianDateTime where
          , gdtMDay     = abs mday    `rem` 28 + 1
          , gdtHour     = abs hour    `rem` 24
          , gdtMinute   = abs minute  `rem` 60
-         , gdtSecond   = abs second  `rem` 60
-         , gdtmSecond  = abs msecond `rem` 1000
+         , gdtmSecond  = abs msecond `rem` 60000
          , gdtOffset   = if even unknown
                            then OffsetUnknown
                            else OffsetMinutes (offset `rem` (24*60))
@@ -41,8 +40,7 @@ instance Random GregorianDateTime where
       (mday,    gen4)  = next gen3
       (hour,    gen5)  = next gen4
       (minute,  gen6)  = next gen5
-      (second,  gen7)  = next gen6
-      (msecond, gen8)  = next gen7
+      (msecond, gen8)  = next gen6
       (unknown, gen9)  = next gen8
       (offset,  gen10) = next gen9
 

@@ -28,9 +28,13 @@ rfc3339Builder gdt
       , BS.word8HexFixed (n1*16 + n0)
       , BS.char7 ':'
       , BS.word8HexFixed (s1*16 + s0)
-      , if gdtmSecond gdt /= 0
-          then BS.char7 '.' `mappend` BS.intDec (gdtmSecond gdt)
-          else mempty
+      , if f0 == 0
+          then if f1 == 0
+                 then if f2 == 0
+                        then mempty
+                        else BS.char7 '.' `mappend` BS.intDec f2
+                 else BS.char7 '.' `mappend` BS.intDec f2 `mappend` BS.intDec f1
+          else BS.char7 '.' `mappend` BS.intDec f2 `mappend` BS.intDec f1 `mappend` BS.intDec f0
       , case gdtOffset gdt of
           OffsetUnknown   -> BS.string7 "-00:00"
           OffsetMinutes 0 -> BS.char7 'Z'
@@ -48,20 +52,23 @@ rfc3339Builder gdt
                                    ]
       ]
   where
-    y3 = fromIntegral $ gdtYear   gdt `quot` 1000 `rem` 10
-    y2 = fromIntegral $ gdtYear   gdt `quot` 100  `rem` 10
-    y1 = fromIntegral $ gdtYear   gdt `quot` 10   `rem` 10
-    y0 = fromIntegral $ gdtYear   gdt             `rem` 10
-    m1 = fromIntegral $ gdtMonth  gdt `quot` 10   `rem` 10
-    m0 = fromIntegral $ gdtMonth  gdt             `rem` 10
-    d1 = fromIntegral $ gdtMDay   gdt `quot` 10   `rem` 10
-    d0 = fromIntegral $ gdtMDay   gdt             `rem` 10
-    h1 = fromIntegral $ gdtHour   gdt `quot` 10   `rem` 10
-    h0 = fromIntegral $ gdtHour   gdt             `rem` 10
-    n1 = fromIntegral $ gdtMinute gdt `quot` 10   `rem` 10
-    n0 = fromIntegral $ gdtMinute gdt             `rem` 10
-    s1 = fromIntegral $ gdtSecond gdt `quot` 10   `rem` 10
-    s0 = fromIntegral $ gdtSecond gdt             `rem` 10
+    y3 = fromIntegral $ gdtYear    gdt `quot` 1000  `rem` 10
+    y2 = fromIntegral $ gdtYear    gdt `quot` 100   `rem` 10
+    y1 = fromIntegral $ gdtYear    gdt `quot` 10    `rem` 10
+    y0 = fromIntegral $ gdtYear    gdt              `rem` 10
+    m1 = fromIntegral $ gdtMonth   gdt `quot` 10    `rem` 10
+    m0 = fromIntegral $ gdtMonth   gdt              `rem` 10
+    d1 = fromIntegral $ gdtMDay    gdt `quot` 10    `rem` 10
+    d0 = fromIntegral $ gdtMDay    gdt              `rem` 10
+    h1 = fromIntegral $ gdtHour    gdt `quot` 10    `rem` 10
+    h0 = fromIntegral $ gdtHour    gdt              `rem` 10
+    n1 = fromIntegral $ gdtMinute  gdt `quot` 10    `rem` 10
+    n0 = fromIntegral $ gdtMinute  gdt              `rem` 10
+    s1 = fromIntegral $ gdtmSecond gdt `quot` 10000 `rem` 10
+    s0 = fromIntegral $ gdtmSecond gdt `quot` 1000  `rem` 10
+    f2 = fromIntegral $ gdtmSecond gdt `quot` 100   `rem` 10
+    f1 = fromIntegral $ gdtmSecond gdt `quot` 10    `rem` 10
+    f0 = fromIntegral $ gdtmSecond gdt              `rem` 10
 
 -- | 
 rfc3339Parser :: Parser GregorianDateTime
@@ -85,8 +92,7 @@ rfc3339Parser
               , gdtMDay     = mday
               , gdtHour     = hour
               , gdtMinute   = minute
-              , gdtSecond   = second
-              , gdtmSecond  = msecond
+              , gdtmSecond  = second * 1000 + msecond
               , gdtOffset   = offset
               }
   where
@@ -112,7 +118,7 @@ rfc3339Parser
              , do d <- decimal2
                   return (d * 10)
              , do d <- decimal1
-                  return d
+                  return (d * 100)
              ]
     timeOffset
       = choice

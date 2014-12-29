@@ -20,7 +20,6 @@ data GregorianDateTime
      , gdtMDay    :: Int
      , gdtHour    :: Int
      , gdtMinute  :: Int
-     , gdtSecond  :: Int
      , gdtmSecond :: Int
      , gdtOffset  :: Offset
      } deriving (Eq, Show)
