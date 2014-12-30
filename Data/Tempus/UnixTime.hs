@@ -16,6 +16,7 @@ import Data.Tempus.Class
 --   * you don't need to represent dates after 2106-02-07T06:28:15Z.
 newtype UnixTime
       = UnixTime Word32
+      deriving (Eq, Ord)
 
 instance Tempus UnixTime where
   -- | Tempus instance doc.

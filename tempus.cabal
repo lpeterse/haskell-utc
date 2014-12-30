@@ -13,9 +13,9 @@ cabal-version:       >=1.10
 
 Library
   build-depends:     base < 5
-                   , attoparsec
                    , text
                    , bytestring
+                   , attoparsec
   hs-source-dirs:    .
   default-language:  Haskell98
   exposed-modules:   Data.Tempus
@@ -38,9 +38,9 @@ Test-Suite test
                    -- in library unexposed modules
                    , Data.Tempus.GregorianDateTime.Internal
   build-depends:     base < 5
-                   , attoparsec
                    , text
                    , bytestring
+                   , attoparsec
                    -- additional deps for testing
                    , Cabal
                    , cabal-test-quickcheck >= 0.1.2 && < 0.2

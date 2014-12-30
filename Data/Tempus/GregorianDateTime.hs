@@ -1,20 +1,38 @@
 module Data.Tempus.GregorianDateTime
   ( -- * Type
     GregorianDateTime()
+    -- * RFC 3339
+    -- ** Rendering
+  , toRfc3339String
+  , toRfc3339Text
+  , toRfc3339LazyText
+  , toRfc3339ByteString
+  , toRfc3339LazyByteString
+    -- ** Low-Level
   , rfc3339Parser
   , rfc3339Builder
   ) where
 
 import Data.Monoid
+import Data.String
 
-import Data.Attoparsec.ByteString ( Parser, skipWhile, choice, option, satisfy )
+import Data.Attoparsec.ByteString ( Parser, parseOnly, skipWhile, choice, option, satisfy )
 import Data.Attoparsec.ByteString.Char8 ( char, isDigit_w8 )
 
+import qualified Data.ByteString as BS
 import qualified Data.ByteString.Builder as BS
+import qualified Data.ByteString.Lazy as BSL
+
+import qualified Data.Text as T
+import qualified Data.Text.Encoding as T
+import qualified Data.Text.Lazy as TL
+import qualified Data.Text.Lazy.Encoding as TL
 
 import Data.Tempus.GregorianDateTime.Internal
 
 rfc3339Builder :: GregorianDateTime -> BS.Builder
+rfc3339Builder InvalidTime
+  = BS.string7 "InvalidTime"
 rfc3339Builder gdt
   = mconcat
       [ BS.word16HexFixed (y3*16*16*16 + y2*16*16 + y1*16 + y0)
@@ -172,3 +190,32 @@ rfc3339Parser
                   + d2 * 100
                   + d3 * 10
                   + d4
+
+toRfc3339LazyByteString :: GregorianDateTime -> BSL.ByteString
+toRfc3339LazyByteString gdt
+  = BS.toLazyByteString (rfc3339Builder gdt)
+
+toRfc3339ByteString :: GregorianDateTime -> BS.ByteString
+toRfc3339ByteString gdt
+  = BSL.toStrict (toRfc3339LazyByteString gdt)
+
+toRfc3339Text :: GregorianDateTime -> T.Text
+toRfc3339Text gdt
+  = T.decodeUtf8 (toRfc3339ByteString gdt)
+
+toRfc3339LazyText :: GregorianDateTime -> TL.Text
+toRfc3339LazyText gdt
+  = TL.decodeUtf8 (toRfc3339LazyByteString gdt)
+
+toRfc3339String :: GregorianDateTime -> String
+toRfc3339String gdt
+  = T.unpack (toRfc3339Text gdt)
+
+instance Show GregorianDateTime where
+  show = toRfc3339String
+
+instance IsString GregorianDateTime where
+  fromString s
+    = case parseOnly rfc3339Parser (T.encodeUtf8 $ T.pack s) of
+        Right s -> s
+        Left  e -> InvalidTime

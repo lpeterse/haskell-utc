@@ -22,9 +22,37 @@ data GregorianDateTime
      , gdtMinute  :: Int
      , gdtmSecond :: Int
      , gdtOffset  :: Offset
-     } deriving (Eq, Show)
+     }
+   | InvalidTime
 
 data Offset
    = OffsetMinutes Int
    | OffsetUnknown
-   deriving (Eq, Show)
+
+instance Eq GregorianDateTime where
+  a == b
+    =  gdtYear   a  == gdtYear    b
+    && gdtMonth  a  == gdtMonth   b
+    && gdtMDay   a  == gdtMDay    b
+    && gdtHour   a  == gdtHour    b
+    && gdtMinute a  == gdtMinute  b
+    && gdtmSecond a == gdtmSecond b
+
+instance Ord GregorianDateTime where
+  compare a b
+    = case compare (gdtYear a) (gdtYear b) of
+        LT -> LT
+        GT -> GT
+        EQ -> case compare (gdtMonth a) (gdtMonth b) of
+                LT -> LT
+                GT -> GT
+                EQ -> case compare (gdtMDay a) (gdtMDay b) of
+                        LT -> LT
+                        GT -> GT
+                        EQ -> case compare (gdtHour a) (gdtHour b) of
+                                LT -> LT
+                                GT -> GT
+                                EQ -> case compare (gdtMinute a) (gdtMinute b) of
+                                        LT -> LT
+                                        GT -> GT
+                                        EQ -> compare (gdtmSecond a) (gdtmSecond b)
