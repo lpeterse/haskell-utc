@@ -1,6 +1,6 @@
-module Data.Tempus.GregorianDateTime
+module Data.Tempus.GregorianTime
   ( -- * Type
-    GregorianDateTime()
+    GregorianTime()
     -- * RFC 3339
     -- ** Rendering
   , toRfc3339String
@@ -29,9 +29,9 @@ import qualified Data.Text.Lazy as TL
 import qualified Data.Text.Lazy.Encoding as TL
 
 import Data.Tempus.Class
-import Data.Tempus.GregorianDateTime.Internal
+import Data.Tempus.GregorianTime.Internal
 
-rfc3339Builder :: GregorianDateTime -> BS.Builder
+rfc3339Builder :: GregorianTime -> BS.Builder
 rfc3339Builder InvalidTime
   = BS.string7 "InvalidTime"
 rfc3339Builder gdt
@@ -71,32 +71,32 @@ rfc3339Builder gdt
                                    ]
       ]
   where
-    y3 = fromIntegral $ gdtYear    gdt `quot` 1000  `rem` 10
-    y2 = fromIntegral $ gdtYear    gdt `quot` 100   `rem` 10
-    y1 = fromIntegral $ gdtYear    gdt `quot` 10    `rem` 10
-    y0 = fromIntegral $ gdtYear    gdt              `rem` 10
-    m1 = fromIntegral $ gdtMonth   gdt `quot` 10    `rem` 10
-    m0 = fromIntegral $ gdtMonth   gdt              `rem` 10
-    d1 = fromIntegral $ gdtMDay    gdt `quot` 10    `rem` 10
-    d0 = fromIntegral $ gdtMDay    gdt              `rem` 10
-    h1 = fromIntegral $ gdtHour    gdt `quot` 10    `rem` 10
-    h0 = fromIntegral $ gdtHour    gdt              `rem` 10
-    n1 = fromIntegral $ gdtMinute  gdt `quot` 10    `rem` 10
-    n0 = fromIntegral $ gdtMinute  gdt              `rem` 10
-    s1 = fromIntegral $ gdtmSecond gdt `quot` 10000 `rem` 10
-    s0 = fromIntegral $ gdtmSecond gdt `quot` 1000  `rem` 10
-    f2 = fromIntegral $ gdtmSecond gdt `quot` 100   `rem` 10
-    f1 = fromIntegral $ gdtmSecond gdt `quot` 10    `rem` 10
-    f0 = fromIntegral $ gdtmSecond gdt              `rem` 10
+    y3 = fromIntegral $ gdtYear         gdt `quot` 1000         `rem` 10
+    y2 = fromIntegral $ gdtYear         gdt `quot` 100          `rem` 10
+    y1 = fromIntegral $ gdtYear         gdt `quot` 10           `rem` 10
+    y0 = fromIntegral $ gdtYear         gdt                     `rem` 10
+    m1 = fromIntegral $ gdtMonth        gdt `quot` 10           `rem` 10
+    m0 = fromIntegral $ gdtMonth        gdt                     `rem` 10
+    d1 = fromIntegral $ gdtDay          gdt `quot` 10           `rem` 10
+    d0 = fromIntegral $ gdtDay          gdt                     `rem` 10
+    h1 = fromIntegral $ gdtMinutes      gdt `quot` 600          `rem` 10
+    h0 = fromIntegral $ gdtMinutes      gdt `quot` 60           `rem` 10
+    n1 = fromIntegral $ gdtMinutes      gdt `rem`  60 `quot` 10 `rem` 10
+    n0 = fromIntegral $ gdtMinutes      gdt `rem`  60           `rem` 10
+    s1 = fromIntegral $ gdtMilliSeconds gdt `quot` 10000        `rem` 10
+    s0 = fromIntegral $ gdtMilliSeconds gdt `quot` 1000         `rem` 10
+    f2 = fromIntegral $ gdtMilliSeconds gdt `quot` 100          `rem` 10
+    f1 = fromIntegral $ gdtMilliSeconds gdt `quot` 10           `rem` 10
+    f0 = fromIntegral $ gdtMilliSeconds gdt                     `rem` 10
 
 -- | 
-rfc3339Parser :: Parser GregorianDateTime
+rfc3339Parser :: Parser GregorianTime
 rfc3339Parser 
   = do year    <- dateFullYear
        _       <- char '-'
        month   <- dateMonth
        _       <- char '-'
-       mday    <- dateMDay
+       day     <- dateMDay
        _       <- char 'T'
        hour    <- timeHour
        _       <- char ':'
@@ -105,14 +105,13 @@ rfc3339Parser
        second  <- timeSecond
        msecond <- option 0 timeSecfrac
        offset  <- timeOffset
-       return GregorianDateTime
-              { gdtYear     = year
-              , gdtMonth    = month
-              , gdtMDay     = mday
-              , gdtHour     = hour
-              , gdtMinute   = minute
-              , gdtmSecond  = second * 1000 + msecond
-              , gdtOffset   = offset
+       return GregorianTime
+              { gdtYear          = year
+              , gdtMonth         = month
+              , gdtDay           = day
+              , gdtMinutes       = hour * 60 + minute
+              , gdtMilliSeconds  = second * 1000 + msecond
+              , gdtOffset        = offset
               }
   where
     dateFullYear
@@ -192,35 +191,39 @@ rfc3339Parser
                   + d3 * 10
                   + d4
 
-toRfc3339LazyByteString :: GregorianDateTime -> BSL.ByteString
+toRfc3339LazyByteString :: GregorianTime -> BSL.ByteString
 toRfc3339LazyByteString gdt
   = BS.toLazyByteString (rfc3339Builder gdt)
 
-toRfc3339ByteString :: GregorianDateTime -> BS.ByteString
+toRfc3339ByteString :: GregorianTime -> BS.ByteString
 toRfc3339ByteString gdt
   = BSL.toStrict (toRfc3339LazyByteString gdt)
 
-toRfc3339Text :: GregorianDateTime -> T.Text
+toRfc3339Text :: GregorianTime -> T.Text
 toRfc3339Text gdt
   = T.decodeUtf8 (toRfc3339ByteString gdt)
 
-toRfc3339LazyText :: GregorianDateTime -> TL.Text
+toRfc3339LazyText :: GregorianTime -> TL.Text
 toRfc3339LazyText gdt
   = TL.decodeUtf8 (toRfc3339LazyByteString gdt)
 
-toRfc3339String :: GregorianDateTime -> String
+toRfc3339String :: GregorianTime -> String
 toRfc3339String gdt
   = T.unpack (toRfc3339Text gdt)
 
-instance Show GregorianDateTime where
+instance Show GregorianTime where
   show = toRfc3339String
 
-instance IsString GregorianDateTime where
+instance IsString GregorianTime where
   fromString s
     = case parseOnly rfc3339Parser (T.encodeUtf8 $ T.pack s) of
         Right s -> s
         Left  e -> InvalidTime
 
-instance Tempus GregorianDateTime where
-  invalid
-    = InvalidTime
+instance Tempus GregorianTime where
+  toGregorianTime
+    = id
+  fromGregorianTime
+    = id
+  isInvalid _
+    = False -- FIXME

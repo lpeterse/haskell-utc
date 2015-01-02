@@ -21,10 +21,9 @@ Library
   default-language:  Haskell98
   exposed-modules:   Data.Tempus
                    , Data.Tempus.Class
-                   , Data.Tempus.GregorianDateTime
+                   , Data.Tempus.GregorianTime
                    , Data.Tempus.UnixTime
-                   , Data.Tempus.UnixOffset
-  other-modules:     Data.Tempus.GregorianDateTime.Internal
+  other-modules:     Data.Tempus.GregorianTime.Internal
 
 Test-Suite test
   type:              detailed-0.9
@@ -33,11 +32,10 @@ Test-Suite test
   test-module:       Test
   other-modules:     Data.Tempus
                    , Data.Tempus.Class
-                   , Data.Tempus.GregorianDateTime
+                   , Data.Tempus.GregorianTime
                    , Data.Tempus.UnixTime
-                   , Data.Tempus.UnixOffset
                    -- in library unexposed modules
-                   , Data.Tempus.GregorianDateTime.Internal
+                   , Data.Tempus.GregorianTime.Internal
   build-depends:     base < 5
                    , text
                    , bytestring

@@ -39,5 +39,3 @@ toUnixTime t
 instance Show UnixTime where
   show _ = "FIXME"
 
-instance Tempus UnixTime where
-  invalid = UnixTime minBound
