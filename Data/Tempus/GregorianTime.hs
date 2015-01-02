@@ -2,13 +2,19 @@ module Data.Tempus.GregorianTime
   ( -- * Type
     GregorianTime()
     -- * RFC 3339
+    -- ** Parsing
+  , parseRfc3339String
+  , parseRfc3339Text
+  , parseRfc3339LazyText
+  , parseRfc3339ByteString
+  , parseRfc3339LazyByteString
     -- ** Rendering
-  , toRfc3339String
-  , toRfc3339Text
-  , toRfc3339LazyText
-  , toRfc3339ByteString
-  , toRfc3339LazyByteString
-    -- ** Low-Level
+  , renderRfc3339String
+  , renderRfc3339Text
+  , renderRfc3339LazyText
+  , renderRfc3339ByteString
+  , renderRfc3339LazyByteString
+    -- ** Rendering (Low-Level)
   , rfc3339Parser
   , rfc3339Builder
     -- * Validation
@@ -89,8 +95,6 @@ validate gdt
                                else mzero
 
 rfc3339Builder :: GregorianTime -> BS.Builder
-rfc3339Builder InvalidTime
-  = BS.string7 "InvalidTime"
 rfc3339Builder gdt
   = mconcat
       [ BS.word16HexFixed (y3*16*16*16 + y2*16*16 + y1*16 + y0)
@@ -162,14 +166,15 @@ rfc3339Parser
        second  <- timeSecond
        msecond <- option 0 timeSecfrac
        offset  <- timeOffset
-       validate $ GregorianTime
-              { gdtYear          = year
-              , gdtMonth         = month
-              , gdtDay           = day
-              , gdtMinutes       = hour * 60 + minute
-              , gdtMilliSeconds  = second * 1000 + msecond
-              , gdtOffset        = offset
-              }
+       validate 
+         $ GregorianTime
+           { gdtYear          = year
+           , gdtMonth         = month
+           , gdtDay           = day
+           , gdtMinutes       = hour * 60 + minute
+           , gdtMilliSeconds  = second * 1000 + msecond
+           , gdtOffset        = offset
+           }
   where
     dateFullYear
       = decimal4
@@ -183,7 +188,6 @@ rfc3339Parser
       = decimal2
     timeSecond
       = decimal2
-    timeSecfrac :: Parser Int
     timeSecfrac
       = do _ <- char '.'
            choice
@@ -248,34 +252,56 @@ rfc3339Parser
                   + d3 * 10
                   + d4
 
-toRfc3339LazyByteString :: GregorianTime -> BSL.ByteString
-toRfc3339LazyByteString gdt
+renderRfc3339LazyByteString :: GregorianTime -> BSL.ByteString
+renderRfc3339LazyByteString gdt
   = BS.toLazyByteString (rfc3339Builder gdt)
 
-toRfc3339ByteString :: GregorianTime -> BS.ByteString
-toRfc3339ByteString gdt
-  = BSL.toStrict (toRfc3339LazyByteString gdt)
+renderRfc3339ByteString :: GregorianTime -> BS.ByteString
+renderRfc3339ByteString gdt
+  = BSL.toStrict (renderRfc3339LazyByteString gdt)
 
-toRfc3339Text :: GregorianTime -> T.Text
-toRfc3339Text gdt
-  = T.decodeUtf8 (toRfc3339ByteString gdt)
+renderRfc3339Text :: GregorianTime -> T.Text
+renderRfc3339Text gdt
+  = T.decodeUtf8 (renderRfc3339ByteString gdt)
 
-toRfc3339LazyText :: GregorianTime -> TL.Text
-toRfc3339LazyText gdt
-  = TL.decodeUtf8 (toRfc3339LazyByteString gdt)
+renderRfc3339LazyText :: GregorianTime -> TL.Text
+renderRfc3339LazyText gdt
+  = TL.decodeUtf8 (renderRfc3339LazyByteString gdt)
 
-toRfc3339String :: GregorianTime -> String
-toRfc3339String gdt
-  = T.unpack (toRfc3339Text gdt)
+renderRfc3339String :: GregorianTime -> String
+renderRfc3339String gdt
+  = T.unpack (renderRfc3339Text gdt)
+
+parseRfc3339ByteString :: (MonadPlus m) => BS.ByteString -> m GregorianTime
+parseRfc3339ByteString s
+  = case parseOnly rfc3339Parser s of
+      Right t -> return t
+      Left e  -> mzero
+
+parseRfc3339LazyByteString :: (MonadPlus m) => BSL.ByteString -> m GregorianTime
+parseRfc3339LazyByteString s
+  = parseRfc3339ByteString (BSL.toStrict s)
+
+parseRfc3339Text :: (MonadPlus m) => T.Text -> m GregorianTime
+parseRfc3339Text s
+  = parseRfc3339ByteString (T.encodeUtf8 s)
+
+parseRfc3339LazyText :: (MonadPlus m) => TL.Text -> m GregorianTime
+parseRfc3339LazyText s
+  = parseRfc3339LazyByteString (TL.encodeUtf8 s)
+
+parseRfc3339String :: (MonadPlus m) => String -> m GregorianTime
+parseRfc3339String s
+  = parseRfc3339Text (T.pack s)
 
 instance Show GregorianTime where
-  show = toRfc3339String
+  show = renderRfc3339String
 
 instance IsString GregorianTime where
   fromString s
     = case parseOnly rfc3339Parser (T.encodeUtf8 $ T.pack s) of
         Right s -> s
-        Left  e -> InvalidTime
+        Left  e -> error $ "Invalid Date '" ++ s ++ "'"
 
 instance Tempus GregorianTime where
   isLeapYear gdt

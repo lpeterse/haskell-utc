@@ -22,7 +22,6 @@ data GregorianTime
      , gdtMilliSeconds :: Int
      , gdtOffset       :: Offset
      }
-   | InvalidTime
    deriving (Eq, Ord)
 
 data Offset
