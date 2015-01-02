@@ -11,7 +11,11 @@ module Data.Tempus.GregorianTime
     -- ** Low-Level
   , rfc3339Parser
   , rfc3339Builder
+    -- * Validation
+  , validate
   ) where
+
+import Control.Monad
 
 import Data.Monoid
 import Data.String
@@ -30,6 +34,59 @@ import qualified Data.Text.Lazy.Encoding as TL
 
 import Data.Tempus.Class
 import Data.Tempus.GregorianTime.Internal
+
+validate :: MonadPlus m => GregorianTime -> m GregorianTime
+validate gdt
+  = do validateYear
+       validateMonthAndDay
+       validateMinutes
+       validateMilliSeconds
+       validateOffset
+       return gdt
+  where
+    validateYear
+      = if 0 <= gdtYear gdt && gdtYear gdt <= 9999
+          then return ()
+          else mzero
+    validateMonthAndDay
+      = if 1 <= gdtMonth gdt && gdtMonth gdt <= 12
+          then case gdtMonth gdt of
+                 1  -> validateDays31
+                 2  -> validateDays28or29
+                 3  -> validateDays31
+                 4  -> validateDays30
+                 5  -> validateDays31
+                 6  -> validateDays30
+                 7  -> validateDays31
+                 8  -> validateDays31
+                 9  -> validateDays30
+                 10 -> validateDays31
+                 11 -> validateDays30
+                 12 -> validateDays31
+                 _  -> mzero
+          else mzero
+    validateDays31
+      | 1 <= gdtDay gdt && gdtDay gdt <= 31           = return ()
+      | otherwise                                     = mzero
+    validateDays30
+      | 1 <= gdtDay gdt && gdtDay gdt <= 30           = return ()
+      | otherwise                                     = mzero
+    validateDays28or29
+      | 1 <= gdtDay gdt && gdtDay gdt <= 28           = return ()
+      | gdtDay gdt == 29 && isLeapYear gdt            = return ()
+      | otherwise                                     = mzero
+    validateMinutes
+      | 0 <= gdtMinutes gdt && gdtMinutes gdt < 24*60 = return ()
+      | otherwise                                     = mzero
+    validateMilliSeconds
+      | 0 <= gdtMinutes gdt && gdtMinutes gdt < 61000 = return ()
+      | otherwise                                     = mzero
+    validateOffset
+      = case gdtOffset gdt of
+          OffsetUnknown   -> return ()
+          OffsetMinutes o -> if negate (24*60) < o && o < (24*60)
+                               then return ()
+                               else mzero
 
 rfc3339Builder :: GregorianTime -> BS.Builder
 rfc3339Builder InvalidTime
@@ -105,7 +162,7 @@ rfc3339Parser
        second  <- timeSecond
        msecond <- option 0 timeSecfrac
        offset  <- timeOffset
-       return GregorianTime
+       validate $ GregorianTime
               { gdtYear          = year
               , gdtMonth         = month
               , gdtDay           = day
@@ -219,4 +276,37 @@ instance IsString GregorianTime where
     = case parseOnly rfc3339Parser (T.encodeUtf8 $ T.pack s) of
         Right s -> s
         Left  e -> InvalidTime
+
+instance Tempus GregorianTime where
+  isLeapYear gdt
+    = (gdtYear gdt `mod` 4 == 0) && ((gdtYear gdt `mod` 400 == 0) || not (gdtYear gdt `mod` 100 == 0))
+
+  getYear gt
+    = return (gdtYear gt)
+  getMonth gt
+    = return (gdtMonth gt)
+  getDay gt
+    = return (gdtDay gt)
+  getHour gt
+    = return (gdtMinutes gt `quot` 60)
+  getMinute gt
+    = return (gdtMinutes gt `rem` 60)
+  getSecond gt
+    = return (gdtMilliSeconds gt `quot` 1000)
+  getMilliSecond gt
+    = return (gdtMilliSeconds gt `rem` 1000)
+  setYear x gt
+    = validate $ gt { gdtYear = x }
+  setMonth x gt
+    = validate $ gt { gdtMonth = x }
+  setDay x gt
+    = validate $ gt { gdtDay = x }
+  setHour x gt
+    = validate $ gt { gdtMinutes = x*60 + (gdtMinutes gt `rem` 60) }
+  setMinute x gt
+    = validate $ gt { gdtMinutes = (gdtMinutes gt `quot` 60)*60 + x }
+  setSecond x gt
+    = validate $ gt { gdtMilliSeconds = x*1000 + (gdtMilliSeconds gt `rem` 1000) }
+  setMilliSecond x gt
+    = validate $ gt { gdtMilliSeconds = (gdtMilliSeconds gt `quot` 1000)*1000 + x }
 

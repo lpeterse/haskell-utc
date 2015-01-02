@@ -42,17 +42,17 @@ instance Show UnixTime where
   show _ = "FIXME"
 
 instance Tempus UnixTime where
-  getYears  (UnixTime t)
+  getYear  (UnixTime t)
     = mzero
-  getMonths (UnixTime t)
+  getMonth (UnixTime t)
     = mzero
-  getDays    (UnixTime t)
+  getDay    (UnixTime t)
     = mzero
-  getHours   (UnixTime t)
+  getHour   (UnixTime t)
     = return $ fromIntegral $ t `quot` 60*60*1000 `rem` 24
-  getMinutes (UnixTime t)
+  getMinute (UnixTime t)
     = return $ fromIntegral $ t `quot` 60*1000 `rem` 60
-  getSeconds (UnixTime t)
+  getSecond (UnixTime t)
     = return $ fromIntegral $ t `quot` 1000 `rem` 60
-  getMilliSeconds (UnixTime t)
+  getMilliSecond (UnixTime t)
     = return $ fromIntegral $ t `rem` 1000

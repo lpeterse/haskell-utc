@@ -3,27 +3,29 @@ module Data.Tempus.Class where
 import Control.Monad
 
 class Tempus a where
+  isLeapYear      :: a -> Bool
+
   -- | > getYears   "2014-⁠12-⁠24T18:11:47Z" == 2014
-  getYears        :: (MonadPlus m) => a -> m Int
+  getYear         :: (MonadPlus m) => a -> m Int
   -- | > getMonths  "2014-⁠12-⁠24T18:11:47Z" == 12
-  getMonths       :: (MonadPlus m) => a -> m Int
+  getMonth        :: (MonadPlus m) => a -> m Int
   -- | > getDays    "2014-⁠12-⁠24T18:11:47Z" == 24
-  getDays         :: (MonadPlus m) => a -> m Int
+  getDay          :: (MonadPlus m) => a -> m Int
   -- | > getHours   "2014-⁠12-⁠24T18:11:47Z" == 18
-  getHours        :: (MonadPlus m) => a -> m Int
+  getHour         :: (MonadPlus m) => a -> m Int
   -- | > getMinutes "2014-⁠12-⁠24T18:11:47Z" == 11
-  getMinutes      :: (MonadPlus m) => a -> m Int
+  getMinute       :: (MonadPlus m) => a -> m Int
   -- | > getSeconds "2014-⁠12-⁠24T18:11:47Z" == 47
-  getSeconds      :: (MonadPlus m) => a -> m Int
+  getSecond       :: (MonadPlus m) => a -> m Int
   -- | > getMillis  "2014-⁠12-⁠24T18:11:47Z" == 0
-  getMilliSeconds :: (MonadPlus m) => a -> m Int
-  setYears        :: Int -> a -> Maybe a
-  setMonths       :: Int -> a -> Maybe a
-  setDays         :: Int -> a -> Maybe a
-  setHours        :: Int -> a -> Maybe a
-  setMinutes      :: Int -> a -> Maybe a
-  setSeconds      :: Int -> a -> Maybe a
-  setMilliSeconds :: Int -> a -> Maybe a
+  getMilliSecond  :: (MonadPlus m) => a -> m Int
+  setYear         :: Int -> a -> Maybe a
+  setMonth        :: Int -> a -> Maybe a
+  setDay          :: Int -> a -> Maybe a
+  setHour         :: Int -> a -> Maybe a
+  setMinute       :: Int -> a -> Maybe a
+  setSecond       :: Int -> a -> Maybe a
+  setMilliSecond  :: Int -> a -> Maybe a
   addYears        :: Int -> a -> Maybe a
   addMonths       :: Int -> a -> Maybe a
   addDays         :: Int -> a -> Maybe a
