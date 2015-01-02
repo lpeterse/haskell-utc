@@ -220,10 +220,3 @@ instance IsString GregorianTime where
         Right s -> s
         Left  e -> InvalidTime
 
-instance Tempus GregorianTime where
-  toGregorianTime
-    = id
-  fromGregorianTime
-    = id
-  isInvalid _
-    = False -- FIXME
