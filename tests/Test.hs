@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 module Test ( tests ) where
 
 import Distribution.TestSuite
@@ -5,7 +6,6 @@ import Distribution.TestSuite.QuickCheck
 
 import Test.QuickCheck
 
-import qualified Data.ByteString as BS
 import qualified Data.ByteString.Builder as BS
 import qualified Data.ByteString.Lazy as BSL
 
@@ -16,6 +16,15 @@ import Data.Tempus.GregorianDateTime
 import Data.Tempus.GregorianDateTime.Internal
 
 import System.Random
+
+
+
+interestingValidDates :: [GregorianDateTime]
+interestingValidDates
+  = [ "1969-07-21T02:56:00Z"
+    , "1970-01-01T00:00:00Z"
+
+    ]
 
 instance Random GregorianDateTime where
   randomR (_,_) gen
@@ -48,12 +57,9 @@ tests :: IO [Test]
 tests 
   = return [
 
-    testProperty "epoch rendering"
-    $ show (epoch :: UnixTime) === "1970-01-01T00:00:00Z"
-
-  , testProperty "random GregorianDateTime RFC3339 parse <-> render"
+    testProperty "random GregorianDateTime RFC3339 parse <-> render"
     $ forAll (choose (undefined, undefined))
-    $ \gdt-> let bs   = BSL.toStrict (BS.toLazyByteString (rfc3339Builder gdt))
+    $ \gdt-> let bs   = toRfc3339ByteString gdt
                  gdt' = case Atto.parseOnly rfc3339Parser bs of
                           Left e  -> error $ e ++ "(" ++ show bs ++ ")"
                           Right s -> s

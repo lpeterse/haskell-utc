@@ -2,7 +2,7 @@ module Data.Tempus.UnixOffset
   ( UnixOffset (..)
   ) where
 
-import Data.Word
+import Data.Int
 
 import Data.Tempus.Class
 
@@ -15,8 +15,8 @@ import Data.Tempus.Class
 --   * you don't care about a local offset or timezones.
 --   * you don't need to represent dates before 1970-01-01T00:00:00Z.
 newtype UnixOffset
-      = UnixOffset Word64
+      = UnixOffset Int
       deriving (Eq, Ord)
 
 instance Tempus UnixOffset where
-  epoch = UnixOffset 0
+  invalid = UnixOffset minBound

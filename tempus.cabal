@@ -16,6 +16,7 @@ Library
                    , text
                    , bytestring
                    , attoparsec
+  ghc-options:       -Wall -fno-warn-orphans
   hs-source-dirs:    .
   default-language:  Haskell98
   exposed-modules:   Data.Tempus
@@ -27,7 +28,7 @@ Library
 
 Test-Suite test
   type:              detailed-0.9
-  ghc-options:       -Wall
+  ghc-options:       -Wall -fno-warn-orphans
   hs-source-dirs:    tests .
   test-module:       Test
   other-modules:     Data.Tempus
