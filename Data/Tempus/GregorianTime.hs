@@ -26,6 +26,7 @@ module Data.Tempus.GregorianTime
   , validate
   , isLeapYear'
   , yearToDays
+  , selectMonthMarFeb
   ) where
 
 import Control.Monad
@@ -360,9 +361,9 @@ toUnixTime t
 --   https://stackoverflow.com/questions/1274964/how-to-decompose-unix-time-in-c
 fromUnixTime :: MonadPlus m => UnixTime -> m GregorianTime
 fromUnixTime (UnixTime i)
-  = do yearMarFeb  <- shrinkYearMarFeb 0 9999
-       let remainingDays = days - (yearToDays yearMarFeb)
-       monthMarFeb <- selectMonthMarFeb remainingDays
+  = do yearMarFeb                   <- shrinkYearMarFeb 0 9999
+       let remainingDays             = days - (yearToDays yearMarFeb)
+       let monthMarFeb               = selectMonthMarFeb remainingDays
        let (yearJanDec, monthJanDec) = if monthMarFeb > 10
                                          then (yearMarFeb + 1, monthMarFeb - 10)
                                          else (yearMarFeb,     monthMarFeb + 2)
@@ -393,19 +394,21 @@ fromUnixTime (UnixTime i)
       | otherwise                           = mzero
       where
         mid = (lower + upper) `quot` 2
-    selectMonthMarFeb d
-      | d <= 367 *  1 `quot` 12 = return  1
-      | d <= 367 *  2 `quot` 12 = return  2
-      | d <= 367 *  3 `quot` 12 = return  3
-      | d <= 367 *  4 `quot` 12 = return  4
-      | d <= 367 *  5 `quot` 12 = return  5
-      | d <= 367 *  6 `quot` 12 = return  6
-      | d <= 367 *  7 `quot` 12 = return  7
-      | d <= 367 *  8 `quot` 12 = return  8
-      | d <= 367 *  9 `quot` 12 = return  9
-      | d <= 367 * 10 `quot` 12 = return 10
-      | d <= 367 * 11 `quot` 12 = return 11
-      | otherwise               = return 12
+
+selectMonthMarFeb :: Int64 -> Int64
+selectMonthMarFeb d
+      | d <= 367 *  2 `quot` 12 = 1
+      | d <= 367 *  3 `quot` 12 = 2
+      | d <= 367 *  4 `quot` 12 = 3
+      | d <= 367 *  5 `quot` 12 = 4
+      | d <= 367 *  6 `quot` 12 = 5
+      | d <= 367 *  7 `quot` 12 = 6
+      | d <= 367 *  8 `quot` 12 = 7
+      | d <= 367 *  9 `quot` 12 = 8
+      | d <= 367 * 10 `quot` 12 = 9
+      | d <= 367 * 11 `quot` 12 = 10
+      | d <= 367                = 11
+      | otherwise               = 12
 
 
 isLeapYear' :: Int -> Bool

@@ -6,6 +6,8 @@ import Distribution.TestSuite.QuickCheck
 
 import Test.QuickCheck
 
+import Data.Int
+import Data.String
 import qualified Data.ByteString.Builder as BS
 import qualified Data.ByteString.Lazy as BSL
 
@@ -17,27 +19,21 @@ import Data.Tempus.GregorianTime.Internal
 
 import System.Random
 
-
-
-interestingValidDates :: [GregorianTime]
-interestingValidDates
-  = [ "1969-07-21T02:56:00Z"
-    , "1970-01-01T00:00:00Z"
-
-    ]
-
 tests :: IO [Test]
 tests 
-  = return [
+  = return
 
---    testProperty "random GregorianDateTime RFC3339 parse <-> render"
---    $ forAll (choose (undefined, undefined))
---    $ \gdt-> let bs   = toRfc3339ByteString gdt
---                 gdt' = case Atto.parseOnly rfc3339Parser bs of
---                          Left e  -> error $ e ++ "(" ++ show bs ++ ")"
---                          Right s -> s
---             in  if gdt == gdt'
---                   then True
---                   else error $ show bs
-  ]
+      (map
+       (\(i64,s)->
+        testProperty ("fromUnixTime " ++ show i64 ++ " " ++ show s)
+        $ fromUnixTime (UnixTime i64) == Just (fromString s)
+       )
+       unixTimeGregorianTimeTuples
+      )
+
+unixTimeGregorianTimeTuples :: [(Int64,String)]
+unixTimeGregorianTimeTuples
+  = [ (            0, "1970-01-01T00:00:00Z")
+    , (1234234234000, "2009-02-10T02:50:34Z")
+    ]
 
