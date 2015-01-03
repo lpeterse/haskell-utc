@@ -17,15 +17,13 @@ import Data.Tempus
 import Data.Tempus.GregorianTime
 import Data.Tempus.GregorianTime.Internal
 
-import System.Random
-
 tests :: IO [Test]
 tests 
   = return
 
       (map
        (\(i64,s)->
-        testProperty ("fromUnixTime " ++ show i64 ++ " " ++ show s)
+        testProperty ("fromUnixTime " ++ show i64 ++ " == " ++ show s)
         $ fromUnixTime (UnixTime i64) == Just (fromString s)
        )
        unixTimeGregorianTimeTuples
@@ -33,7 +31,8 @@ tests
 
 unixTimeGregorianTimeTuples :: [(Int64,String)]
 unixTimeGregorianTimeTuples
-  = [ (            0, "1970-01-01T00:00:00Z")
+  = [ (        -1000, "1969-12-31T23:59:59Z")
+    , (            0, "1970-01-01T00:00:00Z")
     , (1234234234000, "2009-02-10T02:50:34Z")
     ]
 

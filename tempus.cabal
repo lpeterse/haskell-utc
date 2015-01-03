@@ -44,5 +44,4 @@ Test-Suite test
                    , Cabal
                    , cabal-test-quickcheck >= 0.1.2 && < 0.2
                    , QuickCheck
-                   , random
   default-language:  Haskell98
