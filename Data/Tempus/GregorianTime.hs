@@ -30,6 +30,8 @@ module Data.Tempus.GregorianTime
 
 import Control.Monad
 
+import Debug.Trace
+
 import Data.Int
 import Data.Monoid
 import Data.String
@@ -377,11 +379,18 @@ fromUnixTime (UnixTime i)
     days 
       = i `quot` (24*60*60*1000) + 719499
     shrinkYearMarFeb lower upper
-      | days >  yearToDays (upper + 1) + 30 = mzero
-      | days <  yearToDays (lower + 1) + 30 = mzero
+      -- we found the year satifying the condition
+      | lower == upper                      = return lower
+      -- just a fail-safe recursion breaker
+      | lower > upper                       = mzero
+      -- the tested year has more or equally many days than what we are looking for
+      -- induction guarantee: unless 'lower == upper' (catched above) it always holds 'mid < upper'
       | days <= yearToDays (mid   + 1) + 30 = shrinkYearMarFeb lower mid
-      | days >  yearToDays (mid   + 1) + 30 = shrinkYearMarFeb mid upper
-      | otherwise                           = return mid
+      -- the tested year has less days than what we are looking for
+      -- induction guarantee: it always holds 'mid + 1 > lower'
+      | days >  yearToDays (mid   + 1) + 30 = shrinkYearMarFeb (mid + 1) upper
+      -- should not happen
+      | otherwise                           = mzero
       where
         mid = (lower + upper) `quot` 2
     selectMonthMarFeb d
