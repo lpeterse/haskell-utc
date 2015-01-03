@@ -363,7 +363,7 @@ toUnixTime t
 fromUnixTime :: MonadPlus m => UnixTime -> m GregorianTime
 fromUnixTime (UnixTime i)
   = do -- adjust the epoch to the year 0000
-       days                          = i `div` (24*60*60*1000) + 719499
+       let days                      = i `div` (24*60*60*1000) + 719499
        -- calculate the "year" whereas a year ranges from March 1 to February 28|29
        -- having the leap days at the end of the year allows for some tricks
        yearMarFeb                   <- shrinkYearMarFeb days 0 9999
@@ -372,7 +372,7 @@ fromUnixTime (UnixTime i)
        let (yearJanDec, monthJanDec) = if monthMarFeb > 10
                                          then (yearMarFeb + 1, monthMarFeb - 10)
                                          else (yearMarFeb,     monthMarFeb + 2)
-       validate $ GregorianTime
+       return $ GregorianTime
                { gdtYear         = fromIntegral yearJanDec
                , gdtMonth        = fromIntegral monthJanDec
                , gdtDay          = fromIntegral $ remainingDays - (367 * monthMarFeb `div` 12)
