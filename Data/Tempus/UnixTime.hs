@@ -1,7 +1,5 @@
 module Data.Tempus.UnixTime
   ( UnixTime (..)
-  , fromUnixOffset, toUnixOffset
-  , fromUnixTime, toUnixTime
   ) where
 
 
@@ -22,21 +20,6 @@ newtype UnixTime
 
 
 
-fromUnixOffset :: Int64 -> UnixTime
-fromUnixOffset i64
-  = UnixTime i64
-
-toUnixOffset :: UnixTime -> Int64
-toUnixOffset (UnixTime t)
-  = t
-
-fromUnixTime :: Int64 -> UnixTime
-fromUnixTime i64
-  = fromUnixOffset (i64 * 1000)
-
-toUnixTime :: UnixTime -> Int64
-toUnixTime t
-  = (toUnixOffset t) `quot` 1000
 
 instance Show UnixTime where
   show _ = "FIXME"

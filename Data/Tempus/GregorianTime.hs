@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 module Data.Tempus.GregorianTime
   ( -- * Type
     GregorianTime()
@@ -17,12 +18,19 @@ module Data.Tempus.GregorianTime
     -- ** Rendering (Low-Level)
   , rfc3339Parser
   , rfc3339Builder
+
+  -- * Conversion
+  -- ** Unix Time
+  , toUnixTime, fromUnixTime
     -- * Validation
   , validate
+  , isLeapYear'
+  , yearToDays
   ) where
 
 import Control.Monad
 
+import Data.Int
 import Data.Monoid
 import Data.String
 
@@ -39,6 +47,7 @@ import qualified Data.Text.Lazy as TL
 import qualified Data.Text.Lazy.Encoding as TL
 
 import Data.Tempus.Class
+import Data.Tempus.UnixTime
 import Data.Tempus.GregorianTime.Internal
 
 validate :: MonadPlus m => GregorianTime -> m GregorianTime
@@ -305,7 +314,7 @@ instance IsString GregorianTime where
 
 instance Tempus GregorianTime where
   isLeapYear gdt
-    = (gdtYear gdt `mod` 4 == 0) && ((gdtYear gdt `mod` 400 == 0) || not (gdtYear gdt `mod` 100 == 0))
+    = isLeapYear' (gdtYear gdt)
 
   getYear gt
     = return (gdtYear gt)
@@ -336,3 +345,64 @@ instance Tempus GregorianTime where
   setMilliSecond x gt
     = validate $ gt { gdtMilliSeconds = (gdtMilliSeconds gt `quot` 1000)*1000 + x }
 
+
+unixEpoch :: GregorianTime
+unixEpoch
+  = "1970-01-01T00:00:00Z"
+
+toUnixTime :: MonadPlus m => GregorianTime -> m UnixTime
+toUnixTime t
+  = undefined
+
+-- | Influenced by an ingenious solution from @caf found here:
+--   https://stackoverflow.com/questions/1274964/how-to-decompose-unix-time-in-c
+fromUnixTime :: MonadPlus m => UnixTime -> m GregorianTime
+fromUnixTime (UnixTime i)
+  = do yearMarFeb  <- shrinkYearMarFeb 0 9999
+       let remainingDays = days - (yearToDays yearMarFeb)
+       monthMarFeb <- selectMonthMarFeb remainingDays
+       let (yearJanDec, monthJanDec) = if monthMarFeb > 10
+                                         then (yearMarFeb + 1, monthMarFeb - 10)
+                                         else (yearMarFeb,     monthMarFeb + 2)
+       validate $ GregorianTime
+               { gdtYear         = fromIntegral yearJanDec
+               , gdtMonth        = fromIntegral monthJanDec
+               , gdtDay          = fromIntegral $ remainingDays - (367 * monthMarFeb `quot` 12)
+               , gdtMinutes      = fromIntegral $ abs i `quot` 60000 `rem` (24*60)
+               , gdtMilliSeconds = fromIntegral $ abs i `rem` 60000
+               , gdtOffset       = OffsetMinutes 0
+               }
+  where
+    -- days from 0000-01-01
+    days 
+      = i `quot` (24*60*60*1000) + 719499
+    shrinkYearMarFeb lower upper
+      | days >  yearToDays (upper + 1) + 30 = mzero
+      | days <  yearToDays (lower + 1) + 30 = mzero
+      | days <= yearToDays (mid   + 1) + 30 = shrinkYearMarFeb lower mid
+      | days >  yearToDays (mid   + 1) + 30 = shrinkYearMarFeb mid upper
+      | otherwise                           = return mid
+      where
+        mid = (lower + upper) `quot` 2
+    selectMonthMarFeb d
+      | d <= 367 *  1 `quot` 12 = return  1
+      | d <= 367 *  2 `quot` 12 = return  2
+      | d <= 367 *  3 `quot` 12 = return  3
+      | d <= 367 *  4 `quot` 12 = return  4
+      | d <= 367 *  5 `quot` 12 = return  5
+      | d <= 367 *  6 `quot` 12 = return  6
+      | d <= 367 *  7 `quot` 12 = return  7
+      | d <= 367 *  8 `quot` 12 = return  8
+      | d <= 367 *  9 `quot` 12 = return  9
+      | d <= 367 * 10 `quot` 12 = return 10
+      | d <= 367 * 11 `quot` 12 = return 11
+      | otherwise               = return 12
+
+
+isLeapYear' :: Int -> Bool
+isLeapYear' year
+  = (year `mod` 4 == 0) && ((year `mod` 400 == 0) || (year `mod` 100 /= 0))
+
+yearToDays :: Int64 -> Int64
+yearToDays year
+  = (year * 365) + (year `quot` 4) - (year `quot` 100) + (year `quot` 400)
