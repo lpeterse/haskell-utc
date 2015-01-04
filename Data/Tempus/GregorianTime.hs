@@ -375,7 +375,7 @@ toUnixTime gdt
        return $ UnixTime $              (days * 24 * 60 * 60 * 1000)
                          + fromIntegral (gdtMinutes gdt * 60 * 1000)
                          + fromIntegral (gdtMilliSeconds gdt)
-                         - 62167219200000
+                         - 62167219200000 -- ms between 0000-01-01 and 1970-01-01
   where
 
     yearToDays :: Int64 -> Int64
