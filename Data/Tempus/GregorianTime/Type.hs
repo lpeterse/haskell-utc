@@ -1,4 +1,4 @@
-module Data.Tempus.GregorianTime.Internal
+module Data.Tempus.GregorianTime.Type
   ( GregorianTime(..)
   , Offset(..)
   ) where

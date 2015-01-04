@@ -8,14 +8,10 @@ import Test.QuickCheck
 
 import Data.Int
 import Data.String
-import qualified Data.ByteString.Builder as BS
-import qualified Data.ByteString.Lazy as BSL
-
-import qualified Data.Attoparsec.ByteString as Atto
 
 import Data.Tempus
 import Data.Tempus.GregorianTime
-import Data.Tempus.GregorianTime.Internal
+import Data.Tempus.UnixTime
 
 tests :: IO [Test]
 tests 
@@ -43,8 +39,8 @@ tests
       ++
       (map
        (\(i64,s)->
-        testProperty ("toUnixTime " ++ show s ++ " == Just " ++ show i64)
-        $ toUnixTime (fromString s) == Just (UnixTime i64)
+        testProperty ("fromGregorianTime " ++ show s ++ " == Just " ++ show i64)
+        $ fromGregorianTime (fromString s) == Just (UnixTime i64)
        )
        unixTimeGregorianTimeTuples
       )

@@ -21,7 +21,7 @@ module Data.Tempus.GregorianTime
 
   -- * Conversion
   -- ** Unix Time
-  , toUnixTime, fromUnixTime
+  , fromUnixTime
     -- * Validation
   , validate
   , isLeapYear'
@@ -48,10 +48,8 @@ import qualified Data.Text.Lazy as TL
 import qualified Data.Text.Lazy.Encoding as TL
 
 import Data.Tempus.Class
-import Data.Tempus.UnixTime
-import Data.Tempus.GregorianTime.Internal
+import Data.Tempus.GregorianTime.Type
 import Data.Tempus.GregorianTime.FromUnixTime
-import Data.Tempus.GregorianTime.ToUnixTime
 
 validate :: MonadPlus m => GregorianTime -> m GregorianTime
 validate gdt

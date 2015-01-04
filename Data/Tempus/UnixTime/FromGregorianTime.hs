@@ -1,14 +1,14 @@
-module Data.Tempus.GregorianTime.ToUnixTime where
+module Data.Tempus.UnixTime.FromGregorianTime where
 
 import Control.Monad
 
 import Data.Int
 
-import Data.Tempus.GregorianTime.Internal
-import Data.Tempus.UnixTime
+import Data.Tempus.GregorianTime.Type
+import Data.Tempus.UnixTime.Type
 
-toUnixTime :: MonadPlus m => GregorianTime -> m UnixTime
-toUnixTime gdt
+fromGregorianTime :: MonadPlus m => GregorianTime -> m UnixTime
+fromGregorianTime gdt
   = do -- count of days of the "finalised" years
        let daysY = yearToDays $ fromIntegral (gdtYear gdt - 1)
        -- count of days of the "finalised" months

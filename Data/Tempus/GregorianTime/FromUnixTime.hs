@@ -4,7 +4,7 @@ import Control.Monad
 
 import Data.Int
 
-import Data.Tempus.GregorianTime.Internal
+import Data.Tempus.GregorianTime.Type
 import Data.Tempus.UnixTime
 
 -- | Influenced by an ingenious solution from @caf found here:
