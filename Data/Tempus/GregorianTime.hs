@@ -1,19 +1,13 @@
 module Data.Tempus.GregorianTime
   ( -- * Type
     GregorianTime()
-
   -- * Creation
   , fromUnixTime
-
     -- * Low-Level
     -- ** Parsing
   , rfc3339Parser
     -- ** Rendering
   , rfc3339Builder
-
-
-    -- * Validation
-  , validate
   ) where
 
 import Control.Monad
@@ -43,10 +37,6 @@ import Data.Tempus.GregorianTime.Rfc3339Parser
 import Data.Tempus.GregorianTime.Rfc3339Builder
 import Data.Tempus.UnixTime.Type
 import Data.Tempus.RealtimeClock as RT
-
-
--- | 
-
 
 instance Rfc3339 GregorianTime where
   renderRfc3339ByteString
@@ -105,7 +95,3 @@ instance Tempus GregorianTime where
     = validate $ gt { gdtMilliSeconds = x*1000 + (gdtMilliSeconds gt `rem` 1000) }
   setMilliSecond x gt
     = validate $ gt { gdtMilliSeconds = (gdtMilliSeconds gt `quot` 1000)*1000 + x }
-
-
-
-
