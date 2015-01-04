@@ -19,7 +19,7 @@ import Data.Tempus.GregorianTime.Internal
 
 tests :: IO [Test]
 tests 
-  = return
+  = return $
 
       (map
        (\(i64,s)->
@@ -28,10 +28,23 @@ tests
        )
        unixTimeGregorianTimeTuples
       )
+      ++
+      [ -- 1ms before lowest possible date
+        testProperty ("fromUnixTime -62167219200001 == Nothing")
+        $ fromUnixTime (UnixTime (-62167219200001)) == Nothing
+        -- 1ms after highest possible date
+      , testProperty ("fromUnixTime 253402300800000 == Nothing")
+        $ fromUnixTime (UnixTime (253402300800000)) == Nothing
+      , testProperty ("fromUnixTime        minBound == Nothing")
+        $ fromUnixTime (UnixTime minBound) == Nothing
+      , testProperty ("fromUnixTime        maxBound == Nothing")
+        $ fromUnixTime (UnixTime maxBound) == Nothing
+      ]
+      
 
 unixTimeGregorianTimeTuples :: [(Int64,String)]
 unixTimeGregorianTimeTuples
-  = [ ( -62167219200000, "0000-01-01T00:00:00Z")     -- verified against moment.js
+  = [ ( -62167219200000, "0000-01-01T00:00:00Z")     -- verified against moment.js (lowest possible date)
     , ( -62162208000000, "0000-02-28T00:00:00Z")     -- -62162035200000 - (2*24*60*60*1000)
     , ( -62162121600000, "0000-02-29T00:00:00Z")     -- -62162035200000 - (24*60*60*1000)
     , ( -62162035200000, "0000-03-01T00:00:00Z")     -- verified against moment.js
@@ -54,8 +67,9 @@ unixTimeGregorianTimeTuples
     , (  32503680000000, "3000-01-01T00:00:00Z")     -- verified against moment.js
     , ( 190288396800000, "8000-01-01T00:00:00Z")     -- verified against moment.js
     , ( 221845392000000, "9000-01-01T00:00:00Z")     -- verified against moment.js
-    , ( 240779520000000, "9600-01-01T00:00:00Z")
-    , ( 253370764800000, "9999-01-01T00:00:00Z")
-    , ( 253402214400000, "9999-12-31T00:00:00Z")
+    , ( 240779520000000, "9600-01-01T00:00:00Z")     -- verified against moment.js
+    , ( 253370764800000, "9999-01-01T00:00:00Z")     -- verified against moment.js
+    , ( 253402214400000, "9999-12-31T00:00:00Z")     -- verified against moment.js
+    , ( 253402300799999, "9999-12-31T23:59:59.999Z") -- verified against moment.js (highest possible date)
     ]
 

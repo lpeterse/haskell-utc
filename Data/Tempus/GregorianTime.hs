@@ -362,7 +362,10 @@ toUnixTime t
 --   https://stackoverflow.com/questions/1274964/how-to-decompose-unix-time-in-c
 fromUnixTime :: MonadPlus m => UnixTime -> m GregorianTime
 fromUnixTime (UnixTime i)
-  = do -- adjust the epoch to the year 0000
+  | i < (-62167219200000) = mzero
+  | i > (253402300799999) = mzero
+  | otherwise
+  = do -- adjust the epoch to the year -400 and the start of the year to March 1
        let days                      = i `div` (24*60*60*1000) + 719499 + (yearToDays 400)
        -- calculate the "year" whereas a year ranges from March 1 to February 28|29
        -- having the leap days at the end of the year allows for some tricks
@@ -380,6 +383,7 @@ fromUnixTime (UnixTime i)
                , gdtMilliSeconds = fromIntegral $ i `mod` 60000
                , gdtOffset       = OffsetMinutes 0
                }
+
 
 shrinkYearMarFeb :: MonadPlus m => Int64 -> Int64 -> Int64 -> m Int64
 shrinkYearMarFeb days lower upper
@@ -413,11 +417,13 @@ selectMonthMarFeb d
       | d <= 367               = 11
       | otherwise              = 12
 
+yearToDays :: Int64 -> Int64
+yearToDays year
+  = (year * 365) + (year `div` 4) - (year `div` 100) + (year `div` 400)
+
 
 isLeapYear' :: Int -> Bool
 isLeapYear' year
   = (year `mod` 4 == 0) && ((year `mod` 400 == 0) || (year `mod` 100 /= 0))
 
-yearToDays :: Int64 -> Int64
-yearToDays year
-  = (year * 365) + (year `div` 4) - (year `div` 100) + (year `div` 400)
+
