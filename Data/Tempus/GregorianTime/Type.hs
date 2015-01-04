@@ -3,7 +3,7 @@ module Data.Tempus.GregorianTime.Type
   , Offset(..)
   ) where
 
--- | A time and date representation based on years, months and days.
+-- | A time and date representation based on years, months, days, hours, minutes and seconds.
 -- This representation is closest to RFC3339 (a stricter profile of ISO8601) strings. 
 --
 -- Use it if

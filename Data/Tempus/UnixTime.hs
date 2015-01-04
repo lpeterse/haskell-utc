@@ -1,5 +1,6 @@
 module Data.Tempus.UnixTime
   ( UnixTime (..)
+   -- * Creation
   , fromGregorianTime
   ) where
 
@@ -11,11 +12,14 @@ import Data.Tempus.Rfc3339
 import Data.Tempus.GregorianTime
 import Data.Tempus.UnixTime.Type
 import Data.Tempus.UnixTime.FromGregorianTime
+import Data.Tempus.RealtimeClock as RT
 
 instance Show UnixTime where
   show (UnixTime t) = show t
 
 instance Tempus UnixTime where
+  now
+    = RT.now >>= return . UnixTime
   getYear  (UnixTime t)
     = mzero
   getMonth (UnixTime t)

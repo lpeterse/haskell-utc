@@ -16,6 +16,8 @@ Library
                    , text
                    , bytestring
                    , attoparsec
+                   -- FIXME: to be removed later on
+                   , time
   ghc-options:       -Wall
   hs-source-dirs:    .
   default-language:  Haskell98
@@ -28,6 +30,7 @@ Library
                    , Data.Tempus.GregorianTime.FromUnixTime
                    , Data.Tempus.UnixTime.Type
                    , Data.Tempus.UnixTime.FromGregorianTime
+                   , Data.Tempus.RealtimeClock
 
 Test-Suite test
   type:              detailed-0.9
@@ -44,10 +47,12 @@ Test-Suite test
                    , Data.Tempus.GregorianTime.FromUnixTime
                    , Data.Tempus.UnixTime.Type
                    , Data.Tempus.UnixTime.FromGregorianTime
+                   , Data.Tempus.RealtimeClock
   build-depends:     base < 5
                    , text
                    , bytestring
                    , attoparsec
+                   , time
                    -- additional deps for testing
                    , Cabal
                    , cabal-test-quickcheck >= 0.1.2 && < 0.2

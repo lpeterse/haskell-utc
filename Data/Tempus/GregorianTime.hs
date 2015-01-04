@@ -41,6 +41,8 @@ import Data.Tempus.Class
 import Data.Tempus.Rfc3339
 import Data.Tempus.GregorianTime.Type
 import Data.Tempus.GregorianTime.FromUnixTime
+import Data.Tempus.UnixTime.Type
+import Data.Tempus.RealtimeClock as RT
 
 validate :: MonadPlus m => GregorianTime -> m GregorianTime
 validate gdt
@@ -276,6 +278,12 @@ instance IsString GregorianTime where
         Left  e -> error $ "Invalid Date '" ++ s ++ "'"
 
 instance Tempus GregorianTime where
+  now
+    = do n <- RT.now
+         case fromUnixTime (UnixTime n) of
+           Nothing -> fail "tempus: 'now :: IO GregorianTime' failed"
+           Just t  -> return t
+
   isLeapYear gdt
     = isLeapYear' (gdtYear gdt)
 
