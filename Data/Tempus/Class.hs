@@ -5,8 +5,6 @@ import Control.Monad
 class Tempus a where
   now             :: IO a
 
-  isLeapYear      :: a -> Bool
-
   -- | > getYears   "2014-⁠12-⁠24T18:11:47Z" == 2014
   getYear         :: (MonadPlus m) => a -> m Int
   -- | > getMonths  "2014-⁠12-⁠24T18:11:47Z" == 12

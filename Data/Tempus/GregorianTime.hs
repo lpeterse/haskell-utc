@@ -14,7 +14,6 @@ module Data.Tempus.GregorianTime
 
     -- * Validation
   , validate
-  , isLeapYear'
   ) where
 
 import Control.Monad
@@ -82,7 +81,7 @@ validate gdt
       | otherwise                                     = mzero
     validateDays28or29
       | 1 <= gdtDay gdt && gdtDay gdt <= 28           = return ()
-      | gdtDay gdt == 29 && isLeapYear gdt            = return ()
+      | gdtDay gdt == 29 && isLeapYear                = return ()
       | otherwise                                     = mzero
     validateMinutes
       | 0 <= gdtMinutes gdt && gdtMinutes gdt < 24*60 = return ()
@@ -96,6 +95,10 @@ validate gdt
           OffsetMinutes o -> if negate (24*60) < o && o < (24*60)
                                then return ()
                                else mzero
+    isLeapYear
+      = let y = gdtYear gdt
+        in  (y `mod` 4 == 0) && ((y `mod` 400 == 0) || (y `mod` 100 /= 0))
+
 
 rfc3339Builder :: GregorianTime -> BS.Builder
 rfc3339Builder gdt
@@ -284,9 +287,6 @@ instance Tempus GregorianTime where
            Nothing -> fail "tempus: 'now :: IO GregorianTime' failed"
            Just t  -> return t
 
-  isLeapYear gdt
-    = isLeapYear' (gdtYear gdt)
-
   getYear gt
     = return (gdtYear gt)
   getMonth gt
@@ -317,8 +317,5 @@ instance Tempus GregorianTime where
     = validate $ gt { gdtMilliSeconds = (gdtMilliSeconds gt `quot` 1000)*1000 + x }
 
 
-isLeapYear' :: Int -> Bool
-isLeapYear' year
-  = (year `mod` 4 == 0) && ((year `mod` 400 == 0) || (year `mod` 100 /= 0))
 
 
