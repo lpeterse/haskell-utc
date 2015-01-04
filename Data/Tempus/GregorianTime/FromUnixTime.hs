@@ -5,7 +5,7 @@ import Control.Monad
 import Data.Int
 
 import Data.Tempus.GregorianTime.Type
-import Data.Tempus.UnixTime
+import Data.Tempus.UnixTime.Type
 
 -- | Influenced by an ingenious solution from @caf found here:
 --   https://stackoverflow.com/questions/1274964/how-to-decompose-unix-time-in-c

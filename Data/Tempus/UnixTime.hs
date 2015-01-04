@@ -7,6 +7,8 @@ module Data.Tempus.UnixTime
 import Control.Monad
 
 import Data.Tempus.Class
+import Data.Tempus.Rfc3339
+import Data.Tempus.GregorianTime
 import Data.Tempus.UnixTime.Type
 import Data.Tempus.UnixTime.FromGregorianTime
 
@@ -28,3 +30,7 @@ instance Tempus UnixTime where
     = return $ fromIntegral $ t `quot` 1000 `rem` 60
   getMilliSecond (UnixTime t)
     = return $ fromIntegral $ t `rem` 1000
+
+instance Rfc3339 UnixTime where
+  parseRfc3339ByteString  s = parseRfc3339ByteString s >>= fromGregorianTime
+  renderRfc3339ByteString t = fromUnixTime           t >>= renderRfc3339ByteString

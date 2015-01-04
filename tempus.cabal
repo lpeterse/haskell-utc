@@ -16,7 +16,7 @@ Library
                    , text
                    , bytestring
                    , attoparsec
-  ghc-options:       -Wall -fno-warn-orphans
+  ghc-options:       -Wall
   hs-source-dirs:    .
   default-language:  Haskell98
   exposed-modules:   Data.Tempus
