@@ -21,6 +21,7 @@ Library
   default-language:  Haskell98
   exposed-modules:   Data.Tempus
                    , Data.Tempus.Class
+                   , Data.Tempus.Rfc3339
                    , Data.Tempus.GregorianTime
                    , Data.Tempus.UnixTime
   other-modules:     Data.Tempus.GregorianTime.Type
@@ -35,6 +36,7 @@ Test-Suite test
   test-module:       Test
   other-modules:     Data.Tempus
                    , Data.Tempus.Class
+                   , Data.Tempus.Rfc3339
                    , Data.Tempus.GregorianTime
                    , Data.Tempus.UnixTime
                    -- in library unexposed modules

@@ -1,27 +1,17 @@
-{-# LANGUAGE OverloadedStrings #-}
 module Data.Tempus.GregorianTime
   ( -- * Type
     GregorianTime()
-    -- * RFC 3339
+
+  -- * Creation
+  , fromUnixTime
+
+    -- * Low-Level
     -- ** Parsing
-  , parseRfc3339String
-  , parseRfc3339Text
-  , parseRfc3339LazyText
-  , parseRfc3339ByteString
-  , parseRfc3339LazyByteString
-    -- ** Rendering
-  , renderRfc3339String
-  , renderRfc3339Text
-  , renderRfc3339LazyText
-  , renderRfc3339ByteString
-  , renderRfc3339LazyByteString
-    -- ** Rendering (Low-Level)
   , rfc3339Parser
+    -- ** Rendering
   , rfc3339Builder
 
-  -- * Conversion
-  -- ** Unix Time
-  , fromUnixTime
+
     -- * Validation
   , validate
   , isLeapYear'
@@ -48,6 +38,7 @@ import qualified Data.Text.Lazy as TL
 import qualified Data.Text.Lazy.Encoding as TL
 
 import Data.Tempus.Class
+import Data.Tempus.Rfc3339
 import Data.Tempus.GregorianTime.Type
 import Data.Tempus.GregorianTime.FromUnixTime
 
@@ -262,50 +253,21 @@ rfc3339Parser
                   + d3 * 10
                   + d4
 
-renderRfc3339LazyByteString :: GregorianTime -> BSL.ByteString
-renderRfc3339LazyByteString gdt
-  = BS.toLazyByteString (rfc3339Builder gdt)
-
-renderRfc3339ByteString :: GregorianTime -> BS.ByteString
-renderRfc3339ByteString gdt
-  = BSL.toStrict (renderRfc3339LazyByteString gdt)
-
-renderRfc3339Text :: GregorianTime -> T.Text
-renderRfc3339Text gdt
-  = T.decodeUtf8 (renderRfc3339ByteString gdt)
-
-renderRfc3339LazyText :: GregorianTime -> TL.Text
-renderRfc3339LazyText gdt
-  = TL.decodeUtf8 (renderRfc3339LazyByteString gdt)
-
-renderRfc3339String :: GregorianTime -> String
-renderRfc3339String gdt
-  = T.unpack (renderRfc3339Text gdt)
-
-parseRfc3339ByteString :: (MonadPlus m) => BS.ByteString -> m GregorianTime
-parseRfc3339ByteString s
-  = case parseOnly rfc3339Parser s of
-      Right t -> return t
-      Left e  -> mzero
-
-parseRfc3339LazyByteString :: (MonadPlus m) => BSL.ByteString -> m GregorianTime
-parseRfc3339LazyByteString s
-  = parseRfc3339ByteString (BSL.toStrict s)
-
-parseRfc3339Text :: (MonadPlus m) => T.Text -> m GregorianTime
-parseRfc3339Text s
-  = parseRfc3339ByteString (T.encodeUtf8 s)
-
-parseRfc3339LazyText :: (MonadPlus m) => TL.Text -> m GregorianTime
-parseRfc3339LazyText s
-  = parseRfc3339LazyByteString (TL.encodeUtf8 s)
-
-parseRfc3339String :: (MonadPlus m) => String -> m GregorianTime
-parseRfc3339String s
-  = parseRfc3339Text (T.pack s)
+instance Rfc3339 GregorianTime where
+  renderRfc3339ByteString
+    = return . BSL.toStrict . BS.toLazyByteString . rfc3339Builder
+  parseRfc3339ByteString s
+    = case parseOnly rfc3339Parser s of
+        Right t -> return t
+        Left e  -> mzero
 
 instance Show GregorianTime where
-  show = renderRfc3339String
+  -- The assumption is that every GregorianTime is valid and renderable as Rfc3339 string
+  -- and rendering failure is impossible.
+  show t
+    = case renderRfc3339String t of
+        Just s  -> s
+        Nothing -> error $ "Invalid Date (this is a bug in the tempus library!)"
 
 instance IsString GregorianTime where
   fromString s
@@ -345,12 +307,6 @@ instance Tempus GregorianTime where
     = validate $ gt { gdtMilliSeconds = x*1000 + (gdtMilliSeconds gt `rem` 1000) }
   setMilliSecond x gt
     = validate $ gt { gdtMilliSeconds = (gdtMilliSeconds gt `quot` 1000)*1000 + x }
-
-
-unixEpoch :: GregorianTime
-unixEpoch
-  = "1970-01-01T00:00:00Z"
-
 
 
 isLeapYear' :: Int -> Bool
