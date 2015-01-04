@@ -28,6 +28,8 @@ Library
                    , Data.Tempus.UnixTime
   other-modules:     Data.Tempus.GregorianTime.Type
                    , Data.Tempus.GregorianTime.FromUnixTime
+                   , Data.Tempus.GregorianTime.Rfc3339Parser
+                   , Data.Tempus.GregorianTime.Rfc3339Builder
                    , Data.Tempus.UnixTime.Type
                    , Data.Tempus.UnixTime.FromGregorianTime
                    , Data.Tempus.RealtimeClock
@@ -45,6 +47,8 @@ Test-Suite test
                    -- in library unexposed modules
                    , Data.Tempus.GregorianTime.Type
                    , Data.Tempus.GregorianTime.FromUnixTime
+                   , Data.Tempus.GregorianTime.Rfc3339Parser
+                   , Data.Tempus.GregorianTime.Rfc3339Builder
                    , Data.Tempus.UnixTime.Type
                    , Data.Tempus.UnixTime.FromGregorianTime
                    , Data.Tempus.RealtimeClock
