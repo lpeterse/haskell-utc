@@ -22,7 +22,7 @@ newtype UnixTime
 
 
 instance Show UnixTime where
-  show _ = "FIXME"
+  show (UnixTime t) = show t
 
 instance Tempus UnixTime where
   getYear  (UnixTime t)

@@ -40,6 +40,14 @@ tests
       , testProperty ("fromUnixTime        maxBound == Nothing")
         $ fromUnixTime (UnixTime maxBound) == Nothing
       ]
+      ++
+      (map
+       (\(i64,s)->
+        testProperty ("toUnixTime " ++ show s ++ " == Just " ++ show i64)
+        $ toUnixTime (fromString s) == Just (UnixTime i64)
+       )
+       unixTimeGregorianTimeTuples
+      )
       
 
 unixTimeGregorianTimeTuples :: [(Int64,String)]
