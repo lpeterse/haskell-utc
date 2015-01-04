@@ -50,6 +50,8 @@ import qualified Data.Text.Lazy.Encoding as TL
 import Data.Tempus.Class
 import Data.Tempus.UnixTime
 import Data.Tempus.GregorianTime.Internal
+import Data.Tempus.GregorianTime.FromUnixTime
+import Data.Tempus.GregorianTime.ToUnixTime
 
 validate :: MonadPlus m => GregorianTime -> m GregorianTime
 validate gdt
@@ -351,105 +353,6 @@ unixEpoch :: GregorianTime
 unixEpoch
   = "1970-01-01T00:00:00Z"
 
-toUnixTime :: MonadPlus m => GregorianTime -> m UnixTime
-toUnixTime gdt
-  = do -- count of days of the "finalised" years
-       let daysY = yearToDays $ fromIntegral (gdtYear gdt - 1)
-       -- count of days of the "finalised" months
-       let daysM = case gdtMonth gdt - 1 of
-                     1  -> 31
-                     2  -> 31 + 28 + leapDay
-                     3  -> 31 + 28 + 31 + leapDay
-                     4  -> 31 + 28 + 31 + 30 + leapDay
-                     5  -> 31 + 28 + 31 + 30 + 31 + leapDay
-                     6  -> 31 + 28 + 31 + 30 + 31 + 30 + leapDay
-                     7  -> 31 + 28 + 31 + 30 + 31 + 30 + 31 + leapDay
-                     8  -> 31 + 28 + 31 + 30 + 31 + 30 + 31 + 31 + leapDay
-                     9  -> 31 + 28 + 31 + 30 + 31 + 30 + 31 + 31 + 30 + leapDay
-                     10 -> 31 + 28 + 31 + 30 + 31 + 30 + 31 + 31 + 30 + 31 + leapDay
-                     11 -> 31 + 28 + 31 + 30 + 31 + 30 + 31 + 31 + 30 + 31 + 30 + leapDay
-                     _  -> 0
-       -- count of the "finalised" days
-       let daysD = fromIntegral (gdtDay gdt - 1)
-       let days  = daysY + daysM + daysD
-       return $ UnixTime $              (days * 24 * 60 * 60 * 1000)
-                         + fromIntegral (gdtMinutes gdt * 60 * 1000)
-                         + fromIntegral (gdtMilliSeconds gdt)
-                         - 62167219200000 -- ms between 0000-01-01 and 1970-01-01
-  where
-
-    yearToDays :: Int64 -> Int64
-    yearToDays year 
-      | year >= 0 = ((year + 1) * 365) + (year `div` 4) - (year `div` 100) + (year `div` 400) + 1
-      | otherwise = 0
-
-    leapDay :: Int64
-    leapDay
-      | (gdtYear gdt `mod` 4 == 0) && ((gdtYear gdt `mod` 400 == 0) || (gdtYear gdt `mod` 100 /= 0)) = 1
-      | otherwise                                                                                    = 0
-
--- | Influenced by an ingenious solution from @caf found here:
---   https://stackoverflow.com/questions/1274964/how-to-decompose-unix-time-in-c
-fromUnixTime :: MonadPlus m => UnixTime -> m GregorianTime
-fromUnixTime (UnixTime i)
-  | i < (-62167219200000) = mzero
-  | i > (253402300799999) = mzero
-  | otherwise
-  = do -- adjust the epoch to the year -400 and the start of the year to March 1
-       let days                      = i `div` (24*60*60*1000) + 719499 + (yearToDays 400)
-       -- calculate the "year" whereas a year ranges from March 1 to February 28|29
-       -- having the leap days at the end of the year allows for some tricks
-       yearMarFeb                   <- shrinkYearMarFeb days 399 10400
-       let remainingDays             = days - (yearToDays yearMarFeb)
-       let monthMarFeb               = selectMonthMarFeb remainingDays
-       let (yearJanDec, monthJanDec) = if monthMarFeb > 10
-                                         then (yearMarFeb + 1, monthMarFeb - 10)
-                                         else (yearMarFeb,     monthMarFeb + 2)
-       return $ GregorianTime
-               { gdtYear         = fromIntegral $ yearJanDec - 400
-               , gdtMonth        = fromIntegral monthJanDec
-               , gdtDay          = fromIntegral $ remainingDays - (367 * monthMarFeb `div` 12)
-               , gdtMinutes      = fromIntegral $ i `div` 60000 `mod` (24*60)
-               , gdtMilliSeconds = fromIntegral $ i `mod` 60000
-               , gdtOffset       = OffsetMinutes 0
-               }
-  where
-
-    shrinkYearMarFeb :: MonadPlus m => Int64 -> Int64 -> Int64 -> m Int64
-    shrinkYearMarFeb days lower upper
-      -- we found the year satifying the condition
-      | lower == upper                      = return lower
-      -- just a fail-safe recursion breaker
-      | lower > upper                       = mzero
-      -- the tested year has more or equally many days than what we are looking for
-      -- induction guarantee: unless 'lower == upper' (catched above) it always holds 'mid < upper'
-      | days <= yearToDays (mid   + 1) + 30 = shrinkYearMarFeb days lower mid
-      -- the tested year has less days than what we are looking for
-      -- induction guarantee: it always holds 'mid + 1 > lower'
-      | days >  yearToDays (mid   + 1) + 30 = shrinkYearMarFeb days (mid + 1) upper
-      -- should not happen
-      | otherwise                           = mzero
-      where
-        mid = (lower + upper) `div` 2
-
-    selectMonthMarFeb :: Int64 -> Int64
-    selectMonthMarFeb d
-          | d <= 367 *  2 `div` 12 = 1
-          | d <= 367 *  3 `div` 12 = 2
-          | d <= 367 *  4 `div` 12 = 3
-          | d <= 367 *  5 `div` 12 = 4
-          | d <= 367 *  6 `div` 12 = 5
-          | d <= 367 *  7 `div` 12 = 6
-          | d <= 367 *  8 `div` 12 = 7
-          | d <= 367 *  9 `div` 12 = 8
-          | d <= 367 * 10 `div` 12 = 9
-          | d <= 367 * 11 `div` 12 = 10
-          | d <= 367               = 11
-          | otherwise              = 12
-
-    yearToDays :: Int64 -> Int64
-    yearToDays year
-      = (year * 365) + (year `div` 4) - (year `div` 100) + (year `div` 400)
 
 
 isLeapYear' :: Int -> Bool

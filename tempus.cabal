@@ -24,6 +24,8 @@ Library
                    , Data.Tempus.GregorianTime
                    , Data.Tempus.UnixTime
   other-modules:     Data.Tempus.GregorianTime.Internal
+                   , Data.Tempus.GregorianTime.ToUnixTime
+                   , Data.Tempus.GregorianTime.FromUnixTime
 
 Test-Suite test
   type:              detailed-0.9
@@ -36,6 +38,8 @@ Test-Suite test
                    , Data.Tempus.UnixTime
                    -- in library unexposed modules
                    , Data.Tempus.GregorianTime.Internal
+                   , Data.Tempus.GregorianTime.ToUnixTime
+                   , Data.Tempus.GregorianTime.FromUnixTime
   build-depends:     base < 5
                    , text
                    , bytestring
