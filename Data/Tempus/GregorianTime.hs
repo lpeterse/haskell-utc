@@ -26,7 +26,6 @@ import Data.Tempus.GregorianTime.Type
 import Data.Tempus.GregorianTime.FromUnixTime
 import Data.Tempus.UnixTime.Type
 import Data.Tempus.Rfc3339
-import Data.Tempus.RealtimeClock as RT
 
 instance Show GregorianTime where
   -- The assumption is that every GregorianTime is valid and renderable as Rfc3339 string
@@ -43,12 +42,6 @@ instance IsString GregorianTime where
         Nothing -> error $ "Invalid Date '" ++ s ++ "'"
 
 instance Tempus GregorianTime where
-  now
-    = do n <- RT.now
-         case fromUnixTime (UnixTime n) of
-           Nothing -> fail "tempus: 'now :: IO GregorianTime' failed"
-           Just t  -> return t
-
   getYear gt
     = return (gdtYear gt)
   getMonth gt

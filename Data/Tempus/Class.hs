@@ -3,13 +3,6 @@ module Data.Tempus.Class where
 import Control.Monad
 
 class Tempus a where
-  -- | Get the current clock time.
-  --
-  -- This function does __not__ guarantee that subsequent calls are monotonically
-  -- increasing. The machine's clock might stop or even go backwards when
-  -- synchronised manually or via NTP or when adapting to a leap second.
-  now                :: IO a
-
   -- | > getYear        "2014-⁠12-⁠24T18:11:47.042Z" == Just 2014
   getYear            :: (MonadPlus m) => a -> m Int
   -- | > getMonth       "2014-⁠12-⁠24T18:11:47.042Z" == Just   12
