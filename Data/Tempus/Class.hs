@@ -3,21 +3,26 @@ module Data.Tempus.Class where
 import Control.Monad
 
 class Tempus a where
+  -- | Get the current clock time.
+  --
+  -- This function does __not__ guarantee that subsequent calls are monotonically
+  -- increasing. The machine's clock might stop or even go backwards when
+  -- synchronised manually or via NTP or when adapting to a leap second.
   now             :: IO a
 
-  -- | > getYears   "2014-⁠12-⁠24T18:11:47Z" == 2014
+  -- | > getYear        "2014-⁠12-⁠24T18:11:47.042Z" == Just 2014
   getYear         :: (MonadPlus m) => a -> m Int
-  -- | > getMonths  "2014-⁠12-⁠24T18:11:47Z" == 12
+  -- | > getMonth       "2014-⁠12-⁠24T18:11:47.042Z" == Just   12
   getMonth        :: (MonadPlus m) => a -> m Int
-  -- | > getDays    "2014-⁠12-⁠24T18:11:47Z" == 24
+  -- | > getDay         "2014-⁠12-⁠24T18:11:47.042Z" == Just   24
   getDay          :: (MonadPlus m) => a -> m Int
-  -- | > getHours   "2014-⁠12-⁠24T18:11:47Z" == 18
+  -- | > getHour        "2014-⁠12-⁠24T18:11:47.042Z" == Just   18
   getHour         :: (MonadPlus m) => a -> m Int
-  -- | > getMinutes "2014-⁠12-⁠24T18:11:47Z" == 11
+  -- | > getMinute      "2014-⁠12-⁠24T18:11:47.042Z" == Just   11
   getMinute       :: (MonadPlus m) => a -> m Int
-  -- | > getSeconds "2014-⁠12-⁠24T18:11:47Z" == 47
+  -- | > getSecond      "2014-⁠12-⁠24T18:11:47.042Z" == Just   47
   getSecond       :: (MonadPlus m) => a -> m Int
-  -- | > getMillis  "2014-⁠12-⁠24T18:11:47Z" == 0
+  -- | > getMilliSecond "2014-⁠12-⁠24T18:11:47.042Z" == Just   42
   getMilliSecond  :: (MonadPlus m) => a -> m Int
   setYear         :: Int -> a -> Maybe a
   setMonth        :: Int -> a -> Maybe a
