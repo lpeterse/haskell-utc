@@ -5,11 +5,16 @@ module Data.Tempus
     UXT.UnixTime (..)
   -- ** Gregorian Calendar Time
   , GDT.GregorianTime ()
-  -- * Tempus Class
+  -- * Common Operations
   , Data.Tempus.Class.Tempus (..)
+  -- * Epochs
+  , UnixEpoch(..)
+  , CommonEpoch(..)
 
   ) where
 
 import Data.Tempus.Class
+import Data.Tempus.Epoch
 import qualified Data.Tempus.UnixTime as UXT
 import qualified Data.Tempus.GregorianTime as GDT
+
