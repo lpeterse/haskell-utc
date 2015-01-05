@@ -3,11 +3,6 @@ module Data.Tempus.GregorianTime
     GregorianTime()
   -- * Creation
   , fromUnixTime
-    -- * Low-Level
-    -- ** Parsing
-  , rfc3339Parser
-    -- ** Rendering
-  , rfc3339Builder
   ) where
 
 import Control.Monad
@@ -18,10 +13,7 @@ import Data.Int
 import Data.Monoid
 import Data.String
 
-import Data.Attoparsec.ByteString ( parseOnly )
-
 import qualified Data.ByteString as BS
-import qualified Data.ByteString.Builder as BS
 import qualified Data.ByteString.Lazy as BSL
 
 import qualified Data.Text as T
@@ -30,22 +22,11 @@ import qualified Data.Text.Lazy as TL
 import qualified Data.Text.Lazy.Encoding as TL
 
 import Data.Tempus.Class
-import Data.Tempus.Rfc3339
 import Data.Tempus.GregorianTime.Type
 import Data.Tempus.GregorianTime.FromUnixTime
-import Data.Tempus.Rfc3339.Parser
-import Data.Tempus.Rfc3339.Builder
 import Data.Tempus.UnixTime.Type
+import Data.Tempus.Rfc3339
 import Data.Tempus.RealtimeClock as RT
-
-instance Rfc3339 GregorianTime where
-  renderRfc3339ByteString t
-    = do b <- rfc3339Builder t
-         return (BSL.toStrict $ BS.toLazyByteString b)
-  parseRfc3339ByteString s
-    = case parseOnly rfc3339Parser s of
-        Right (Just t) -> return t
-        Left  _        -> mzero
 
 instance Show GregorianTime where
   -- The assumption is that every GregorianTime is valid and renderable as Rfc3339 string
@@ -57,9 +38,9 @@ instance Show GregorianTime where
 
 instance IsString GregorianTime where
   fromString s
-    = case parseOnly rfc3339Parser (T.encodeUtf8 $ T.pack s) of
-        Right (Just s) -> s
-        Left  _        -> error $ "Invalid Date '" ++ s ++ "'"
+    = case parseRfc3339String s of
+        Just s  -> s
+        Nothing -> error $ "Invalid Date '" ++ s ++ "'"
 
 instance Tempus GregorianTime where
   now
