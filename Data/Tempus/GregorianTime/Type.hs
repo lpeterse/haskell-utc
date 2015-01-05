@@ -45,17 +45,6 @@ instance UnixEpoch GregorianTime where
       , gdtOffset       = OffsetMinutes 0
       }
 
-instance CommonEpoch GregorianTime where
-  commonEpoch
-    = GregorianTime
-      { gdtYear         = 0
-      , gdtMonth        = 1
-      , gdtDay          = 1
-      , gdtMinutes      = 0
-      , gdtMilliSeconds = 0
-      , gdtOffset       = OffsetMinutes 0
-      }
-
 validate :: MonadPlus m => GregorianTime -> m GregorianTime
 validate gdt
   = do validateYear

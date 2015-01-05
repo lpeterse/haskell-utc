@@ -13,6 +13,3 @@ instance UnixEpoch UnixTime where
   unixEpoch 
     = UnixTime 0
 
-instance CommonEpoch UnixTime where
-  commonEpoch
-    = UnixTime (-62167219200000)

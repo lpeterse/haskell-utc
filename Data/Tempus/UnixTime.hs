@@ -7,7 +7,7 @@ module Data.Tempus.UnixTime
 
 import Control.Monad
 
-import Data.Tempus.Class
+import Data.Tempus.GregorianCalendar
 import Data.Tempus.GregorianTime
 import Data.Tempus.UnixTime.Type
 import Data.Tempus.UnixTime.FromGregorianTime
@@ -15,7 +15,9 @@ import Data.Tempus.UnixTime.FromGregorianTime
 instance Show UnixTime where
   show (UnixTime t) = show t
 
-instance Tempus UnixTime where
+instance GregorianCalendar UnixTime where
+  commonEpoch
+    = UnixTime (-62167219200000)
   getYear  (UnixTime t)
     = mzero
   getMonth (UnixTime t)

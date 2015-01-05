@@ -21,7 +21,7 @@ import qualified Data.Text.Encoding as T
 import qualified Data.Text.Lazy as TL
 import qualified Data.Text.Lazy.Encoding as TL
 
-import Data.Tempus.Class
+import Data.Tempus.GregorianCalendar
 import Data.Tempus.GregorianTime.Type
 import Data.Tempus.GregorianTime.FromUnixTime
 import Data.Tempus.UnixTime.Type
@@ -41,7 +41,16 @@ instance IsString GregorianTime where
         Just s  -> s
         Nothing -> error $ "Invalid Date '" ++ s ++ "'"
 
-instance Tempus GregorianTime where
+instance GregorianCalendar GregorianTime where
+  commonEpoch
+    = GregorianTime
+      { gdtYear         = 0
+      , gdtMonth        = 1
+      , gdtDay          = 1
+      , gdtMinutes      = 0
+      , gdtMilliSeconds = 0
+      , gdtOffset       = OffsetMinutes 0
+      }
   getYear gt
     = return (gdtYear gt)
   getMonth gt
@@ -74,7 +83,7 @@ instance Tempus GregorianTime where
     = validate $ gt { gdtMilliSeconds = (x * 1000) + (gdtMilliSeconds gt `mod` 1000) }
   setMilliSecond x gt
     = validate $ gt { gdtMilliSeconds = (gdtMilliSeconds gt `div` 1000) * 1000 + x }
-  setLocalOffsetMinutes mm gt
+  setLocalOffset mm gt
     = validate $ case mm of
        Nothing -> gt { gdtOffset = OffsetUnknown }
        Just o  -> gt { gdtOffset = OffsetMinutes o }

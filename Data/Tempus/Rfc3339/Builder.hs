@@ -7,9 +7,9 @@ import Control.Monad
 import Data.Monoid
 import Data.ByteString.Builder as BS
 
-import Data.Tempus.Class
+import Data.Tempus.GregorianCalendar
 
-rfc3339Builder :: (MonadPlus m, Tempus t) => t -> m BS.Builder
+rfc3339Builder :: (MonadPlus m, GregorianCalendar t) => t -> m BS.Builder
 rfc3339Builder t
   = do year    <- getYear t
        month   <- getMonth t

@@ -4,13 +4,12 @@ module Data.Tempus.Rfc3339.Parser
 
 import Control.Monad
 
-import Data.Attoparsec.ByteString ( Parser, parseOnly, skipWhile, choice, option, satisfy )
+import Data.Attoparsec.ByteString ( Parser, skipWhile, choice, option, satisfy )
 import Data.Attoparsec.ByteString.Char8 ( char, isDigit_w8 )
 
-import Data.Tempus.Class
-import Data.Tempus.Epoch
+import Data.Tempus.GregorianCalendar
 
-rfc3339Parser :: (MonadPlus m, Tempus t, CommonEpoch t) => Parser (m t)
+rfc3339Parser :: (MonadPlus m, GregorianCalendar t) => Parser (m t)
 rfc3339Parser 
   = do year    <- dateFullYear
        _       <- char '-'
@@ -32,7 +31,7 @@ rfc3339Parser
             >>= setMinute              minute
             >>= setSecond              second
             >>= setMilliSecond         msecond
-            >>= setLocalOffsetMinutes  offset
+            >>= setLocalOffset         offset
   where
     dateFullYear
       = decimal4
