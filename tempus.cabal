@@ -26,10 +26,11 @@ Library
                    , Data.Tempus.Rfc3339
                    , Data.Tempus.GregorianTime
                    , Data.Tempus.UnixTime
+                   , Data.Tempus.Epoch
   other-modules:     Data.Tempus.GregorianTime.Type
                    , Data.Tempus.GregorianTime.FromUnixTime
-                   , Data.Tempus.GregorianTime.Rfc3339Parser
-                   , Data.Tempus.GregorianTime.Rfc3339Builder
+                   , Data.Tempus.Rfc3339.Parser
+                   , Data.Tempus.Rfc3339.Builder
                    , Data.Tempus.UnixTime.Type
                    , Data.Tempus.UnixTime.FromGregorianTime
                    , Data.Tempus.RealtimeClock
@@ -44,11 +45,12 @@ Test-Suite test
                    , Data.Tempus.Rfc3339
                    , Data.Tempus.GregorianTime
                    , Data.Tempus.UnixTime
+                   , Data.Tempus.Epoch
                    -- in library unexposed modules
                    , Data.Tempus.GregorianTime.Type
                    , Data.Tempus.GregorianTime.FromUnixTime
-                   , Data.Tempus.GregorianTime.Rfc3339Parser
-                   , Data.Tempus.GregorianTime.Rfc3339Builder
+                   , Data.Tempus.Rfc3339.Parser
+                   , Data.Tempus.Rfc3339.Builder
                    , Data.Tempus.UnixTime.Type
                    , Data.Tempus.UnixTime.FromGregorianTime
                    , Data.Tempus.RealtimeClock
