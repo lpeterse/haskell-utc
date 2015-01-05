@@ -1,3 +1,4 @@
+{-# LANGUAGE Safe #-}
 module Data.Tempus.GregorianCalendar
   ( GregorianCalendar(..)
   , convertGregorianCalendar

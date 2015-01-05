@@ -1,3 +1,4 @@
+{-# LANGUAGE Safe #-}
 module Data.Tempus.Rfc3339.Builder
   ( rfc3339Builder
   ) where

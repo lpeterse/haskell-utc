@@ -1,3 +1,4 @@
+{-# LANGUAGE Safe #-}
 module Data.Tempus.GregorianTime.FromUnixTime where
 
 import Control.Monad

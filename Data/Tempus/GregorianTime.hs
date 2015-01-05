@@ -7,19 +7,8 @@ module Data.Tempus.GregorianTime
 
 import Control.Monad
 
-import Debug.Trace
-
-import Data.Int
-import Data.Monoid
 import Data.String
-
-import qualified Data.ByteString as BS
-import qualified Data.ByteString.Lazy as BSL
-
-import qualified Data.Text as T
-import qualified Data.Text.Encoding as T
-import qualified Data.Text.Lazy as TL
-import qualified Data.Text.Lazy.Encoding as TL
+import Data.Maybe
 
 import Data.Tempus.GregorianCalendar
 import Data.Tempus.GregorianTime.Type
@@ -30,16 +19,10 @@ import Data.Tempus.Rfc3339
 instance Show GregorianTime where
   -- The assumption is that every GregorianTime is valid and renderable as Rfc3339 string
   -- and rendering failure is impossible.
-  show t
-    = case renderRfc3339String t of
-        Just s  -> s
-        Nothing -> error $ "Invalid Date (this is a bug in the tempus library!)"
+  show = fromMaybe "0000-00-00T00:00:00Z" . renderRfc3339String
 
 instance IsString GregorianTime where
-  fromString s
-    = case parseRfc3339String s of
-        Just s  -> s
-        Nothing -> error $ "Invalid Date '" ++ s ++ "'"
+  fromString = fromMaybe commonEpoch . parseRfc3339String
 
 instance GregorianCalendar GregorianTime where
   commonEpoch

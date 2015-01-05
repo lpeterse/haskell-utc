@@ -1,3 +1,4 @@
+{-# LANGUAGE Safe #-}
 module Data.Tempus.UnixTime
   ( UnixTime (..)
    -- * Creation
@@ -8,12 +9,8 @@ module Data.Tempus.UnixTime
 import Control.Monad
 
 import Data.Tempus.GregorianCalendar
-import Data.Tempus.GregorianTime
 import Data.Tempus.UnixTime.Type
 import Data.Tempus.UnixTime.FromGregorianTime
-
-instance Show UnixTime where
-  show (UnixTime t) = show t
 
 instance GregorianCalendar UnixTime where
   commonEpoch

@@ -1,3 +1,4 @@
+{-# LANGUAGE Safe #-}
 module Data.Tempus.Epoch where
 
 class UnixEpoch a where
