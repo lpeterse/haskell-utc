@@ -1,6 +1,6 @@
 {-# LANGUAGE Safe #-}
-module Data.Tempus.GregorianTime.Type
-  ( GregorianTime(..)
+module Data.Tempus.Rfc3339Time.Type
+  ( Rfc3339Time(..)
   , validate
   ) where
 
@@ -18,8 +18,8 @@ import Data.Tempus.Epoch
 --   * you need to be able to represent leap seconds.
 --   * you need to be able to represent a local offset (timezone).
 --   * you don't care about a value's memory footprint.
-data GregorianTime
-   = GregorianTime
+data Rfc3339Time
+   = Rfc3339Time
      { gdtYear         :: Integer
      , gdtMonth        :: Integer
      , gdtDay          :: Integer
@@ -29,9 +29,9 @@ data GregorianTime
      }
    deriving (Eq, Ord)
 
-instance UnixEpoch GregorianTime where
+instance UnixEpoch Rfc3339Time where
   unixEpoch
-    = GregorianTime
+    = Rfc3339Time
       { gdtYear         = 1970
       , gdtMonth        = 1
       , gdtDay          = 1
@@ -40,7 +40,7 @@ instance UnixEpoch GregorianTime where
       , gdtOffset       = Just 0
       }
 
-validate :: MonadPlus m => GregorianTime -> m GregorianTime
+validate :: MonadPlus m => Rfc3339Time -> m Rfc3339Time
 validate gdt
   = do validateYear
        validateMonthAndDay

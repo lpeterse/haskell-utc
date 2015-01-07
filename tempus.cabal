@@ -24,12 +24,12 @@ Library
   exposed-modules:   Data.Tempus
                    , Data.Tempus.GregorianCalendar
                    , Data.Tempus.Rfc3339
-                   , Data.Tempus.GregorianTime
+                   , Data.Tempus.Rfc3339Time
                    , Data.Tempus.UnixTime
                    , Data.Tempus.Epoch
                    , Data.Tempus.RealtimeClock
                    , Data.Tempus.Internal
-  other-modules:     Data.Tempus.GregorianTime.Type
+  other-modules:     Data.Tempus.Rfc3339Time.Type
                    , Data.Tempus.Rfc3339.Parser
                    , Data.Tempus.Rfc3339.Builder
                    , Data.Tempus.UnixTime.Type
@@ -42,12 +42,12 @@ Test-Suite test
   other-modules:     Data.Tempus
                    , Data.Tempus.GregorianCalendar
                    , Data.Tempus.Rfc3339
-                   , Data.Tempus.GregorianTime
+                   , Data.Tempus.Rfc3339Time
                    , Data.Tempus.UnixTime
                    , Data.Tempus.Epoch
                    , Data.Tempus.RealtimeClock
                    -- in library unexposed modules
-                   , Data.Tempus.GregorianTime.Type
+                   , Data.Tempus.Rfc3339Time.Type
                    , Data.Tempus.Rfc3339.Parser
                    , Data.Tempus.Rfc3339.Builder
                    , Data.Tempus.UnixTime.Type

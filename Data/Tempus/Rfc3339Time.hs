@@ -1,6 +1,6 @@
-module Data.Tempus.GregorianTime
+module Data.Tempus.Rfc3339Time
   ( -- * Type
-    GregorianTime()
+    Rfc3339Time()
   -- * Creation
   ) where
 
@@ -8,21 +8,21 @@ import Data.String
 import Data.Maybe
 
 import Data.Tempus.GregorianCalendar
-import Data.Tempus.GregorianTime.Type
+import Data.Tempus.Rfc3339Time.Type
 import Data.Tempus.UnixTime.Type
 import Data.Tempus.Rfc3339
 
-instance Show GregorianTime where
-  -- The assumption is that every GregorianTime is valid and renderable as Rfc3339 string
+instance Show Rfc3339Time where
+  -- The assumption is that every Rfc3339Time is valid and renderable as Rfc3339 string
   -- and rendering failure is impossible.
   show = fromMaybe "0000-00-00T00:00:00Z" . renderRfc3339String
 
-instance IsString GregorianTime where
+instance IsString Rfc3339Time where
   fromString = fromMaybe commonEpoch . parseRfc3339String
 
-instance GregorianCalendar GregorianTime where
+instance GregorianCalendar Rfc3339Time where
   commonEpoch
-    = GregorianTime
+    = Rfc3339Time
       { gdtYear         = 0
       , gdtMonth        = 1
       , gdtDay          = 1
@@ -60,7 +60,7 @@ instance GregorianCalendar GregorianTime where
   setMilliSecond x gt
     = validate $ gt { gdtMilliSeconds = (gdtMilliSeconds gt `div` 1000) * 1000 + x }
 
-instance LocalOffset GregorianTime where
+instance LocalOffset Rfc3339Time where
   getLocalOffset
     = return . gdtOffset
   setLocalOffset mm gt
