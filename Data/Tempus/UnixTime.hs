@@ -2,7 +2,6 @@
 module Data.Tempus.UnixTime
   ( UnixTime (..)
    -- * Creation
-  , fromGregorianTime
   ) where
 
 
@@ -10,7 +9,6 @@ import Control.Monad
 
 import Data.Tempus.GregorianCalendar
 import Data.Tempus.UnixTime.Type
-import Data.Tempus.UnixTime.FromGregorianTime
 
 instance GregorianCalendar UnixTime where
   commonEpoch

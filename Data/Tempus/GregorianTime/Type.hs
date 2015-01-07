@@ -21,17 +21,17 @@ import Data.Tempus.Epoch
 --   * you don't care about a value's memory footprint.
 data GregorianTime
    = GregorianTime
-     { gdtYear         :: Int
-     , gdtMonth        :: Int
-     , gdtDay          :: Int
-     , gdtMinutes      :: Int
-     , gdtMilliSeconds :: Int
+     { gdtYear         :: Integer
+     , gdtMonth        :: Integer
+     , gdtDay          :: Integer
+     , gdtMinutes      :: Integer
+     , gdtMilliSeconds :: Integer
      , gdtOffset       :: Offset
      }
    deriving (Eq, Ord)
 
 data Offset
-   = OffsetMinutes Int
+   = OffsetMinutes Integer
    | OffsetUnknown
    deriving (Eq, Ord)
 

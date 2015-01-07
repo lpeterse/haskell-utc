@@ -8,44 +8,67 @@ import Control.Monad
 
 import Data.Int
 
+import Data.Tempus.Internal
+
 class GregorianCalendar a where
   -- | > fromRfc3339String "0000-00-00T00:00:00Z"  == Just commonEpoch
   commonEpoch        :: a
 
   -- | > getYear        "2014-⁠12-⁠24T18:11:47.042Z" == Just 2014
-  getYear            :: (MonadPlus m) => a -> m Int
+  getYear            :: (MonadPlus m) => a -> m Integer
   -- | > getMonth       "2014-⁠12-⁠24T18:11:47.042Z" == Just   12
-  getMonth           :: (MonadPlus m) => a -> m Int
+  getMonth           :: (MonadPlus m) => a -> m Integer
   -- | > getDay         "2014-⁠12-⁠24T18:11:47.042Z" == Just   24
-  getDay             :: (MonadPlus m) => a -> m Int
+  getDay             :: (MonadPlus m) => a -> m Integer
   -- | > getHour        "2014-⁠12-⁠24T18:11:47.042Z" == Just   18
-  getHour            :: (MonadPlus m) => a -> m Int
+  getHour            :: (MonadPlus m) => a -> m Integer
   -- | > getMinute      "2014-⁠12-⁠24T18:11:47.042Z" == Just   11
-  getMinute          :: (MonadPlus m) => a -> m Int
+  getMinute          :: (MonadPlus m) => a -> m Integer
   -- | > getSecond      "2014-⁠12-⁠24T18:11:47.042Z" == Just   47
-  getSecond          :: (MonadPlus m) => a -> m Int
+  getSecond          :: (MonadPlus m) => a -> m Integer
   -- | > getMilliSecond "2014-⁠12-⁠24T18:11:47.042Z" == Just   42
-  getMilliSecond        :: (MonadPlus m) => a -> m Int
+  getMilliSecond        :: (MonadPlus m) => a -> m Integer
 
-  setYear               :: (MonadPlus m) => Int -> a -> m a
-  setMonth              :: (MonadPlus m) => Int -> a -> m a
-  setDay                :: (MonadPlus m) => Int -> a -> m a
-  setHour               :: (MonadPlus m) => Int -> a -> m a
-  setMinute             :: (MonadPlus m) => Int -> a -> m a
-  setSecond             :: (MonadPlus m) => Int -> a -> m a
-  setMilliSecond        :: (MonadPlus m) => Int -> a -> m a
+  setYear               :: (MonadPlus m) => Integer -> a -> m a
+  setMonth              :: (MonadPlus m) => Integer -> a -> m a
+  setDay                :: (MonadPlus m) => Integer -> a -> m a
+  setHour               :: (MonadPlus m) => Integer -> a -> m a
+  setMinute             :: (MonadPlus m) => Integer -> a -> m a
+  setSecond             :: (MonadPlus m) => Integer -> a -> m a
+  setMilliSecond        :: (MonadPlus m) => Integer -> a -> m a
 
-  getMilliSecondsCommonEpoch :: (MonadPlus m) => a -> m Int64
-  setMilliSecondsCommonEpoch :: (MonadPlus m) => Int64 -> m a
+  toMilliSecondsCommonEpoch :: (MonadPlus m) => a -> m Integer
+  toMilliSecondsCommonEpoch t
+    = do year    <- getYear        t
+         month   <- getMonth       t
+         day     <- getDay         t
+         hour    <- getHour        t
+         minute  <- getMinute      t
+         second  <- getSecond      t
+         msecond <- getMilliSecond t
+         days    <- yearMonthDayToDays (year, month, day)
+         return $ (days  * 24 * 60 * 60 * 1000)
+                + (hour       * 60 * 60 * 1000)
+                + (minute          * 60 * 1000)
+                + (second               * 1000)
+                + (msecond                    )
 
-  addYears              :: Int -> a -> Maybe a
-  addMonths             :: Int -> a -> Maybe a
-  addDays               :: Int -> a -> Maybe a
-  addHours              :: Int -> a -> Maybe a
-  addMinutes            :: Int -> a -> Maybe a
-  addSeconds            :: Int -> a -> Maybe a
-  addMilliSeconds       :: Int -> a -> Maybe a
+  fromMilliSecondsCommonEpoch :: (MonadPlus m) => Integer -> m a
+  fromMilliSecondsCommonEpoch ms
+    = do (year, month, day)       <- daysToYearMonthDay (ms `div` (24 * 60 * 60 * 1000))
+         let hour                  = ms `div` (60 * 60 * 1000) `mod` 24
+         let minute                = ms `div` (     60 * 1000) `mod` 60
+         let second                = ms `div` (          1000) `mod` 60
+         let msecond               = ms `div` (             1) `mod` 1000
+         return commonEpoch 
+           >>= setYear        year
+           >>= setMonth       month
+           >>= setDay         day
+           >>= setHour        hour
+           >>= setMinute      minute
+           >>= setSecond      second
+           >>= setMilliSecond msecond
 
 class LocalOffset a where
-  getLocalOffset        :: (MonadPlus m) => a -> m (Maybe Int)
-  setLocalOffset        :: (MonadPlus m) => Maybe Int -> a -> m a
+  getLocalOffset        :: (MonadPlus m) => a -> m (Maybe Integer)
+  setLocalOffset        :: (MonadPlus m) => Maybe Integer -> a -> m a

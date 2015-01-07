@@ -21,30 +21,26 @@ tests
 
       (map
        (\(i64,s)->
-        testProperty ("fromUnixTime " ++ show i64 ++ " == Just " ++ show s)
-        $ fromUnixTime (UnixTime i64) == Just (fromString s)
+        testProperty ("(fromMilliSecondsCommonEpoch " ++ show i64 ++ " :: Maybe GregorianTime) == Just " ++ show s)
+        $  (fromMilliSecondsCommonEpoch i64 :: Maybe GregorianTime) == Just (fromString s)
        )
-       unixTimeGregorianTimeTuples
+       commonEpochMsRfc3339TimeTuples
       )
       ++
       [ -- 1ms before lowest possible date
-        testProperty ("fromUnixTime -62167219200001 == Nothing")
-        $ fromUnixTime (UnixTime (-62167219200001)) == Nothing
+        testProperty ("fromMilliSecondsCommonEpoch (-1) == (Nothing :: Maybe GregorianTime)")
+        $ fromMilliSecondsCommonEpoch (-62167219200001) == (Nothing :: Maybe GregorianTime)
         -- 1ms after highest possible date
-      , testProperty ("fromUnixTime 253402300800000 == Nothing")
-        $ fromUnixTime (UnixTime (253402300800000)) == Nothing
-      , testProperty ("fromUnixTime        minBound == Nothing")
-        $ fromUnixTime (UnixTime minBound) == Nothing
-      , testProperty ("fromUnixTime        maxBound == Nothing")
-        $ fromUnixTime (UnixTime maxBound) == Nothing
+      , testProperty ("fromMilliSecondsCommonEpoch 315569520000000 == (Nothing :: Maybe GregorianTime)")
+        $ fromMilliSecondsCommonEpoch 315569520000000 == (Nothing :: Maybe GregorianTime)
       ]
       ++
       (map
        (\(i64,s)->
-        testProperty ("fromGregorianTime " ++ show s ++ " == Just " ++ show i64)
-        $ fromGregorianTime (fromString s) == Just (UnixTime i64)
+        testProperty ("toMilliSecondsCommonEpoch (" ++ show s ++ " :: GregorianTime) == Just " ++ show i64)
+        $ toMilliSecondsCommonEpoch (fromString s :: GregorianTime) == Just i64
        )
-       unixTimeGregorianTimeTuples
+       commonEpochMsRfc3339TimeTuples
       )
       ++
       [ testProperty ("yearMonthDayToDays (daysToYearMonthDay x) == x")
@@ -55,10 +51,15 @@ tests
              -- error (show x')
              return (x == x')
       ]
-      
+  
+commonEpochMsRfc3339TimeTuples :: [(Integer,String)]
+commonEpochMsRfc3339TimeTuples
+  = map
+      (\(i,s)-> (i + 62167219200000, s))
+      unixEpochMsRfc3339TimeTuples
 
-unixTimeGregorianTimeTuples :: [(Int64,String)]
-unixTimeGregorianTimeTuples
+unixEpochMsRfc3339TimeTuples :: [(Integer,String)]
+unixEpochMsRfc3339TimeTuples
   = [ ( -62167219200000, "0000-01-01T00:00:00Z")     -- verified against moment.js (lowest possible date)
     , ( -62162208000000, "0000-02-28T00:00:00Z")     -- -62162035200000 - (2*24*60*60*1000)
     , ( -62162121600000, "0000-02-29T00:00:00Z")     -- -62162035200000 - (24*60*60*1000)

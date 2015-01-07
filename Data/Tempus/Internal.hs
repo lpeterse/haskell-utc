@@ -3,10 +3,9 @@ module Data.Tempus.Internal
   , yearMonthDayToDays
   ) where
 
-
 import Control.Monad
 
-yearMonthDayToDays :: MonadPlus m => (Int, Int, Int) -> m Int
+yearMonthDayToDays :: MonadPlus m => (Integer, Integer, Integer) -> m Integer
 yearMonthDayToDays (year,month,day)
   = do -- count of days of the "finalised" years
        let daysY = yearToDays (year - 1)
@@ -29,19 +28,19 @@ yearMonthDayToDays (year,month,day)
        return (daysY + daysM + daysD)
   where
 
-    yearToDays :: Int -> Int
+    yearToDays :: Integer -> Integer
     yearToDays y 
       | y    >= 0 = ((y + 1) * 365) + (y `div` 4) - (y `div` 100) + (y `div` 400) + 1
       | otherwise = 0
 
-    leapDay :: Int
+    leapDay :: Integer
     leapDay
       | (year `mod` 4 == 0) && ((year `mod` 400 == 0) || (year `mod` 100 /= 0)) = 1
       | otherwise                                                               = 0
 
 -- | Influenced by an ingenious solution from @caf found here:
 --   https://stackoverflow.com/questions/1274964/how-to-decompose-unix-time-in-c
-daysToYearMonthDay :: MonadPlus m => Int -> m (Int, Int, Int)
+daysToYearMonthDay :: MonadPlus m => Integer -> m (Integer, Integer, Integer)
 daysToYearMonthDay d
   | d < 0       = mzero -- 0000-01-01
   | d > 3652424 = mzero -- 9999-12-31
@@ -55,7 +54,7 @@ daysToYearMonthDay d
                       return (yearJanDec - 400, monthJanDec, remainingDays - (367 * monthMarFeb `div` 12))
   where
 
-    shrinkYearMarFeb :: MonadPlus m => Int -> Int -> Int -> m Int
+    shrinkYearMarFeb :: MonadPlus m => Integer -> Integer -> Integer -> m Integer
     shrinkYearMarFeb days lower upper
       -- we found the year satifying the condition
       | lower == upper                      = return lower
@@ -72,7 +71,7 @@ daysToYearMonthDay d
       where
         mid = (lower + upper) `div` 2
 
-    selectMonthMarFeb :: Int -> Int
+    selectMonthMarFeb :: Integer -> Integer
     selectMonthMarFeb days
           | days <= 367 *  2 `div` 12 = 1
           | days <= 367 *  3 `div` 12 = 2
@@ -87,6 +86,6 @@ daysToYearMonthDay d
           | days <= 367               = 11
           | otherwise              = 12
 
-    yearToDays :: Int -> Int
+    yearToDays :: Integer -> Integer
     yearToDays year
       = (year * 365) + (year `div` 4) - (year `div` 100) + (year `div` 400)

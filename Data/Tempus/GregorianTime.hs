@@ -2,7 +2,6 @@ module Data.Tempus.GregorianTime
   ( -- * Type
     GregorianTime()
   -- * Creation
-  , fromUnixTime
   ) where
 
 import Data.String
@@ -10,7 +9,6 @@ import Data.Maybe
 
 import Data.Tempus.GregorianCalendar
 import Data.Tempus.GregorianTime.Type
-import Data.Tempus.GregorianTime.FromUnixTime
 import Data.Tempus.UnixTime.Type
 import Data.Tempus.Rfc3339
 

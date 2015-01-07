@@ -30,11 +30,9 @@ Library
                    , Data.Tempus.RealtimeClock
                    , Data.Tempus.Internal
   other-modules:     Data.Tempus.GregorianTime.Type
-                   , Data.Tempus.GregorianTime.FromUnixTime
                    , Data.Tempus.Rfc3339.Parser
                    , Data.Tempus.Rfc3339.Builder
                    , Data.Tempus.UnixTime.Type
-                   , Data.Tempus.UnixTime.FromGregorianTime
 
 Test-Suite test
   type:              detailed-0.9
@@ -50,11 +48,9 @@ Test-Suite test
                    , Data.Tempus.RealtimeClock
                    -- in library unexposed modules
                    , Data.Tempus.GregorianTime.Type
-                   , Data.Tempus.GregorianTime.FromUnixTime
                    , Data.Tempus.Rfc3339.Parser
                    , Data.Tempus.Rfc3339.Builder
                    , Data.Tempus.UnixTime.Type
-                   , Data.Tempus.UnixTime.FromGregorianTime
                    , Data.Tempus.Internal
   build-depends:     base < 5
                    , text
