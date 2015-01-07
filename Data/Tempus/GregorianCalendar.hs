@@ -1,10 +1,12 @@
 {-# LANGUAGE Safe #-}
 module Data.Tempus.GregorianCalendar
   ( GregorianCalendar(..)
-  , convertGregorianCalendar
+  , LocalOffset(..)
   ) where
 
 import Control.Monad
+
+import Data.Int
 
 class GregorianCalendar a where
   -- | > fromRfc3339String "0000-00-00T00:00:00Z"  == Just commonEpoch
@@ -24,7 +26,7 @@ class GregorianCalendar a where
   getSecond          :: (MonadPlus m) => a -> m Int
   -- | > getMilliSecond "2014-⁠12-⁠24T18:11:47.042Z" == Just   42
   getMilliSecond        :: (MonadPlus m) => a -> m Int
-  getLocalOffset        :: (MonadPlus m) => a -> m (Maybe Int)
+
   setYear               :: (MonadPlus m) => Int -> a -> m a
   setMonth              :: (MonadPlus m) => Int -> a -> m a
   setDay                :: (MonadPlus m) => Int -> a -> m a
@@ -32,7 +34,10 @@ class GregorianCalendar a where
   setMinute             :: (MonadPlus m) => Int -> a -> m a
   setSecond             :: (MonadPlus m) => Int -> a -> m a
   setMilliSecond        :: (MonadPlus m) => Int -> a -> m a
-  setLocalOffset        :: (MonadPlus m) => Maybe Int -> a -> m a
+
+  getMilliSecondsCommonEpoch :: (MonadPlus m) => a -> m Int64
+  setMilliSecondsCommonEpoch :: (MonadPlus m) => Int64 -> m a
+
   addYears              :: Int -> a -> Maybe a
   addMonths             :: Int -> a -> Maybe a
   addDays               :: Int -> a -> Maybe a
@@ -41,20 +46,6 @@ class GregorianCalendar a where
   addSeconds            :: Int -> a -> Maybe a
   addMilliSeconds       :: Int -> a -> Maybe a
 
-convertGregorianCalendar :: (MonadPlus m, GregorianCalendar a, GregorianCalendar b) => a -> m b
-convertGregorianCalendar t
-  = do year    <- getYear        t
-       month   <- getMonth       t
-       day     <- getDay         t
-       minute  <- getMinute      t
-       second  <- getSecond      t
-       msecond <- getMilliSecond t
-       offset  <- getLocalOffset t
-       return commonEpoch
-         >>= setYear        year
-         >>= setMonth       month
-         >>= setDay         day
-         >>= setMinute      minute
-         >>= setSecond      second
-         >>= setMilliSecond msecond
-         >>= setLocalOffset offset
+class LocalOffset a where
+  getLocalOffset        :: (MonadPlus m) => a -> m (Maybe Int)
+  setLocalOffset        :: (MonadPlus m) => Maybe Int -> a -> m a

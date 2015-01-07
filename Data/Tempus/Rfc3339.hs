@@ -31,45 +31,45 @@ import Data.Tempus.Rfc3339.Builder
 -- > fromMaybe (UnixTime 0)   (parseRfc3339String "1970-01-32T00:00:00Z")
 -- > > "1970-01-01T00:00:00Z"
 
-renderRfc3339ByteString        :: (MonadPlus m, GregorianCalendar a) => a -> m BS.ByteString
+renderRfc3339ByteString        :: (MonadPlus m, GregorianCalendar a, LocalOffset a) => a -> m BS.ByteString
 renderRfc3339ByteString t
   = renderRfc3339LazyByteString t >>= return . BSL.toStrict
 
-renderRfc3339LazyByteString    :: (MonadPlus m, GregorianCalendar a) => a -> m BSL.ByteString
+renderRfc3339LazyByteString    :: (MonadPlus m, GregorianCalendar a, LocalOffset a) => a -> m BSL.ByteString
 renderRfc3339LazyByteString t
   = rfc3339Builder t              >>= return . B.toLazyByteString
 
-renderRfc3339Text              :: (MonadPlus m, GregorianCalendar a) => a -> m T.Text
+renderRfc3339Text              :: (MonadPlus m, GregorianCalendar a, LocalOffset a) => a -> m T.Text
 renderRfc3339Text t
   = renderRfc3339ByteString     t >>= return . T.decodeUtf8
 
-renderRfc3339LazyText          :: (MonadPlus m, GregorianCalendar a) => a -> m TL.Text
+renderRfc3339LazyText          :: (MonadPlus m, GregorianCalendar a, LocalOffset a) => a -> m TL.Text
 renderRfc3339LazyText         t
   = renderRfc3339LazyByteString t >>= return . TL.decodeUtf8
 
-renderRfc3339String            :: (MonadPlus m, GregorianCalendar a) => a -> m String
+renderRfc3339String            :: (MonadPlus m, GregorianCalendar a, LocalOffset a) => a -> m String
 renderRfc3339String t
   = renderRfc3339Text           t >>= return . T.unpack
 
-parseRfc3339ByteString         :: (MonadPlus m, GregorianCalendar a) => BS.ByteString  -> m a
+parseRfc3339ByteString         :: (MonadPlus m, GregorianCalendar a, LocalOffset a) => BS.ByteString  -> m a
 parseRfc3339ByteString s
   = case Atto.parseOnly rfc3339Parser s of
       Right (Just t) -> return t
       Right _        -> mzero
       _              -> mzero
 
-parseRfc3339LazyByteString     :: (MonadPlus m, GregorianCalendar a) => BSL.ByteString -> m a
+parseRfc3339LazyByteString     :: (MonadPlus m, GregorianCalendar a, LocalOffset a) => BSL.ByteString -> m a
 parseRfc3339LazyByteString s
   = parseRfc3339ByteString      (BSL.toStrict s)
 
-parseRfc3339Text               :: (MonadPlus m, GregorianCalendar a) => T.Text         -> m a
+parseRfc3339Text               :: (MonadPlus m, GregorianCalendar a, LocalOffset a) => T.Text         -> m a
 parseRfc3339Text s
   = parseRfc3339ByteString      (T.encodeUtf8 s)
 
-parseRfc3339LazyText           :: (MonadPlus m, GregorianCalendar a) => TL.Text        -> m a
+parseRfc3339LazyText           :: (MonadPlus m, GregorianCalendar a, LocalOffset a) => TL.Text        -> m a
 parseRfc3339LazyText s
   = parseRfc3339LazyByteString (TL.encodeUtf8 s)
 
-parseRfc3339String             :: (MonadPlus m, GregorianCalendar a) => String         -> m a
+parseRfc3339String             :: (MonadPlus m, GregorianCalendar a, LocalOffset a) => String         -> m a
 parseRfc3339String s
   = parseRfc3339Text                  (T.pack s)

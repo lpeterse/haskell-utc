@@ -7,6 +7,7 @@ module Data.Tempus
   , GDT.GregorianTime ()
   -- * Common Operations
   , Data.Tempus.GregorianCalendar.GregorianCalendar (..)
+  , Data.Tempus.GregorianCalendar.LocalOffset (..)
   -- * Epochs
   , UnixEpoch(..)
   ) where

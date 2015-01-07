@@ -10,7 +10,7 @@ import Data.ByteString.Builder as BS
 
 import Data.Tempus.GregorianCalendar
 
-rfc3339Builder :: (MonadPlus m, GregorianCalendar t) => t -> m BS.Builder
+rfc3339Builder :: (MonadPlus m, GregorianCalendar t, LocalOffset t) => t -> m BS.Builder
 rfc3339Builder t
   = do year    <- getYear t
        month   <- getMonth t
