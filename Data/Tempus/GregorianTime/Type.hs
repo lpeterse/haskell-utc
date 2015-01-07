@@ -1,7 +1,6 @@
 {-# LANGUAGE Safe #-}
 module Data.Tempus.GregorianTime.Type
   ( GregorianTime(..)
-  , Offset(..)
   , validate
   ) where
 
@@ -26,13 +25,8 @@ data GregorianTime
      , gdtDay          :: Integer
      , gdtMinutes      :: Integer
      , gdtMilliSeconds :: Integer
-     , gdtOffset       :: Offset
+     , gdtOffset       :: (Maybe Integer)
      }
-   deriving (Eq, Ord)
-
-data Offset
-   = OffsetMinutes Integer
-   | OffsetUnknown
    deriving (Eq, Ord)
 
 instance UnixEpoch GregorianTime where
@@ -43,7 +37,7 @@ instance UnixEpoch GregorianTime where
       , gdtDay          = 1
       , gdtMinutes      = 0
       , gdtMilliSeconds = 0
-      , gdtOffset       = OffsetMinutes 0
+      , gdtOffset       = Just 0
       }
 
 validate :: MonadPlus m => GregorianTime -> m GregorianTime
@@ -94,10 +88,10 @@ validate gdt
       | otherwise                                     = mzero
     validateOffset
       = case gdtOffset gdt of
-          OffsetUnknown   -> return ()
-          OffsetMinutes o -> if negate (24*60) < o && o < (24*60)
-                               then return ()
-                               else mzero
+          Nothing  -> return ()
+          Just   o -> if negate (24*60) < o && o < (24*60)
+                        then return ()
+                        else mzero
     isLeapYear
       = let y = gdtYear gdt
         in  (y `mod` 4 == 0) && ((y `mod` 400 == 0) || (y `mod` 100 /= 0))

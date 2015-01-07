@@ -28,7 +28,7 @@ instance GregorianCalendar GregorianTime where
       , gdtDay          = 1
       , gdtMinutes      = 0
       , gdtMilliSeconds = 0
-      , gdtOffset       = OffsetMinutes 0
+      , gdtOffset       = Just 0
       }
   getYear gt
     = return (gdtYear gt)
@@ -60,14 +60,8 @@ instance GregorianCalendar GregorianTime where
   setMilliSecond x gt
     = validate $ gt { gdtMilliSeconds = (gdtMilliSeconds gt `div` 1000) * 1000 + x }
 
-
 instance LocalOffset GregorianTime where
-  getLocalOffset gt
-    = return $ case gdtOffset gt of
-        OffsetUnknown  -> Nothing
-        OffsetMinutes m -> Just m
+  getLocalOffset
+    = return . gdtOffset
   setLocalOffset mm gt
-    = validate $ case mm of
-       Nothing -> gt { gdtOffset = OffsetUnknown }
-       Just o  -> gt { gdtOffset = OffsetMinutes o }
-
+    = validate $ gt { gdtOffset = mm }

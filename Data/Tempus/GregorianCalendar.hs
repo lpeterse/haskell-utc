@@ -37,8 +37,8 @@ class GregorianCalendar a where
   setSecond             :: (MonadPlus m) => Integer -> a -> m a
   setMilliSecond        :: (MonadPlus m) => Integer -> a -> m a
 
-  toMilliSecondsCommonEpoch :: (MonadPlus m) => a -> m Integer
-  toMilliSecondsCommonEpoch t
+  toMilliSecondsSinceCommonEpoch :: (MonadPlus m) => a -> m Integer
+  toMilliSecondsSinceCommonEpoch t
     = do year    <- getYear        t
          month   <- getMonth       t
          day     <- getDay         t
@@ -53,8 +53,8 @@ class GregorianCalendar a where
                 + (second               * 1000)
                 + (msecond                    )
 
-  fromMilliSecondsCommonEpoch :: (MonadPlus m) => Integer -> m a
-  fromMilliSecondsCommonEpoch ms
+  fromMilliSecondsSinceCommonEpoch :: (MonadPlus m) => Integer -> m a
+  fromMilliSecondsSinceCommonEpoch ms
     = do (year, month, day)       <- daysToYearMonthDay (ms `div` (24 * 60 * 60 * 1000))
          let hour                  = ms `div` (60 * 60 * 1000) `mod` 24
          let minute                = ms `div` (     60 * 1000) `mod` 60

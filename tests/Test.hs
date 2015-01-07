@@ -21,24 +21,24 @@ tests
 
       (map
        (\(i64,s)->
-        testProperty ("(fromMilliSecondsCommonEpoch " ++ show i64 ++ " :: Maybe GregorianTime) == Just " ++ show s)
-        $  (fromMilliSecondsCommonEpoch i64 :: Maybe GregorianTime) == Just (fromString s)
+        testProperty ("(fromMilliSecondsSinceCommonEpoch " ++ show i64 ++ " :: Maybe GregorianTime) == Just " ++ show s)
+        $  (fromMilliSecondsSinceCommonEpoch i64 :: Maybe GregorianTime) == Just (fromString s)
        )
        commonEpochMsRfc3339TimeTuples
       )
       ++
       [ -- 1ms before lowest possible date
-        testProperty ("fromMilliSecondsCommonEpoch (-1) == (Nothing :: Maybe GregorianTime)")
-        $ fromMilliSecondsCommonEpoch (-62167219200001) == (Nothing :: Maybe GregorianTime)
+        testProperty ("fromMilliSecondsSinceCommonEpoch (-1) == (Nothing :: Maybe GregorianTime)")
+        $ fromMilliSecondsSinceCommonEpoch (-62167219200001) == (Nothing :: Maybe GregorianTime)
         -- 1ms after highest possible date
-      , testProperty ("fromMilliSecondsCommonEpoch 315569520000000 == (Nothing :: Maybe GregorianTime)")
-        $ fromMilliSecondsCommonEpoch 315569520000000 == (Nothing :: Maybe GregorianTime)
+      , testProperty ("fromMilliSecondsSinceCommonEpoch 315569520000000 == (Nothing :: Maybe GregorianTime)")
+        $ fromMilliSecondsSinceCommonEpoch 315569520000000 == (Nothing :: Maybe GregorianTime)
       ]
       ++
       (map
        (\(i64,s)->
-        testProperty ("toMilliSecondsCommonEpoch (" ++ show s ++ " :: GregorianTime) == Just " ++ show i64)
-        $ toMilliSecondsCommonEpoch (fromString s :: GregorianTime) == Just i64
+        testProperty ("toMilliSecondsSinceCommonEpoch (" ++ show s ++ " :: GregorianTime) == Just " ++ show i64)
+        $ toMilliSecondsSinceCommonEpoch (fromString s :: GregorianTime) == Just i64
        )
        commonEpochMsRfc3339TimeTuples
       )
