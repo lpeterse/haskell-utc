@@ -6,8 +6,6 @@ module Data.Tempus.Rfc3339Time.Type
 
 import Control.Monad
 
-import Data.Tempus.Epoch
-
 -- | A time and date representation based on years, months, days, hours, minutes and seconds.
 -- This representation is closest to RFC3339 (a stricter profile of ISO8601) strings. 
 --
@@ -28,17 +26,6 @@ data Rfc3339Time
      , gdtOffset       :: (Maybe Integer)
      }
    deriving (Eq, Ord)
-
-instance UnixEpoch Rfc3339Time where
-  unixEpoch
-    = Rfc3339Time
-      { gdtYear         = 1970
-      , gdtMonth        = 1
-      , gdtDay          = 1
-      , gdtMinutes      = 0
-      , gdtMilliSeconds = 0
-      , gdtOffset       = Just 0
-      }
 
 validate :: MonadPlus m => Rfc3339Time -> m Rfc3339Time
 validate gdt

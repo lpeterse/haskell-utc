@@ -9,12 +9,15 @@ module Data.Tempus
   -- * Common Operations
   , GregorianCalendar (..)
   , LocalOffset (..)
-  -- * Epochs
-  , UnixEpoch(..)
+  -- * RFC 3339
+  -- ** Parsing
+  , parseRfc3339String, parseRfc3339Text, parseRfc3339LazyText, parseRfc3339ByteString, parseRfc3339LazyByteString
+  -- ** Rendering
+  , renderRfc3339String, renderRfc3339Text, renderRfc3339LazyText, renderRfc3339ByteString, renderRfc3339LazyByteString
   ) where
 
 import Data.Tempus.GregorianCalendar
-import Data.Tempus.Epoch
 import Data.Tempus.UnixTime
 import Data.Tempus.UnixTimestamp
 import Data.Tempus.Rfc3339Time
+import Data.Tempus.Rfc3339

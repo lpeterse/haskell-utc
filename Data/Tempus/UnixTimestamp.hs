@@ -5,7 +5,6 @@ module Data.Tempus.UnixTimestamp
 
 import Control.Monad
 
-import Data.Tempus.Epoch
 import Data.Tempus.GregorianCalendar
 import Data.Tempus.Rfc3339Time
 import Data.Tempus.Internal
@@ -16,9 +15,13 @@ newtype UnixTimestamp
       = UnixTimestamp Integer
       deriving (Eq, Ord, Show)
 
-instance UnixEpoch UnixTimestamp where
+instance UnixTime UnixTimestamp where
   unixEpoch 
     = UnixTimestamp 0
+  unixSeconds (UnixTimestamp i)
+    = i `div` 1000
+  fromUnixSeconds s
+    = return (UnixTimestamp (s * 1000))
 
 instance GregorianCalendar UnixTimestamp where
   commonEpoch
