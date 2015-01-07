@@ -5,8 +5,6 @@ module Data.Tempus.GregorianTime
   , fromUnixTime
   ) where
 
-import Control.Monad
-
 import Data.String
 import Data.Maybe
 

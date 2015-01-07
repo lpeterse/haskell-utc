@@ -28,6 +28,7 @@ Library
                    , Data.Tempus.UnixTime
                    , Data.Tempus.Epoch
                    , Data.Tempus.RealtimeClock
+                   , Data.Tempus.Internal
   other-modules:     Data.Tempus.GregorianTime.Type
                    , Data.Tempus.GregorianTime.FromUnixTime
                    , Data.Tempus.Rfc3339.Parser
@@ -54,6 +55,7 @@ Test-Suite test
                    , Data.Tempus.Rfc3339.Builder
                    , Data.Tempus.UnixTime.Type
                    , Data.Tempus.UnixTime.FromGregorianTime
+                   , Data.Tempus.Internal
   build-depends:     base < 5
                    , text
                    , bytestring

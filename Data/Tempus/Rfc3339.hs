@@ -55,7 +55,8 @@ parseRfc3339ByteString         :: (MonadPlus m, GregorianCalendar a) => BS.ByteS
 parseRfc3339ByteString s
   = case Atto.parseOnly rfc3339Parser s of
       Right (Just t) -> return t
-      Left  _        -> mzero
+      Right _        -> mzero
+      _              -> mzero
 
 parseRfc3339LazyByteString     :: (MonadPlus m, GregorianCalendar a) => BSL.ByteString -> m a
 parseRfc3339LazyByteString s

@@ -8,10 +8,12 @@ import Test.QuickCheck
 
 import Data.Int
 import Data.String
+import Data.Maybe
 
 import Data.Tempus
 import Data.Tempus.GregorianTime
 import Data.Tempus.UnixTime
+import Data.Tempus.Internal
 
 tests :: IO [Test]
 tests 
@@ -44,6 +46,15 @@ tests
        )
        unixTimeGregorianTimeTuples
       )
+      ++
+      [ testProperty ("yearMonthDayToDays (daysToYearMonthDay x) == x")
+        $ forAll (choose (0, 3652424)) -- 0000-01-01 to 9999-12-31
+        $ \x-> fromMaybe False
+        $ do ymd <- daysToYearMonthDay x
+             x'  <- yearMonthDayToDays ymd
+             -- error (show x')
+             return (x == x')
+      ]
       
 
 unixTimeGregorianTimeTuples :: [(Int64,String)]
