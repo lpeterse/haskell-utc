@@ -4,6 +4,8 @@ module Data.Tempus.Rfc3339.Parser
 
 import Control.Monad
 
+import Data.Ratio
+
 import Data.Attoparsec.ByteString ( Parser, skipWhile, choice, option, satisfy )
 import Data.Attoparsec.ByteString.Char8 ( char, isDigit_w8 )
 
@@ -22,7 +24,7 @@ rfc3339Parser
        minute  <- timeMinute
        _       <- char ':'
        second  <- timeSecond
-       msecond <- option 0 timeSecfrac
+       secfrac <- option 0 timeSecfrac
        offset  <- timeOffset
        return $ setYear                year commonEpoch
             >>= setMonth               month
@@ -30,7 +32,7 @@ rfc3339Parser
             >>= setHour                hour
             >>= setMinute              minute
             >>= setSecond              second
-            >>= setMilliSecond         msecond
+            >>= setSecondFraction      secfrac
             >>= setLocalOffset         offset
   where
     dateFullYear
@@ -50,11 +52,11 @@ rfc3339Parser
            choice
              [ do d <- decimal3
                   skipWhile isDigit_w8
-                  return d
+                  return (d *   1 % 1)
              , do d <- decimal2
-                  return (d * 10)
+                  return (d *  10 % 1)
              , do d <- decimal1
-                  return (d * 100)
+                  return (d * 100 % 1)
              ]
     timeOffset
       = choice

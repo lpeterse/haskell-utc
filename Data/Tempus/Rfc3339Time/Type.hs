@@ -18,12 +18,14 @@ import Control.Monad
 --   * you don't care about a value's memory footprint.
 data Rfc3339Time
    = Rfc3339Time
-     { gdtYear         :: Integer
-     , gdtMonth        :: Integer
-     , gdtDay          :: Integer
-     , gdtMinutes      :: Integer
-     , gdtMilliSeconds :: Integer
-     , gdtOffset       :: (Maybe Integer)
+     { gdtYear           :: Integer
+     , gdtMonth          :: Integer
+     , gdtDay            :: Integer
+     , gdtHour           :: Integer
+     , gdtMinute         :: Integer
+     , gdtSecond         :: Integer
+     , gdtSecondFraction :: Rational
+     , gdtOffset         :: (Maybe Integer)
      }
    deriving (Eq, Ord)
 
@@ -31,8 +33,10 @@ validate :: MonadPlus m => Rfc3339Time -> m Rfc3339Time
 validate gdt
   = do validateYear
        validateMonthAndDay
-       validateMinutes
-       validateMilliSeconds
+       validateHour
+       validateMinute
+       validateSecond
+       validateSecondFraction
        validateOffset
        return gdt
   where
@@ -67,12 +71,18 @@ validate gdt
       | 1 <= gdtDay gdt && gdtDay gdt <= 28           = return ()
       | gdtDay gdt == 29 && isLeapYear                = return ()
       | otherwise                                     = mzero
-    validateMinutes
-      | 0 <= gdtMinutes gdt && gdtMinutes gdt < 24*60 = return ()
+    validateHour
+      | 0 <= gdtHour gdt && gdtHour gdt < 24          = return ()
       | otherwise                                     = mzero
-    validateMilliSeconds
-      | 0 <= gdtMinutes gdt && gdtMinutes gdt < 61000 = return ()
+    validateMinute
+      | 0 <= gdtMinute gdt && gdtMinute gdt < 60      = return ()
       | otherwise                                     = mzero
+    validateSecond
+      | 0 <= gdtSecond gdt && gdtSecond gdt < 60      = return ()
+      | otherwise                                     = mzero
+    validateSecondFraction
+      | truncate (gdtSecondFraction gdt) == (0 :: Integer) = return ()
+      | otherwise                                          = mzero
     validateOffset
       = case gdtOffset gdt of
           Nothing  -> return ()

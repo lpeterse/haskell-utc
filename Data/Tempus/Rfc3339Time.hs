@@ -22,11 +22,13 @@ instance IsString Rfc3339Time where
 instance GregorianCalendar Rfc3339Time where
   commonEpoch
     = Rfc3339Time
-      { gdtYear         = 0
-      , gdtMonth        = 1
-      , gdtDay          = 1
-      , gdtMinutes      = 0
-      , gdtMilliSeconds = 0
+      { gdtYear           = 0
+      , gdtMonth          = 1
+      , gdtDay            = 1
+      , gdtHour           = 0
+      , gdtMinute         = 0
+      , gdtSecond         = 0
+      , gdtSecondFraction = 0
       , gdtOffset       = Just 0
       }
   getYear gt
@@ -36,28 +38,28 @@ instance GregorianCalendar Rfc3339Time where
   getDay gt
     = return (gdtDay gt)
   getHour gt
-    = return (gdtMinutes gt `div` 60)
+    = return (gdtHour gt)
   getMinute gt
-    = return (gdtMinutes gt `mod` 60)
+    = return (gdtMinute gt)
   getSecond gt
-    = return (gdtMilliSeconds gt `div` 1000)
-  getMilliSecond gt
-    = return (gdtMilliSeconds gt `mod` 1000)
+    = return (gdtSecond gt)
+  getSecondFraction gt
+    = return (gdtSecondFraction gt)
 
   setYear x gt
-    = validate $ gt { gdtYear         = x }
+    = validate $ gt { gdtYear           = x }
   setMonth x gt
-    = validate $ gt { gdtMonth        = x }
+    = validate $ gt { gdtMonth          = x }
   setDay x gt
-    = validate $ gt { gdtDay          = x }
+    = validate $ gt { gdtDay            = x }
   setHour x gt
-    = validate $ gt { gdtMinutes      = (x * 60) + (gdtMinutes gt `mod` 60) }
+    = validate $ gt { gdtHour           = x }
   setMinute x gt
-    = validate $ gt { gdtMinutes      = (gdtMinutes gt `div` 60) * 60 + x }
+    = validate $ gt { gdtMinute         = x }
   setSecond x gt
-    = validate $ gt { gdtMilliSeconds = (x * 1000) + (gdtMilliSeconds gt `mod` 1000) }
-  setMilliSecond x gt
-    = validate $ gt { gdtMilliSeconds = (gdtMilliSeconds gt `div` 1000) * 1000 + x }
+    = validate $ gt { gdtSecond         = x }
+  setSecondFraction x gt
+    = validate $ gt { gdtSecondFraction = x }
 
 instance LocalOffset Rfc3339Time where
   getLocalOffset

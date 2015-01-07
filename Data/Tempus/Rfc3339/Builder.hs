@@ -18,7 +18,7 @@ rfc3339Builder t
        hour    <- getHour t
        minute  <- getMinute t
        second  <- getSecond t
-       msecond <- getMilliSecond t
+       secfrac <- getSecondFraction t
        offset  <- getLocalOffset t
        -- calculate the single digits
        let y3 = fromIntegral $ year    `div` 1000 `mod` 10
@@ -35,9 +35,9 @@ rfc3339Builder t
            n0 = fromIntegral $ minute  `div` 1    `mod` 10
            s1 = fromIntegral $ second  `div` 10   `mod` 10
            s0 = fromIntegral $ second  `div` 1    `mod` 10
-           f2 = fromIntegral $ msecond `div` 100  `mod` 10
-           f1 = fromIntegral $ msecond `div` 10   `mod` 10
-           f0 = fromIntegral $ msecond `div` 1    `mod` 10
+           f2 = truncate (secfrac * 10) `mod` 10
+           f1 = truncate (secfrac * 100) `mod` 10
+           f0 = truncate (secfrac * 1000) `mod` 10
        return $ mconcat
         [ BS.word16HexFixed (y3*16*16*16 + y2*16*16 + y1*16 + y0)
         , BS.char7 '-'

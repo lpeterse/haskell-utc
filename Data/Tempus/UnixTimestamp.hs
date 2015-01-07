@@ -5,6 +5,8 @@ module Data.Tempus.UnixTimestamp
 
 import Control.Monad
 
+import Data.Ratio
+
 import Data.Tempus.GregorianCalendar
 import Data.Tempus.Rfc3339Time
 import Data.Tempus.Internal
@@ -12,20 +14,20 @@ import Data.Tempus.UnixTime
 
 -- | A time representation counting the milliseconds since 1970-01-01T00:00:00Z.
 newtype UnixTimestamp
-      = UnixTimestamp Integer
+      = UnixTimestamp Rational
       deriving (Eq, Ord, Show)
 
 instance UnixTime UnixTimestamp where
   unixEpoch 
     = UnixTimestamp 0
   unixSeconds (UnixTimestamp i)
-    = i `div` 1000
+    = i
   fromUnixSeconds s
-    = return (UnixTimestamp (s * 1000))
+    = return (UnixTimestamp s)
 
 instance GregorianCalendar UnixTimestamp where
   commonEpoch
-    = UnixTimestamp (negate msDiffUnixEpochCommonEpoch)
+    = UnixTimestamp (negate deltaUnixEpochCommonEpoch)
 
   getYear
     = mapAsRfc3339Time getYear
@@ -34,13 +36,13 @@ instance GregorianCalendar UnixTimestamp where
   getDay
     = mapAsRfc3339Time getDay
   getHour   (UnixTimestamp t)
-    = return $ t `div` (60 * 60 * 1000) `mod` 24
+    = return $ truncate t `div` (60 * 60) `mod` 24
   getMinute (UnixTimestamp t)
-    = return $ t `div` (     60 * 1000) `mod` 60
+    = return $ truncate t `div`       60  `mod` 60
   getSecond (UnixTimestamp t)
-    = return $ t `div` (          1000) `mod` 60
-  getMilliSecond (UnixTimestamp t)
-    = return $ t                        `mod` 1000
+    = return $ truncate t                 `mod` 60
+  getSecondFraction (UnixTimestamp t)
+    = return $ t - (truncate t % 1)
 
   setYear x
     = modifyAsRfc3339Time (setYear x)
@@ -54,24 +56,24 @@ instance GregorianCalendar UnixTimestamp where
     = modifyAsRfc3339Time (setMinute x)
   setSecond x
     = modifyAsRfc3339Time (setSecond x)
-  setMilliSecond x
-    = modifyAsRfc3339Time (setMilliSecond x)
+  setSecondFraction x
+    = modifyAsRfc3339Time (setSecondFraction x)
 
-  fromMilliSecondsSinceCommonEpoch i
-    = return $ UnixTimestamp (i + msDiffUnixEpochCommonEpoch)
-  toMilliSecondsSinceCommonEpoch (UnixTimestamp t)
-    = return $ t - msDiffUnixEpochCommonEpoch
+  fromSecondsSinceCommonEpoch i
+    = return $ UnixTimestamp (i + deltaUnixEpochCommonEpoch)
+  toSecondsSinceCommonEpoch (UnixTimestamp t)
+    = return $ t - deltaUnixEpochCommonEpoch
 
 modifyAsRfc3339Time :: MonadPlus m => (Rfc3339Time -> m Rfc3339Time) -> UnixTimestamp -> m UnixTimestamp
 modifyAsRfc3339Time f t
-  = toMilliSecondsSinceCommonEpoch t
-    >>= fromMilliSecondsSinceCommonEpoch
+  = toSecondsSinceCommonEpoch t
+    >>= fromSecondsSinceCommonEpoch
     >>= f
-    >>= toMilliSecondsSinceCommonEpoch
-    >>= fromMilliSecondsSinceCommonEpoch
+    >>= toSecondsSinceCommonEpoch
+    >>= fromSecondsSinceCommonEpoch
 
 mapAsRfc3339Time :: MonadPlus m => (Rfc3339Time -> m a) -> UnixTimestamp -> m a
 mapAsRfc3339Time f t
-  = toMilliSecondsSinceCommonEpoch t
-    >>= fromMilliSecondsSinceCommonEpoch
+  = toSecondsSinceCommonEpoch t
+    >>= fromSecondsSinceCommonEpoch
     >>= f
