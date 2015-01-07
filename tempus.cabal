@@ -26,6 +26,7 @@ Library
                    , Data.Tempus.Rfc3339
                    , Data.Tempus.Rfc3339Time
                    , Data.Tempus.UnixTime
+                   , Data.Tempus.UnixTimestamp
                    , Data.Tempus.Epoch
                    , Data.Tempus.RealtimeClock
                    , Data.Tempus.Internal
@@ -43,6 +44,7 @@ Test-Suite test
                    , Data.Tempus.Rfc3339
                    , Data.Tempus.Rfc3339Time
                    , Data.Tempus.UnixTime
+                   , Data.Tempus.UnixTimestamp
                    , Data.Tempus.Epoch
                    , Data.Tempus.RealtimeClock
                    -- in library unexposed modules
