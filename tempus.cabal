@@ -32,7 +32,6 @@ Library
   other-modules:     Data.Tempus.Rfc3339Time.Type
                    , Data.Tempus.Rfc3339.Parser
                    , Data.Tempus.Rfc3339.Builder
-                   , Data.Tempus.UnixTime.Type
 
 Test-Suite test
   type:              detailed-0.9
@@ -50,7 +49,6 @@ Test-Suite test
                    , Data.Tempus.Rfc3339Time.Type
                    , Data.Tempus.Rfc3339.Parser
                    , Data.Tempus.Rfc3339.Builder
-                   , Data.Tempus.UnixTime.Type
                    , Data.Tempus.Internal
   build-depends:     base < 5
                    , text

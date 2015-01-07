@@ -6,7 +6,6 @@ import Distribution.TestSuite.QuickCheck
 
 import Test.QuickCheck
 
-import Data.Int
 import Data.String
 import Data.Maybe
 

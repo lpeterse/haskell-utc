@@ -6,8 +6,6 @@ module Data.Tempus.GregorianCalendar
 
 import Control.Monad
 
-import Data.Int
-
 import Data.Tempus.Internal
 
 class GregorianCalendar a where

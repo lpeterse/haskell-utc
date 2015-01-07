@@ -1,9 +1,14 @@
 module Data.Tempus.Internal
   ( daysToYearMonthDay
   , yearMonthDayToDays
+  , msDiffUnixEpochCommonEpoch
   ) where
 
 import Control.Monad
+
+msDiffUnixEpochCommonEpoch :: Integer
+msDiffUnixEpochCommonEpoch
+  = 62167219200000
 
 yearMonthDayToDays :: MonadPlus m => (Integer, Integer, Integer) -> m Integer
 yearMonthDayToDays (year,month,day)

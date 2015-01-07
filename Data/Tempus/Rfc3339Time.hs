@@ -9,7 +9,6 @@ import Data.Maybe
 
 import Data.Tempus.GregorianCalendar
 import Data.Tempus.Rfc3339Time.Type
-import Data.Tempus.UnixTime.Type
 import Data.Tempus.Rfc3339
 
 instance Show Rfc3339Time where
