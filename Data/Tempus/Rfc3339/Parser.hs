@@ -52,11 +52,11 @@ rfc3339Parser
            choice
              [ do d <- decimal3
                   skipWhile isDigit_w8
-                  return (d *   1 % 1)
+                  return (d % 1000)
              , do d <- decimal2
-                  return (d *  10 % 1)
+                  return (d % 100)
              , do d <- decimal1
-                  return (d * 100 % 1)
+                  return (d % 10)
              ]
     timeOffset
       = choice
