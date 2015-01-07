@@ -9,9 +9,9 @@ import Data.Ratio
 import Data.Attoparsec.ByteString ( Parser, skipWhile, choice, option, satisfy )
 import Data.Attoparsec.ByteString.Char8 ( char, isDigit_w8 )
 
-import Data.Tempus.GregorianCalendar
+import Data.Tempus.GregorianTime
 
-rfc3339Parser :: (MonadPlus m, GregorianCalendar t, LocalOffset t) => Parser (m t)
+rfc3339Parser :: (MonadPlus m, GregorianTime t, LocalOffset t) => Parser (m t)
 rfc3339Parser 
   = do year    <- dateFullYear
        _       <- char '-'

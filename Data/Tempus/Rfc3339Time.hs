@@ -7,7 +7,7 @@ module Data.Tempus.Rfc3339Time
 import Data.String
 import Data.Maybe
 
-import Data.Tempus.GregorianCalendar
+import Data.Tempus.GregorianTime
 import Data.Tempus.Rfc3339Time.Type
 import Data.Tempus.Rfc3339
 
@@ -19,7 +19,7 @@ instance Show Rfc3339Time where
 instance IsString Rfc3339Time where
   fromString = fromMaybe commonEpoch . parseRfc3339String
 
-instance GregorianCalendar Rfc3339Time where
+instance GregorianTime Rfc3339Time where
   commonEpoch
     = Rfc3339Time
       { gdtYear           = 0
@@ -31,20 +31,20 @@ instance GregorianCalendar Rfc3339Time where
       , gdtSecondFraction = 0
       , gdtOffset       = Just 0
       }
-  getYear gt
-    = return (gdtYear gt)
-  getMonth gt
-    = return (gdtMonth gt)
-  getDay gt
-    = return (gdtDay gt)
-  getHour gt
-    = return (gdtHour gt)
-  getMinute gt
-    = return (gdtMinute gt)
-  getSecond gt
-    = return (gdtSecond gt)
-  getSecondFraction gt
-    = return (gdtSecondFraction gt)
+  year
+    = gdtYear
+  month
+    = gdtMonth
+  day
+    = gdtDay
+  hour
+    = gdtHour
+  minute
+    = gdtMinute
+  second
+    = gdtSecond
+  secondFraction
+    = gdtSecondFraction
 
   setYear x gt
     = validate $ gt { gdtYear           = x }
@@ -62,7 +62,7 @@ instance GregorianCalendar Rfc3339Time where
     = validate $ gt { gdtSecondFraction = x }
 
 instance LocalOffset Rfc3339Time where
-  getLocalOffset
-    = return . gdtOffset
+  localOffset
+    = gdtOffset
   setLocalOffset mm gt
     = validate $ gt { gdtOffset = mm }

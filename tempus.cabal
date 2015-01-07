@@ -24,11 +24,11 @@ Library
   hs-source-dirs:    .
   default-language:  Haskell98
   exposed-modules:   Data.Tempus
-                   , Data.Tempus.GregorianCalendar
                    , Data.Tempus.Rfc3339
                    , Data.Tempus.Rfc3339Time
                    , Data.Tempus.UnixTime
                    , Data.Tempus.UnixTimestamp
+                   , Data.Tempus.GregorianTime
                    , Data.Tempus.RealtimeClock
                    , Data.Tempus.Internal
   other-modules:     Data.Tempus.Rfc3339Time.Type
@@ -41,11 +41,11 @@ Test-Suite test
   hs-source-dirs:    tests .
   test-module:       Test
   other-modules:     Data.Tempus
-                   , Data.Tempus.GregorianCalendar
                    , Data.Tempus.Rfc3339
                    , Data.Tempus.Rfc3339Time
                    , Data.Tempus.UnixTime
                    , Data.Tempus.UnixTimestamp
+                   , Data.Tempus.GregorianTime
                    , Data.Tempus.RealtimeClock
                    -- in library unexposed modules
                    , Data.Tempus.Rfc3339Time.Type

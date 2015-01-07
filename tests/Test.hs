@@ -20,16 +20,16 @@ tests
 
       (map
        (\(i64,s)->
-        testProperty ("(fromSecondsSinceCommonEpoch " ++ show i64 ++ " :: Maybe Rfc3339Time) == Just " ++ show s)
-        $  (fromSecondsSinceCommonEpoch i64 :: Maybe Rfc3339Time) == Just (fromString s)
+        testProperty ("(fromGregorianSeconds " ++ show i64 ++ " :: Maybe Rfc3339Time) == Just " ++ show s)
+        $  (fromGregorianSeconds i64 :: Maybe Rfc3339Time) == Just (fromString s)
        )
        commonEpochMsRfc3339TimeTuples
       )
       ++
       (map
        (\(i64,s)->
-        testProperty ("toSecondsSinceCommonEpoch (" ++ show s ++ " :: Rfc3339Time) == Just " ++ show i64)
-        $ toSecondsSinceCommonEpoch (fromString s :: Rfc3339Time) == Just i64
+        testProperty ("gregorianSeconds (" ++ show s ++ " :: Rfc3339Time) == " ++ show i64)
+        $ gregorianSeconds (fromString s :: Rfc3339Time) == i64
        )
        commonEpochMsRfc3339TimeTuples
       )
@@ -38,7 +38,7 @@ tests
         $ forAll (choose (0, 3652424)) -- 0000-01-01 to 9999-12-31
         $ \x-> fromMaybe False
         $ do ymd <- daysToYearMonthDay x
-             x'  <- yearMonthDayToDays ymd
+             let x' = yearMonthDayToDays ymd
              -- error (show x')
              return (x == x')
       ]

@@ -8,36 +8,28 @@ import Control.Monad
 import Data.Monoid
 import Data.ByteString.Builder as BS
 
-import Data.Tempus.GregorianCalendar
+import Data.Tempus.GregorianTime
 
-rfc3339Builder :: (MonadPlus m, GregorianCalendar t, LocalOffset t) => t -> m BS.Builder
+rfc3339Builder :: (MonadPlus m, GregorianTime t, LocalOffset t) => t -> m BS.Builder
 rfc3339Builder t
-  = do year    <- getYear t
-       month   <- getMonth t
-       day     <- getDay t
-       hour    <- getHour t
-       minute  <- getMinute t
-       second  <- getSecond t
-       secfrac <- getSecondFraction t
-       offset  <- getLocalOffset t
-       -- calculate the single digits
-       let y3 = fromIntegral $ year    `div` 1000 `mod` 10
-           y2 = fromIntegral $ year    `div` 100  `mod` 10
-           y1 = fromIntegral $ year    `div` 10   `mod` 10
-           y0 = fromIntegral $ year    `div` 1    `mod` 10
-           m1 = fromIntegral $ month   `div` 10   `mod` 10
-           m0 = fromIntegral $ month   `div` 1    `mod` 10
-           d1 = fromIntegral $ day     `div` 10   `mod` 10
-           d0 = fromIntegral $ day     `div` 1    `mod` 10
-           h1 = fromIntegral $ hour    `div` 10   `mod` 10
-           h0 = fromIntegral $ hour    `div` 1    `mod` 10
-           n1 = fromIntegral $ minute  `div` 10   `mod` 10
-           n0 = fromIntegral $ minute  `div` 1    `mod` 10
-           s1 = fromIntegral $ second  `div` 10   `mod` 10
-           s0 = fromIntegral $ second  `div` 1    `mod` 10
-           f2 = truncate (secfrac * 10) `mod` 10
-           f1 = truncate (secfrac * 100) `mod` 10
-           f0 = truncate (secfrac * 1000) `mod` 10
+  = do -- calculate the single digits
+       let y3 = fromIntegral $ year t   `div` 1000 `mod` 10
+           y2 = fromIntegral $ year t   `div` 100  `mod` 10
+           y1 = fromIntegral $ year t   `div` 10   `mod` 10
+           y0 = fromIntegral $ year t   `div` 1    `mod` 10
+           m1 = fromIntegral $ month t  `div` 10   `mod` 10
+           m0 = fromIntegral $ month t  `div` 1    `mod` 10
+           d1 = fromIntegral $ day t    `div` 10   `mod` 10
+           d0 = fromIntegral $ day t    `div` 1    `mod` 10
+           h1 = fromIntegral $ hour t   `div` 10   `mod` 10
+           h0 = fromIntegral $ hour t   `div` 1    `mod` 10
+           n1 = fromIntegral $ minute t `div` 10   `mod` 10
+           n0 = fromIntegral $ minute t `div` 1    `mod` 10
+           s1 = fromIntegral $ second t `div` 10   `mod` 10
+           s0 = fromIntegral $ second t `div` 1    `mod` 10
+           f2 = truncate (secondFraction t * 10) `mod` 10
+           f1 = truncate (secondFraction t * 100) `mod` 10
+           f0 = truncate (secondFraction t * 1000) `mod` 10
        return $ mconcat
         [ BS.word16HexFixed (y3*16*16*16 + y2*16*16 + y1*16 + y0)
         , BS.char7 '-'
@@ -57,7 +49,7 @@ rfc3339Builder t
                           else BS.char7 '.' `mappend` BS.intDec f2
                    else BS.char7 '.' `mappend` BS.intDec f2 `mappend` BS.intDec f1
             else BS.char7 '.' `mappend` BS.intDec f2 `mappend` BS.intDec f1 `mappend` BS.intDec f0
-        , case offset of
+        , case localOffset t of
             Nothing -> BS.string7 "-00:00"
             Just 0  -> BS.char7 'Z'
             Just o  -> let oh1 = fromIntegral $ abs o `quot` 600          `rem` 10

@@ -10,27 +10,27 @@ deltaUnixEpochCommonEpoch :: Rational
 deltaUnixEpochCommonEpoch
   = 62167219200
 
-yearMonthDayToDays :: MonadPlus m => (Integer, Integer, Integer) -> m Integer
+yearMonthDayToDays :: (Integer, Integer, Integer) -> Integer
 yearMonthDayToDays (year,month,day)
-  = do -- count of days of the "finalised" years
-       let daysY = yearToDays (year - 1)
-       -- count of days of the "finalised" months
-       let daysM = case month - 1 of
-                     1  -> 31
-                     2  -> 31 + 28 + leapDay
-                     3  -> 31 + 28 + 31 + leapDay
-                     4  -> 31 + 28 + 31 + 30 + leapDay
-                     5  -> 31 + 28 + 31 + 30 + 31 + leapDay
-                     6  -> 31 + 28 + 31 + 30 + 31 + 30 + leapDay
-                     7  -> 31 + 28 + 31 + 30 + 31 + 30 + 31 + leapDay
-                     8  -> 31 + 28 + 31 + 30 + 31 + 30 + 31 + 31 + leapDay
-                     9  -> 31 + 28 + 31 + 30 + 31 + 30 + 31 + 31 + 30 + leapDay
-                     10 -> 31 + 28 + 31 + 30 + 31 + 30 + 31 + 31 + 30 + 31 + leapDay
-                     11 -> 31 + 28 + 31 + 30 + 31 + 30 + 31 + 31 + 30 + 31 + 30 + leapDay
-                     _  -> 0
+  = -- count of days of the "finalised" years
+    let daysY = yearToDays (year - 1)
+    -- count of days of the "finalised" months
+        daysM = case month - 1 of
+                  1  -> 31
+                  2  -> 31 + 28 + leapDay
+                  3  -> 31 + 28 + 31 + leapDay
+                  4  -> 31 + 28 + 31 + 30 + leapDay
+                  5  -> 31 + 28 + 31 + 30 + 31 + leapDay
+                  6  -> 31 + 28 + 31 + 30 + 31 + 30 + leapDay
+                  7  -> 31 + 28 + 31 + 30 + 31 + 30 + 31 + leapDay
+                  8  -> 31 + 28 + 31 + 30 + 31 + 30 + 31 + 31 + leapDay
+                  9  -> 31 + 28 + 31 + 30 + 31 + 30 + 31 + 31 + 30 + leapDay
+                  10 -> 31 + 28 + 31 + 30 + 31 + 30 + 31 + 31 + 30 + 31 + leapDay
+                  11 -> 31 + 28 + 31 + 30 + 31 + 30 + 31 + 31 + 30 + 31 + 30 + leapDay
+                  _  -> 0
        -- count of the "finalised" days
-       let daysD = day - 1
-       return (daysY + daysM + daysD)
+        daysD = day - 1
+    in  daysY + daysM + daysD
   where
 
     yearToDays :: Integer -> Integer

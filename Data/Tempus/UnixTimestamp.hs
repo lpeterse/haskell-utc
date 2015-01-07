@@ -7,7 +7,7 @@ import Control.Monad
 
 import Data.Ratio
 
-import Data.Tempus.GregorianCalendar
+import Data.Tempus.GregorianTime
 import Data.Tempus.Rfc3339Time
 import Data.Tempus.Internal
 import Data.Tempus.UnixTime
@@ -25,24 +25,24 @@ instance UnixTime UnixTimestamp where
   fromUnixSeconds s
     = return (UnixTimestamp s)
 
-instance GregorianCalendar UnixTimestamp where
+instance GregorianTime UnixTimestamp where
   commonEpoch
     = UnixTimestamp (negate deltaUnixEpochCommonEpoch)
 
-  getYear
-    = mapAsRfc3339Time getYear
-  getMonth
-    = mapAsRfc3339Time getMonth
-  getDay
-    = mapAsRfc3339Time getDay
-  getHour   (UnixTimestamp t)
-    = return $ truncate t `div` (60 * 60) `mod` 24
-  getMinute (UnixTimestamp t)
-    = return $ truncate t `div`       60  `mod` 60
-  getSecond (UnixTimestamp t)
-    = return $ truncate t                 `mod` 60
-  getSecondFraction (UnixTimestamp t)
-    = return $ t - (truncate t % 1)
+  year
+    = undefined
+  month
+    = undefined
+  day
+    = undefined
+  hour   (UnixTimestamp t)
+    = truncate t `div` (60 * 60) `mod` 24
+  minute (UnixTimestamp t)
+    = truncate t `div`       60  `mod` 60
+  second (UnixTimestamp t)
+    = truncate t                 `mod` 60
+  secondFraction (UnixTimestamp t)
+    = t - (truncate t % 1)
 
   setYear x
     = modifyAsRfc3339Time (setYear x)
@@ -59,21 +59,14 @@ instance GregorianCalendar UnixTimestamp where
   setSecondFraction x
     = modifyAsRfc3339Time (setSecondFraction x)
 
-  fromSecondsSinceCommonEpoch i
+  fromGregorianSeconds i
     = return $ UnixTimestamp (i + deltaUnixEpochCommonEpoch)
-  toSecondsSinceCommonEpoch (UnixTimestamp t)
-    = return $ t - deltaUnixEpochCommonEpoch
+  gregorianSeconds (UnixTimestamp t)
+    = t - deltaUnixEpochCommonEpoch
 
 modifyAsRfc3339Time :: MonadPlus m => (Rfc3339Time -> m Rfc3339Time) -> UnixTimestamp -> m UnixTimestamp
 modifyAsRfc3339Time f t
-  = toSecondsSinceCommonEpoch t
-    >>= fromSecondsSinceCommonEpoch
+  = fromGregorianSeconds (gregorianSeconds t)
     >>= f
-    >>= toSecondsSinceCommonEpoch
-    >>= fromSecondsSinceCommonEpoch
+    >>= fromGregorianSeconds . gregorianSeconds
 
-mapAsRfc3339Time :: MonadPlus m => (Rfc3339Time -> m a) -> UnixTimestamp -> m a
-mapAsRfc3339Time f t
-  = toSecondsSinceCommonEpoch t
-    >>= fromSecondsSinceCommonEpoch
-    >>= f
