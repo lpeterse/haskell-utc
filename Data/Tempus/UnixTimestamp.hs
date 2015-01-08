@@ -8,7 +8,7 @@ import Control.Monad
 import Data.Ratio
 
 import Data.Tempus.GregorianTime
-import Data.Tempus.Rfc3339Time
+import Data.Tempus.Rfc3339Timestamp
 import Data.Tempus.Internal
 import Data.Tempus.UnixTime
 
@@ -64,7 +64,7 @@ instance GregorianTime UnixTimestamp where
   gregorianSeconds (UnixTimestamp t)
     = t - deltaUnixEpochCommonEpoch
 
-modifyAsRfc3339Time :: MonadPlus m => (Rfc3339Time -> m Rfc3339Time) -> UnixTimestamp -> m UnixTimestamp
+modifyAsRfc3339Time :: MonadPlus m => (Rfc3339Timestamp -> m Rfc3339Timestamp) -> UnixTimestamp -> m UnixTimestamp
 modifyAsRfc3339Time f t
   = fromGregorianSeconds (gregorianSeconds t)
     >>= f

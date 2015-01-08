@@ -10,7 +10,7 @@ import Data.String
 import Data.Maybe
 
 import Data.Tempus
-import Data.Tempus.Rfc3339Time
+import Data.Tempus.Rfc3339Timestamp
 import Data.Tempus.UnixTime
 import Data.Tempus.Internal
 
@@ -21,7 +21,7 @@ tests
       (map
        (\(i64,s)->
         testProperty ("(fromGregorianSeconds " ++ show i64 ++ " :: Maybe Rfc3339Time) == Just " ++ show s)
-        $  (fromGregorianSeconds i64 :: Maybe Rfc3339Time) == Just (fromString s)
+        $  (fromGregorianSeconds i64 :: Maybe Rfc3339Timestamp) == Just (fromString s)
        )
        commonEpochMsRfc3339TimeTuples
       )
@@ -29,7 +29,7 @@ tests
       (map
        (\(i64,s)->
         testProperty ("gregorianSeconds (" ++ show s ++ " :: Rfc3339Time) == " ++ show i64)
-        $ gregorianSeconds (fromString s :: Rfc3339Time) == i64
+        $ gregorianSeconds (fromString s :: Rfc3339Timestamp) == i64
        )
        commonEpochMsRfc3339TimeTuples
       )

@@ -1,15 +1,18 @@
 {-# LANGUAGE FlexibleInstances, UndecidableInstances #-}
 module Data.Tempus
-  ( -- * Representations
-  -- ** Unix Time
-    UnixTime(..)
-  , UnixTimestamp (..)
-  -- ** Gregorian Calendar Time
-  , Rfc3339Time ()
+  ( -- * Introduction
+    -- $introduction
+
+  -- * Representations
+  -- ** UnixTimestamp
+    UnixTimestamp
+  -- ** Rfc3339Time
+  , Rfc3339Timestamp
   -- * Current Clock Time
   , RealtimeClock (..)
   -- * Common Operations
   , GregorianTime (..)
+  , UnixTime(..)
   , LocalOffset (..)
   -- * RFC 3339
   -- ** Parsing
@@ -21,6 +24,10 @@ module Data.Tempus
 import Data.Tempus.GregorianTime
 import Data.Tempus.UnixTime
 import Data.Tempus.UnixTimestamp
-import Data.Tempus.Rfc3339Time
+import Data.Tempus.Rfc3339Timestamp
 import Data.Tempus.Rfc3339
 import Data.Tempus.RealtimeClock
+
+-- $introduction
+-- 
+-- Introduction here.
