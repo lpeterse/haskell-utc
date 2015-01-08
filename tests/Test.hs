@@ -18,7 +18,7 @@ tests
       (map
        (\(i64,s)->
         testProperty ("(fromSecondsSinceCommonEpoch " ++ show i64 ++ " :: Maybe Rfc3339Time) == Just " ++ show s)
-        $  (fromSecondsSinceCommonEpoch i64 :: Maybe Rfc3339Timestamp) == Just (fromString s)
+        $  (fromSecondsSinceCommonEpoch i64 :: Maybe GregorianTimestamp) == Just (fromString s)
        )
        commonEpochMsRfc3339TimeTuples
       )
@@ -26,7 +26,7 @@ tests
       (map
        (\(i64,s)->
         testProperty ("secondsSinceCommonEpoch (" ++ show s ++ " :: Rfc3339Time) == " ++ show i64)
-        $ toSecondsSinceCommonEpoch (fromString s :: Rfc3339Timestamp) == i64
+        $ toSecondsSinceCommonEpoch (fromString s :: GregorianTimestamp) == i64
        )
        commonEpochMsRfc3339TimeTuples
       )

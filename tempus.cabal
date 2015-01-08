@@ -24,10 +24,10 @@ Library
   default-language:  Haskell98
   exposed-modules:   Data.Tempus
                    , Data.Tempus.Rfc3339
-                   , Data.Tempus.Rfc3339Timestamp
                    , Data.Tempus.UnixTime
                    , Data.Tempus.UnixTimestamp
                    , Data.Tempus.GregorianTime
+                   , Data.Tempus.GregorianTimestamp
                    , Data.Tempus.RealtimeClock
                    , Data.Tempus.Internal
   other-modules:     Data.Tempus.Rfc3339.Parser
@@ -40,10 +40,10 @@ Test-Suite test
   test-module:       Test
   other-modules:     Data.Tempus
                    , Data.Tempus.Rfc3339
-                   , Data.Tempus.Rfc3339Timestamp
                    , Data.Tempus.UnixTime
                    , Data.Tempus.UnixTimestamp
                    , Data.Tempus.GregorianTime
+                   , Data.Tempus.GregorianTimestamp
                    , Data.Tempus.RealtimeClock
                    -- in library unexposed modules
                    , Data.Tempus.Rfc3339.Parser

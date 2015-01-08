@@ -6,8 +6,8 @@ module Data.Tempus
   -- * Representations
   -- ** UnixTimestamp
     UnixTimestamp
-  -- ** Rfc3339Time
-  , Rfc3339Timestamp
+  -- ** GregorianTimestamp
+  , GregorianTimestamp
   -- * Current Clock Time
   , RealtimeClock (..)
   -- * Common Operations
@@ -22,9 +22,9 @@ module Data.Tempus
   ) where
 
 import Data.Tempus.GregorianTime
+import Data.Tempus.GregorianTimestamp
 import Data.Tempus.UnixTime
 import Data.Tempus.UnixTimestamp
-import Data.Tempus.Rfc3339Timestamp
 import Data.Tempus.Rfc3339
 import Data.Tempus.RealtimeClock
 

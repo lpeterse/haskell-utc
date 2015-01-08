@@ -1,6 +1,6 @@
-module Data.Tempus.Rfc3339Timestamp
+module Data.Tempus.GregorianTimestamp
   ( -- * Type
-    Rfc3339Timestamp()
+    GregorianTimestamp()
   -- * Creation
   ) where
 
@@ -23,8 +23,8 @@ import Data.Tempus.Internal
 --   * you need to be able to represent leap seconds.
 --   * you need to be able to represent a local offset (timezone).
 --   * you don't care about a value's memory footprint.
-data Rfc3339Timestamp
-   = Rfc3339Timestamp
+data GregorianTimestamp
+   = GregorianTimestamp
      { gdtYear           :: Integer
      , gdtMonth          :: Integer
      , gdtDay            :: Integer
@@ -35,29 +35,29 @@ data Rfc3339Timestamp
      , gdtOffset         :: (Maybe Rational)
      }
 
-instance Eq Rfc3339Timestamp where
+instance Eq GregorianTimestamp where
   (==) a b
     = (==)
        (toSecondsSinceCommonEpoch a)
        (toSecondsSinceCommonEpoch b)
 
-instance Ord Rfc3339Timestamp where
+instance Ord GregorianTimestamp where
   compare a b
     = compare
        (toSecondsSinceCommonEpoch a)
        (toSecondsSinceCommonEpoch b)
 
-instance Show Rfc3339Timestamp where
-  -- The assumption is that every Rfc3339Timestamp is valid and renderable as Rfc3339 string
+instance Show GregorianTimestamp where
+  -- The assumption is that every GregorianTimestamp is valid and renderable as Rfc3339 string
   -- and rendering failure is impossible.
   show = fromMaybe undefined . renderRfc3339String
 
-instance IsString Rfc3339Timestamp where
+instance IsString GregorianTimestamp where
   fromString = fromMaybe undefined . parseRfc3339String
 
-instance UnixTime Rfc3339Timestamp where
+instance UnixTime GregorianTimestamp where
   unixEpoch
-    = Rfc3339Timestamp
+    = GregorianTimestamp
       { gdtYear           = 1970
       , gdtMonth          = 1
       , gdtDay            = 1
@@ -72,7 +72,7 @@ instance UnixTime Rfc3339Timestamp where
   fromSecondsSinceUnixEpoch s
     = fromSecondsSinceCommonEpoch (s - deltaUnixEpochCommonEpoch)
 
-instance GregorianTime Rfc3339Timestamp where
+instance GregorianTime GregorianTimestamp where
   year
     = gdtYear
   month
@@ -104,7 +104,7 @@ instance GregorianTime Rfc3339Timestamp where
     = validate $ gt { gdtSecondFraction = x }
 
   commonEpoch
-    = Rfc3339Timestamp
+    = GregorianTimestamp
       { gdtYear           = 0
       , gdtMonth          = 1
       , gdtDay            = 1
@@ -127,7 +127,7 @@ instance GregorianTime Rfc3339Timestamp where
 
   fromSecondsSinceCommonEpoch s
     = validate
-    $ Rfc3339Timestamp
+    $ GregorianTimestamp
       { gdtYear           = y
       , gdtMonth          = m
       , gdtDay            = d
@@ -140,7 +140,7 @@ instance GregorianTime Rfc3339Timestamp where
     where
       (y, m, d) = daysToYearMonthDay (truncate s `div` secsPerDay)
 
-instance LocalOffset Rfc3339Timestamp where
+instance LocalOffset GregorianTimestamp where
   localOffset
     = gdtOffset
   setLocalOffset mm gt
