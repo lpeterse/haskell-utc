@@ -2,11 +2,33 @@ module Data.Tempus.Internal
   ( daysToYearMonthDay
   , yearMonthDayToDays
   , deltaUnixEpochCommonEpoch
+
+  , secsPerDay, secsPerHour, secsPerMinute, secsPerMinute, minsPerHour, hoursPerDay
   ) where
 
 deltaUnixEpochCommonEpoch :: Rational
 deltaUnixEpochCommonEpoch
   = 62167219200
+
+secsPerDay :: Integer
+secsPerDay
+  = hoursPerDay * secsPerHour
+
+secsPerHour :: Integer
+secsPerHour
+  = minsPerHour * secsPerMinute
+
+secsPerMinute :: Integer
+secsPerMinute
+  = 60
+
+minsPerHour :: Integer
+minsPerHour
+  = 60
+
+hoursPerDay :: Integer
+hoursPerDay
+  = 24
 
 yearMonthDayToDays :: (Integer, Integer, Integer) -> Integer
 yearMonthDayToDays (year,month,day)
