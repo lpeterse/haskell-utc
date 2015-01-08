@@ -94,7 +94,7 @@ instance GregorianTime Rfc3339Timestamp where
       , gdtMinute         = 0
       , gdtSecond         = 0
       , gdtSecondFraction = 0
-      , gdtOffset       = Just 0
+      , gdtOffset         = Nothing
       }
 
   toSecondsSinceCommonEpoch t
@@ -103,6 +103,7 @@ instance GregorianTime Rfc3339Timestamp where
     + (minute t        * 60 % 1)
     + (second t             % 1)
     + (secondFraction t)
+    - (fromMaybe 0 $ localOffset t)
     where
       days = yearMonthDayToDays (year t, month t, day t)
 
