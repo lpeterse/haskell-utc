@@ -26,6 +26,9 @@ instance UnixTime UnixTimestamp where
     = return (UnixTimestamp s)
 
 instance GregorianTime UnixTimestamp where
+  commonEpoch
+    = UnixTimestamp (negate deltaUnixEpochCommonEpoch)
+
   fromSecondsSinceCommonEpoch i
     = return $ UnixTimestamp (i + deltaUnixEpochCommonEpoch)
   toSecondsSinceCommonEpoch (UnixTimestamp t)

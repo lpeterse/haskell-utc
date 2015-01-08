@@ -4,8 +4,6 @@ module Data.Tempus.Rfc3339Timestamp
   -- * Creation
   ) where
 
-import Control.Monad
-
 import Data.Ratio
 import Data.String
 import Data.Maybe
@@ -98,88 +96,22 @@ instance GregorianTime Rfc3339Timestamp where
       days = yearMonthDayToDays (year t, month t, day t)
 
   fromSecondsSinceCommonEpoch s
-    = do let (year, month, day) =  daysToYearMonthDay (truncate s `div` (24 * 60 * 60))
-         let hour               = truncate s `div` (60 * 60) `mod` 24
-         let minute             = truncate s `div`       60  `mod` 60
-         let second             = truncate s                 `mod` 60
-         let secfrac            = s - (truncate s % 1)
+    = do let (y, m, d) = daysToYearMonthDay (truncate s `div` (24 * 60 * 60))
+         let hh        = truncate s `div` (60 * 60) `mod` 24
+         let mm        = truncate s `div`       60  `mod` 60
+         let ss        = truncate s                 `mod` 60
+         let sf        = s - (truncate s % 1)
          return commonEpoch 
-           >>= setYear           year
-           >>= setMonth          month
-           >>= setDay            day
-           >>= setHour           hour
-           >>= setMinute         minute
-           >>= setSecond         second
-           >>= setSecondFraction secfrac
-
+           >>= setYear           y
+           >>= setMonth          m
+           >>= setDay            d
+           >>= setHour           hh
+           >>= setMinute         mm
+           >>= setSecond         ss
+           >>= setSecondFraction sf
 
 instance LocalOffset Rfc3339Timestamp where
   localOffset
     = gdtOffset
   setLocalOffset mm gt
     = validate $ gt { gdtOffset = mm }
-
-
-validate :: MonadPlus m => Rfc3339Timestamp -> m Rfc3339Timestamp
-validate gdt
-  = do validateYear
-       validateMonthAndDay
-       validateHour
-       validateMinute
-       validateSecond
-       validateSecondFraction
-       validateOffset
-       return gdt
-  where
-    validateYear
-      = if 0 <= gdtYear gdt && gdtYear gdt <= 9999
-          then return ()
-          else mzero
-    validateMonthAndDay
-      = if 1 <= gdtMonth gdt && gdtMonth gdt <= 12
-          then case gdtMonth gdt of
-                 1  -> validateDays31
-                 2  -> validateDays28or29
-                 3  -> validateDays31
-                 4  -> validateDays30
-                 5  -> validateDays31
-                 6  -> validateDays30
-                 7  -> validateDays31
-                 8  -> validateDays31
-                 9  -> validateDays30
-                 10 -> validateDays31
-                 11 -> validateDays30
-                 12 -> validateDays31
-                 _  -> mzero
-          else mzero
-    validateDays31
-      | 1 <= gdtDay gdt && gdtDay gdt <= 31           = return ()
-      | otherwise                                     = mzero
-    validateDays30
-      | 1 <= gdtDay gdt && gdtDay gdt <= 30           = return ()
-      | otherwise                                     = mzero
-    validateDays28or29
-      | 1 <= gdtDay gdt && gdtDay gdt <= 28           = return ()
-      | gdtDay gdt == 29 && isLeapYear                = return ()
-      | otherwise                                     = mzero
-    validateHour
-      | 0 <= gdtHour gdt && gdtHour gdt < 24          = return ()
-      | otherwise                                     = mzero
-    validateMinute
-      | 0 <= gdtMinute gdt && gdtMinute gdt < 60      = return ()
-      | otherwise                                     = mzero
-    validateSecond
-      | 0 <= gdtSecond gdt && gdtSecond gdt < 60      = return ()
-      | otherwise                                     = mzero
-    validateSecondFraction
-      | truncate (gdtSecondFraction gdt) == (0 :: Integer) = return ()
-      | otherwise                                          = mzero
-    validateOffset
-      = case gdtOffset gdt of
-          Nothing  -> return ()
-          Just   o -> if negate (24*60) < o && o < (24*60)
-                        then return ()
-                        else mzero
-    isLeapYear
-      = let y = gdtYear gdt
-        in  (y `mod` 4 == 0) && ((y `mod` 400 == 0) || (y `mod` 100 /= 0))
