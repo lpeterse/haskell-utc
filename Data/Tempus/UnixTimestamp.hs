@@ -20,9 +20,9 @@ newtype UnixTimestamp
 instance UnixTime UnixTimestamp where
   unixEpoch 
     = UnixTimestamp 0
-  unixSeconds (UnixTimestamp i)
+  toSecondsSinceUnixEpoch (UnixTimestamp i)
     = i
-  fromUnixSeconds s
+  fromSecondsSinceUnixEpoch s
     = return (UnixTimestamp s)
 
 instance GregorianTime UnixTimestamp where

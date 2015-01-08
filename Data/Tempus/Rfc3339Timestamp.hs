@@ -76,8 +76,8 @@ instance GregorianTime Rfc3339Timestamp where
   setSecondFraction x gt
     = validate $ gt { gdtSecondFraction = x }
 
-  getCommonEpoch
-    = return $ Rfc3339Timestamp
+  commonEpoch
+    = Rfc3339Timestamp
       { gdtYear           = 0
       , gdtMonth          = 1
       , gdtDay            = 1
@@ -103,7 +103,7 @@ instance GregorianTime Rfc3339Timestamp where
          let minute             = truncate s `div`       60  `mod` 60
          let second             = truncate s                 `mod` 60
          let secfrac            = s - (truncate s % 1)
-         getCommonEpoch 
+         return commonEpoch 
            >>= setYear           year
            >>= setMonth          month
            >>= setDay            day

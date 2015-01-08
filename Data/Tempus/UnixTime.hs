@@ -5,6 +5,6 @@ module Data.Tempus.UnixTime
 import Control.Monad
 
 class UnixTime t where
-  unixEpoch        :: t
-  unixSeconds      :: t -> Rational
-  fromUnixSeconds  :: MonadPlus m => Rational -> m t
+  unixEpoch                  :: t
+  toSecondsSinceUnixEpoch    :: t -> Rational
+  fromSecondsSinceUnixEpoch  :: MonadPlus m => Rational -> m t

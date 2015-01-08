@@ -13,28 +13,28 @@ import Data.Tempus.GregorianTime
 
 rfc3339Parser :: (MonadPlus m, GregorianTime t, LocalOffset t) => Parser (m t)
 rfc3339Parser 
-  = do year    <- dateFullYear
-       _       <- char '-'
-       month   <- dateMonth
-       _       <- char '-'
-       day     <- dateMDay
-       _       <- char 'T'
-       hour    <- timeHour
-       _       <- char ':'
-       minute  <- timeMinute
-       _       <- char ':'
-       second  <- timeSecond
-       secfrac <- option 0 timeSecfrac
-       offset  <- timeOffset
-       return $ getCommonEpoch
-            >>= setYear                year
-            >>= setMonth               month
-            >>= setDay                 day
-            >>= setHour                hour
-            >>= setMinute              minute
-            >>= setSecond              second
-            >>= setSecondFraction      secfrac
-            >>= setLocalOffset         offset
+  = do year'    <- dateFullYear
+       _        <- char '-'
+       month'   <- dateMonth
+       _        <- char '-'
+       day'     <- dateMDay
+       _        <- char 'T'
+       hour'    <- timeHour
+       _        <- char ':'
+       minute'  <- timeMinute
+       _        <- char ':'
+       second'  <- timeSecond
+       secfrac' <- option 0 timeSecfrac
+       offset'  <- timeOffset
+       return $ return commonEpoch
+            >>= setYear                year'
+            >>= setMonth               month'
+            >>= setDay                 day'
+            >>= setHour                hour'
+            >>= setMinute              minute'
+            >>= setSecond              second'
+            >>= setSecondFraction      secfrac'
+            >>= setLocalOffset         offset'
   where
     dateFullYear
       = decimal4
