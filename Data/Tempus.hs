@@ -1,11 +1,13 @@
 {-# LANGUAGE FlexibleInstances, UndecidableInstances #-}
 module Data.Tempus
-  ( -- * Flavors
+  ( -- * Representations
   -- ** Unix Time
     UnixTime(..)
   , UnixTimestamp (..)
   -- ** Gregorian Calendar Time
   , Rfc3339Time ()
+  -- * Current Clock Time
+  , RealtimeClock (..)
   -- * Common Operations
   , GregorianTime (..)
   , LocalOffset (..)
@@ -21,3 +23,4 @@ import Data.Tempus.UnixTime
 import Data.Tempus.UnixTimestamp
 import Data.Tempus.Rfc3339Time
 import Data.Tempus.Rfc3339
+import Data.Tempus.RealtimeClock
