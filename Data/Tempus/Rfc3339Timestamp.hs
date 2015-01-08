@@ -8,6 +8,7 @@ import Data.Ratio
 import Data.String
 import Data.Maybe
 
+import Data.Tempus.UnixTime
 import Data.Tempus.GregorianTime
 import Data.Tempus.Rfc3339
 import Data.Tempus.Internal
@@ -53,6 +54,23 @@ instance Show Rfc3339Timestamp where
 
 instance IsString Rfc3339Timestamp where
   fromString = fromMaybe undefined . parseRfc3339String
+
+instance UnixTime Rfc3339Timestamp where
+  unixEpoch
+    = Rfc3339Timestamp
+      { gdtYear           = 1970
+      , gdtMonth          = 1
+      , gdtDay            = 1
+      , gdtHour           = 0
+      , gdtMinute         = 0
+      , gdtSecond         = 0
+      , gdtSecondFraction = 0
+      , gdtOffset         = Nothing
+      }
+  toSecondsSinceUnixEpoch t
+    = toSecondsSinceCommonEpoch t + deltaUnixEpochCommonEpoch
+  fromSecondsSinceUnixEpoch s
+    = fromSecondsSinceCommonEpoch (s - deltaUnixEpochCommonEpoch)
 
 instance GregorianTime Rfc3339Timestamp where
   year
