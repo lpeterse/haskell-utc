@@ -116,29 +116,29 @@ instance GregorianTime Rfc3339Timestamp where
       }
 
   toSecondsSinceCommonEpoch t
-    = (days  * 24 * 60 * 60 % 1)
-    + (hour t     * 60 * 60 % 1)
-    + (minute t        * 60 % 1)
-    + (second t             % 1)
+    = (days       * secsPerDay    % 1)
+    + (hour t     * secsPerHour   % 1)
+    + (minute t   * secsPerMinute % 1)
+    + (second t                   % 1)
     + (secondFraction t)
     - (fromMaybe 0 $ localOffset t)
     where
       days = yearMonthDayToDays (year t, month t, day t)
 
   fromSecondsSinceCommonEpoch s
-    = do let (y, m, d) = daysToYearMonthDay (truncate s `div` (24 * 60 * 60))
-         let hh        = truncate s `div` (60 * 60) `mod` 24
-         let mm        = truncate s `div`       60  `mod` 60
-         let ss        = truncate s                 `mod` 60
-         let sf        = s - (truncate s % 1)
-         return commonEpoch 
-           >>= setYear           y
-           >>= setMonth          m
-           >>= setDay            d
-           >>= setHour           hh
-           >>= setMinute         mm
-           >>= setSecond         ss
-           >>= setSecondFraction sf
+    = validate
+    $ Rfc3339Timestamp
+      { gdtYear           = y
+      , gdtMonth          = m
+      , gdtDay            = d
+      , gdtHour           = truncate s `div` secsPerHour   `mod` hoursPerDay
+      , gdtMinute         = truncate s `div` secsPerMinute `mod` minsPerHour
+      , gdtSecond         = truncate s                     `mod` secsPerMinute
+      , gdtSecondFraction = s - (truncate s % 1)
+      , gdtOffset         = Nothing
+      }
+    where
+      (y, m, d) = daysToYearMonthDay (truncate s `div` secsPerDay)
 
 instance LocalOffset Rfc3339Timestamp where
   localOffset
