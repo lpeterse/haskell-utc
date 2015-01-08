@@ -52,10 +52,10 @@ rfc3339Builder t
         , case localOffset t of
             Nothing -> BS.string7 "-00:00"
             Just 0  -> BS.char7 'Z'
-            Just o  -> let oh1 = fromIntegral $ abs (truncate o) `quot` 600          `rem` 10
-                           oh0 = fromIntegral $ abs (truncate o) `quot` 60           `rem` 10
-                           om1 = fromIntegral $ abs (truncate o) `rem`  60 `quot` 10 `rem` 10
-                           om0 = fromIntegral $ abs (truncate o) `rem`  60           `rem` 10
+            Just o  -> let oh1 = fromIntegral $ abs (truncate o `quot` 600          `rem` 10 :: Integer)
+                           oh0 = fromIntegral $ abs (truncate o `quot` 60           `rem` 10 :: Integer)
+                           om1 = fromIntegral $ abs (truncate o `rem`  60 `quot` 10 `rem` 10 :: Integer)
+                           om0 = fromIntegral $ abs (truncate o `rem`  60           `rem` 10 :: Integer)
                        in  mconcat
                              [ if o < 0
                                  then BS.char7 '-'

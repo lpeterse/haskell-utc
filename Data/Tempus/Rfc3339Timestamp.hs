@@ -33,7 +33,18 @@ data Rfc3339Timestamp
      , gdtSecondFraction :: Rational
      , gdtOffset         :: (Maybe Rational)
      }
-   deriving (Eq, Ord)
+
+instance Eq Rfc3339Timestamp where
+  (==) a b
+    = (==)
+       (toSecondsSinceCommonEpoch a)
+       (toSecondsSinceCommonEpoch b)
+
+instance Ord Rfc3339Timestamp where
+  compare a b
+    = compare
+       (toSecondsSinceCommonEpoch a)
+       (toSecondsSinceCommonEpoch b)
 
 instance Show Rfc3339Timestamp where
   -- The assumption is that every Rfc3339Timestamp is valid and renderable as Rfc3339 string

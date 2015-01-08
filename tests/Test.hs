@@ -7,11 +7,8 @@ import Distribution.TestSuite.QuickCheck
 import Test.QuickCheck
 
 import Data.String
-import Data.Maybe
 
 import Data.Tempus
-import Data.Tempus.Rfc3339Timestamp
-import Data.Tempus.UnixTime
 import Data.Tempus.Internal
 
 tests :: IO [Test]

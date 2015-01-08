@@ -3,12 +3,7 @@ module Data.Tempus.UnixTimestamp
    -- * Creation
   ) where
 
-import Control.Monad
-
-import Data.Ratio
-
 import Data.Tempus.GregorianTime
-import Data.Tempus.Rfc3339Timestamp
 import Data.Tempus.Internal
 import Data.Tempus.UnixTime
 
