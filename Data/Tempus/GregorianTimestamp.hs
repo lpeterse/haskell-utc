@@ -14,15 +14,17 @@ import Data.Tempus.Rfc3339
 import Data.Tempus.Internal
 
 -- | A time and date representation based on years, months, days, hours, minutes and seconds.
--- This representation is closest to RFC3339 (a stricter profile of ISO8601) strings. 
+-- This representation is very close to RFC3339 (a stricter profile of ISO8601) strings. 
 --
--- Use it if
---
---   * you are parsing and rendering RFC3339 strings and only use
---     Gregorian operations in between.
---   * you need to be able to represent leap seconds.
---   * you need to be able to represent a local offset (timezone).
---   * you don't care about a value's memory footprint.
+--   * The type uses multiprecision integers internally and is able to represent
+--     any date in the past and in the future.
+--   * The type can represent leap seconds, but they are likely to get lost
+--     when doing more than parsing and rendering.
+--   * 'Prelude.Eq' and 'Prelude.Ord' are operating on the output of
+--     'toSecondsSinceCommonEpoch' and are independant of local offsets.
+--   * The instances for 'Data.String.IsString' and 'Prelude.Show' are only
+--     meant for debugging purposes and default to 'commonEpoch' in case of
+--     failure. Don't rely on their behaviour!
 data GregorianTimestamp
    = GregorianTimestamp
      { gdtYear           :: Integer
