@@ -31,7 +31,7 @@ data Rfc3339Timestamp
      , gdtMinute         :: Integer
      , gdtSecond         :: Integer
      , gdtSecondFraction :: Rational
-     , gdtOffset         :: (Maybe Integer)
+     , gdtOffset         :: (Maybe Rational)
      }
    deriving (Eq, Ord)
 

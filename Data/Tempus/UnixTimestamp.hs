@@ -12,7 +12,7 @@ import Data.Tempus.Rfc3339Timestamp
 import Data.Tempus.Internal
 import Data.Tempus.UnixTime
 
--- | A time representation counting the milliseconds since 1970-01-01T00:00:00Z.
+-- | A time representation counting the seconds since 1970-01-01T00:00:00Z.
 newtype UnixTimestamp
       = UnixTimestamp Rational
       deriving (Eq, Ord, Show)

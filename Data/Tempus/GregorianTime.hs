@@ -39,8 +39,8 @@ class GregorianTime t where
   fromSecondsSinceCommonEpoch :: (MonadPlus m) => Rational -> m t
 
 class LocalOffset a where
-  localOffset        :: a -> Maybe Integer
-  setLocalOffset     :: (MonadPlus m) => Maybe Integer -> a -> m a
+  localOffset        :: a -> Maybe Rational
+  setLocalOffset     :: (MonadPlus m) => Maybe Rational -> a -> m a
 
 validate :: (MonadPlus m, GregorianTime t) => t -> m t
 validate t

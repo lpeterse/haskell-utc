@@ -68,8 +68,7 @@ rfc3339Parser
                _  <- char ':'
                x2 <- decimal2
                return $ Just
-                      $ x1 * 60
-                      + x2
+                      $ (x1 * 3600 + x2 * 60) % 1
           , do _  <- char '-'
                _  <- char '0'
                _  <- char '0'
@@ -83,8 +82,7 @@ rfc3339Parser
                x2 <- decimal2
                return $ Just
                       $ negate
-                      $ x1 * 360000
-                      + x2 * 60000
+                      $ (x1 * 3600 + x2 * 60) % 1
           ]
 
     decimal1

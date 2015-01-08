@@ -20,27 +20,23 @@ tests
 
       (map
        (\(i64,s)->
-        testProperty ("(fromGregorianSeconds " ++ show i64 ++ " :: Maybe Rfc3339Time) == Just " ++ show s)
-        $  (fromGregorianSeconds i64 :: Maybe Rfc3339Timestamp) == Just (fromString s)
+        testProperty ("(fromSecondsSinceCommonEpoch " ++ show i64 ++ " :: Maybe Rfc3339Time) == Just " ++ show s)
+        $  (fromSecondsSinceCommonEpoch i64 :: Maybe Rfc3339Timestamp) == Just (fromString s)
        )
        commonEpochMsRfc3339TimeTuples
       )
       ++
       (map
        (\(i64,s)->
-        testProperty ("gregorianSeconds (" ++ show s ++ " :: Rfc3339Time) == " ++ show i64)
-        $ gregorianSeconds (fromString s :: Rfc3339Timestamp) == i64
+        testProperty ("secondsSinceCommonEpoch (" ++ show s ++ " :: Rfc3339Time) == " ++ show i64)
+        $ toSecondsSinceCommonEpoch (fromString s :: Rfc3339Timestamp) == i64
        )
        commonEpochMsRfc3339TimeTuples
       )
       ++
       [ testProperty ("yearMonthDayToDays (daysToYearMonthDay x) == x")
         $ forAll (choose (0, 3652424)) -- 0000-01-01 to 9999-12-31
-        $ \x-> fromMaybe False
-        $ do ymd <- daysToYearMonthDay x
-             let x' = yearMonthDayToDays ymd
-             -- error (show x')
-             return (x == x')
+        $ \x-> yearMonthDayToDays (daysToYearMonthDay x) == x
       ]
   
 commonEpochMsRfc3339TimeTuples :: [(Rational,String)]
