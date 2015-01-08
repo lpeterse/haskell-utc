@@ -10,58 +10,55 @@ import Data.Ratio
 
 import Data.Tempus.Internal
 
-class GregorianTime a where
-  -- | > fromRfc3339String "0000-00-00T00:00:00Z"  == Just commonEpoch
-  commonEpoch        :: a
-
+class GregorianTime t where
   -- | > getYear        "2014-⁠12-⁠24T18:11:47.042Z" == Just 2014
-  year            :: a -> Integer
+  year            :: t -> Integer
+  year t
+    = let (y,_,_) = daysToYearMonthDay (truncate (toSecondsSinceCommonEpoch t) `div` (24 * 60 * 60))
+      in  y
   -- | > getMonth       "2014-⁠12-⁠24T18:11:47.042Z" == Just   12
-  month           :: a -> Integer
+  month           :: t -> Integer
+  month t
+    = let (_,m,_) = daysToYearMonthDay (truncate (toSecondsSinceCommonEpoch t) `div` (24 * 60 * 60))
+      in  m
   -- | > getDay         "2014-⁠12-⁠24T18:11:47.042Z" == Just   24
-  day             :: a -> Integer
+  day             :: t -> Integer
+  day t
+    = let (_,_,d) = daysToYearMonthDay (truncate (toSecondsSinceCommonEpoch t) `div` (24 * 60 * 60))
+      in  d
   -- | > getHour        "2014-⁠12-⁠24T18:11:47.042Z" == Just   18
-  hour            :: a -> Integer
+  hour            :: t -> Integer
+  hour t
+    = truncate (toSecondsSinceCommonEpoch t) `div` (60 * 60) `mod` 24
   -- | > getMinute      "2014-⁠12-⁠24T18:11:47.042Z" == Just   11
-  minute          :: a -> Integer
+  minute          :: t -> Integer
+  minute t
+    = truncate (toSecondsSinceCommonEpoch t) `div`       60  `mod` 60
   -- | > getSecond      "2014-⁠12-⁠24T18:11:47.042Z" == Just   47
-  second          :: a -> Integer
+  second          :: t -> Integer
+  second t
+    = truncate (toSecondsSinceCommonEpoch t)                 `mod` 60
   -- | > getMilliSecond "2014-⁠12-⁠24T18:11:47.042Z" == Just   42
-  secondFraction  :: a -> Rational
+  secondFraction  :: t -> Rational
+  secondFraction t
+    = let s = toSecondsSinceCommonEpoch t
+      in  s - (truncate s % 1)
 
-  setYear               :: (MonadPlus m) => Integer  -> a -> m a
-  setMonth              :: (MonadPlus m) => Integer  -> a -> m a
-  setDay                :: (MonadPlus m) => Integer  -> a -> m a
-  setHour               :: (MonadPlus m) => Integer  -> a -> m a
-  setMinute             :: (MonadPlus m) => Integer  -> a -> m a
-  setSecond             :: (MonadPlus m) => Integer  -> a -> m a
-  setSecondFraction     :: (MonadPlus m) => Rational -> a -> m a
+  setYear               :: (MonadPlus m) => Integer  -> t -> m t
+  setMonth              :: (MonadPlus m) => Integer  -> t -> m t
+  setDay                :: (MonadPlus m) => Integer  -> t -> m t
+  setHour               :: (MonadPlus m) => Integer  -> t -> m t
+  setMinute             :: (MonadPlus m) => Integer  -> t -> m t
+  setSecond             :: (MonadPlus m) => Integer  -> t -> m t
+  setSecondFraction     :: (MonadPlus m) => Rational -> t -> m t
 
-  gregorianSeconds :: a -> Rational
-  gregorianSeconds t
-    = (days  * 24 * 60 * 60 % 1)
-    + (hour t     * 60 * 60 % 1)
-    + (minute t        * 60 % 1)
-    + (second t             % 1)
-    + (secondFraction t)
-    where
-      days = yearMonthDayToDays (year t, month t, day t)
+  -- | > fromRfc3339String "0000-00-00T00:00:00Z"  == Just commonEpoch
+  getCommonEpoch              :: (MonadPlus m) => m t
+  getCommonEpoch
+    = fromSecondsSinceCommonEpoch 0
 
-  fromGregorianSeconds :: (MonadPlus m) => Rational -> m a
-  fromGregorianSeconds s
-    = do (year, month, day) <- daysToYearMonthDay (truncate s `div` (24 * 60 * 60))
-         let hour            = truncate s `div` (60 * 60) `mod` 24
-         let minute          = truncate s `div`       60  `mod` 60
-         let second          = truncate s                 `mod` 60
-         let secfrac         = s - (truncate s % 1)
-         return commonEpoch 
-           >>= setYear           year
-           >>= setMonth          month
-           >>= setDay            day
-           >>= setHour           hour
-           >>= setMinute         minute
-           >>= setSecond         second
-           >>= setSecondFraction secfrac
+  toSecondsSinceCommonEpoch   :: t -> Rational
+  fromSecondsSinceCommonEpoch :: (MonadPlus m) => Rational -> m t
 
 class LocalOffset a where
   localOffset        :: a -> Maybe Integer

@@ -4,8 +4,6 @@ module Data.Tempus.Internal
   , deltaUnixEpochCommonEpoch
   ) where
 
-import Control.Monad
-
 deltaUnixEpochCommonEpoch :: Rational
 deltaUnixEpochCommonEpoch
   = 62167219200
@@ -45,26 +43,24 @@ yearMonthDayToDays (year,month,day)
 
 -- | Influenced by an ingenious solution from @caf found here:
 --   https://stackoverflow.com/questions/1274964/how-to-decompose-unix-time-in-c
-daysToYearMonthDay :: MonadPlus m => Integer -> m (Integer, Integer, Integer)
+daysToYearMonthDay :: Integer -> (Integer, Integer, Integer)
 daysToYearMonthDay d
-  | d < 0       = mzero -- 0000-01-01
-  | d > 3652424 = mzero -- 9999-12-31
-  | otherwise   =  do let days                      = d + 146068 -- 400 years and 2 months
-                      yearMarFeb                   <- shrinkYearMarFeb days 399 10400
-                      let remainingDays             = days - (yearToDays yearMarFeb)
-                      let monthMarFeb               = selectMonthMarFeb remainingDays
-                      let (yearJanDec, monthJanDec) = if monthMarFeb > 10
-                                                        then (yearMarFeb + 1, monthMarFeb - 10)
-                                                        else (yearMarFeb,     monthMarFeb + 2)
-                      return (yearJanDec - 400, monthJanDec, remainingDays - (367 * monthMarFeb `div` 12))
+  = let days                      = d + 146068 -- 400 years and 2 months
+        yearMarFeb                = shrinkYearMarFeb days 399 10400
+        remainingDays             = days - (yearToDays yearMarFeb)
+        monthMarFeb               = selectMonthMarFeb remainingDays
+        (yearJanDec, monthJanDec) = if monthMarFeb > 10
+                                       then (yearMarFeb + 1, monthMarFeb - 10)
+                                       else (yearMarFeb,     monthMarFeb + 2)
+    in  (yearJanDec - 400, monthJanDec, remainingDays - (367 * monthMarFeb `div` 12))
   where
 
-    shrinkYearMarFeb :: MonadPlus m => Integer -> Integer -> Integer -> m Integer
+    shrinkYearMarFeb :: Integer -> Integer -> Integer -> Integer
     shrinkYearMarFeb days lower upper
       -- we found the year satifying the condition
-      | lower == upper                      = return lower
+      | lower == upper                      = lower
       -- just a fail-safe recursion breaker
-      | lower > upper                       = mzero
+      | lower > upper                       = 0
       -- the tested year has more or equally many days than what we are looking for
       -- induction guarantee: unless 'lower == upper' (catched above) it always holds 'mid < upper'
       | days <= yearToDays (mid   + 1) + 30 = shrinkYearMarFeb days lower mid
@@ -72,7 +68,7 @@ daysToYearMonthDay d
       -- induction guarantee: it always holds 'mid + 1 > lower'
       | days >  yearToDays (mid   + 1) + 30 = shrinkYearMarFeb days (mid + 1) upper
       -- should not happen
-      | otherwise                           = mzero
+      | otherwise                           = 0
       where
         mid = (lower + upper) `div` 2
 

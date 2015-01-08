@@ -26,7 +26,8 @@ rfc3339Parser
        second  <- timeSecond
        secfrac <- option 0 timeSecfrac
        offset  <- timeOffset
-       return $ setYear                year commonEpoch
+       return $ getCommonEpoch
+            >>= setYear                year
             >>= setMonth               month
             >>= setDay                 day
             >>= setHour                hour

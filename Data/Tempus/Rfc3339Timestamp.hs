@@ -6,11 +6,13 @@ module Data.Tempus.Rfc3339Timestamp
 
 import Control.Monad
 
+import Data.Ratio
 import Data.String
 import Data.Maybe
 
 import Data.Tempus.GregorianTime
 import Data.Tempus.Rfc3339
+import Data.Tempus.Internal
 
 -- | A time and date representation based on years, months, days, hours, minutes and seconds.
 -- This representation is closest to RFC3339 (a stricter profile of ISO8601) strings. 
@@ -38,23 +40,12 @@ data Rfc3339Timestamp
 instance Show Rfc3339Timestamp where
   -- The assumption is that every Rfc3339Timestamp is valid and renderable as Rfc3339 string
   -- and rendering failure is impossible.
-  show = fromMaybe "0000-00-00T00:00:00Z" . renderRfc3339String
+  show = fromMaybe undefined . renderRfc3339String
 
 instance IsString Rfc3339Timestamp where
-  fromString = fromMaybe commonEpoch . parseRfc3339String
+  fromString = fromMaybe undefined . parseRfc3339String
 
 instance GregorianTime Rfc3339Timestamp where
-  commonEpoch
-    = Rfc3339Timestamp
-      { gdtYear           = 0
-      , gdtMonth          = 1
-      , gdtDay            = 1
-      , gdtHour           = 0
-      , gdtMinute         = 0
-      , gdtSecond         = 0
-      , gdtSecondFraction = 0
-      , gdtOffset       = Just 0
-      }
   year
     = gdtYear
   month
@@ -84,6 +75,43 @@ instance GregorianTime Rfc3339Timestamp where
     = validate $ gt { gdtSecond         = x }
   setSecondFraction x gt
     = validate $ gt { gdtSecondFraction = x }
+
+  getCommonEpoch
+    = return $ Rfc3339Timestamp
+      { gdtYear           = 0
+      , gdtMonth          = 1
+      , gdtDay            = 1
+      , gdtHour           = 0
+      , gdtMinute         = 0
+      , gdtSecond         = 0
+      , gdtSecondFraction = 0
+      , gdtOffset       = Just 0
+      }
+
+  toSecondsSinceCommonEpoch t
+    = (days  * 24 * 60 * 60 % 1)
+    + (hour t     * 60 * 60 % 1)
+    + (minute t        * 60 % 1)
+    + (second t             % 1)
+    + (secondFraction t)
+    where
+      days = yearMonthDayToDays (year t, month t, day t)
+
+  fromSecondsSinceCommonEpoch s
+    = do let (year, month, day) =  daysToYearMonthDay (truncate s `div` (24 * 60 * 60))
+         let hour               = truncate s `div` (60 * 60) `mod` 24
+         let minute             = truncate s `div`       60  `mod` 60
+         let second             = truncate s                 `mod` 60
+         let secfrac            = s - (truncate s % 1)
+         getCommonEpoch 
+           >>= setYear           year
+           >>= setMonth          month
+           >>= setDay            day
+           >>= setHour           hour
+           >>= setMinute         minute
+           >>= setSecond         second
+           >>= setSecondFraction secfrac
+
 
 instance LocalOffset Rfc3339Timestamp where
   localOffset
