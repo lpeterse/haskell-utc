@@ -12,29 +12,33 @@ import Data.Tempus
 import Data.Tempus.Internal
 
 tests :: IO [Test]
-tests 
-  = return $
+tests
+  = return $ testUnixTimeInstance "UnixTimestamp"      (undefined :: UnixTimestamp)
+          ++ testUnixTimeInstance "GregorianTimestamp" (undefined :: GregorianTimestamp)
+          ++
+            [ testProperty ("yearMonthDayToDays (daysToYearMonthDay x) == x")
+              $ forAll (choose (0, 3652424)) -- 0000-01-01 to 9999-12-31
+              $ \x-> yearMonthDayToDays (daysToYearMonthDay x) == x
+            ]
 
-      (map
+testUnixTimeInstance :: (UnixTime t, IsString t,Eq t) => String -> t -> [Test]
+testUnixTimeInstance tn t
+  = (map
        (\(i64,s)->
-        testProperty ("(fromSecondsSinceUnixEpoch " ++ show i64 ++ " :: Maybe Rfc3339Time) == Just " ++ show s)
-        $  (fromSecondsSinceUnixEpoch i64 :: Maybe GregorianTimestamp) == Just (fromString s)
+        testProperty ("(" ++ tn ++ ".fromSecondsSinceUnixEpoch " ++ show i64 ++ ") == Just " ++ show s)
+        $  (fromSecondsSinceUnixEpoch i64) == Just (fromString s `asTypeOf` t)
        )
        unixEpochMsRfc3339TimeTuples
       )
       ++
       (map
        (\(i64,s)->
-        testProperty ("secondsSinceUnixEpoch (" ++ show s ++ " :: Rfc3339Time) == " ++ show i64)
-        $ toSecondsSinceUnixEpoch (fromString s :: GregorianTimestamp) == i64
+        testProperty ("(" ++ tn ++ ".secondsSinceUnixEpoch (" ++ show s ++ ") == " ++ show i64)
+        $ toSecondsSinceUnixEpoch (fromString s `asTypeOf` t) == i64
        )
        unixEpochMsRfc3339TimeTuples
       )
-      ++
-      [ testProperty ("yearMonthDayToDays (daysToYearMonthDay x) == x")
-        $ forAll (choose (0, 3652424)) -- 0000-01-01 to 9999-12-31
-        $ \x-> yearMonthDayToDays (daysToYearMonthDay x) == x
-      ]
+
   
 unixEpochMsRfc3339TimeTuples :: [(Rational,String)]
 unixEpochMsRfc3339TimeTuples
