@@ -3,6 +3,8 @@ module Data.Tempus.UnixTimestamp
    -- * Creation
   ) where
 
+import Control.Monad
+
 import Data.Ratio
 import Data.String
 import Data.Maybe
@@ -93,16 +95,16 @@ instance GregorianTime UnixTimestamp where
                          + (h * secsPerHour % 1)
 
   setMinute m t
-    | h < 0     = mzero
-    | h > 59    = mzero
+    | m < 0     = mzero
+    | m > 59    = mzero
     | otherwise = return $ UnixTimestamp
                          $ (toUnixSeconds t)
                          - (minute t  * secsPerMinute % 1)
                          + (m * secsPerMinute % 1)
 
   setSecond s t
-    | h < 0     = mzero
-    | h > 59    = mzero
+    | s < 0     = mzero
+    | s > 59    = mzero
     | otherwise = return $ UnixTimestamp
                          $ (toUnixSeconds t)
                          - (second t % 1)
