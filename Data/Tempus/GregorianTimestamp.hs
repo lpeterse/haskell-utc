@@ -4,6 +4,8 @@ module Data.Tempus.GregorianTimestamp
   -- * Creation
   ) where
 
+import Control.Monad
+
 import Data.Ratio
 import Data.String
 import Data.Maybe
@@ -118,13 +120,21 @@ instance GregorianTime GregorianTimestamp where
   setDay x gt
     = validate $ gt { gdtDay            = x }
   setHour x gt
-    = validate $ gt { gdtHour           = x }
+    | x < 0     = mzero
+    | x > 23    = mzero
+    | otherwise = validate $ gt { gdtHour           = x }
   setMinute x gt
-    = validate $ gt { gdtMinute         = x }
+    | x < 0     = mzero
+    | x > 59    = mzero
+    | otherwise = validate $ gt { gdtMinute         = x }
   setSecond x gt
-    = validate $ gt { gdtSecond         = x }
+    | x < 0     = mzero
+    | x > 59    = mzero
+    | otherwise = validate $ gt { gdtSecond         = x }
   setSecondFraction x gt
-    = validate $ gt { gdtSecondFraction = x }
+    | x <  0.0  = mzero
+    | x >= 1.0  = mzero
+    | otherwise = validate $ gt { gdtSecondFraction = x }
 
   commonEpoch
     = GregorianTimestamp

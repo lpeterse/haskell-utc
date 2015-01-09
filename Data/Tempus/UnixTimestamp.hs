@@ -111,6 +111,7 @@ instance GregorianTime UnixTimestamp where
                          + (s  % 1)
 
   setSecondFraction s (UnixTimestamp t)
+    | s <  0.0  = mzero
     | s >= 1.0  = mzero
     | otherwise = return $ UnixTimestamp
                          $ (truncate t % 1)
