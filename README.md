@@ -24,3 +24,12 @@ Run the default test suite:
 ```bash
 cabal test
 ```
+
+[badge-travis]: https://travis-ci.org/lpeterse/tempus.svg?branch=master
+[travis]: https://travis-ci.org/lpeterse/tempus
+[badge-hackage]: https://img.shields.io/hackage/v/tempus.svg?dummy
+[hackage]: https://hackage.haskell.org/package/tempus
+[badge-license]: https://img.shields.io/badge/license-MIT-green.svg?dummy
+[license]: https://github.com/lpeterse/tempus/blob/master/LICENSE
+[issues]: https://github.com/lunaryorn/lpeterse/tempus/issues
+[Github]: https://github.com/lunaryorn/lpeterse/tempus
