@@ -13,13 +13,13 @@ import Data.Tempus.GregorianTime
 import Data.Tempus.Rfc3339
 import Data.Tempus.Internal
 
--- | A time and date representation based on years, months, days, hours, minutes and seconds.
--- This representation is very close to RFC3339 (a stricter profile of ISO8601) strings. 
+-- | A time representation based on years, months, days, hours, minutes and seconds with
+--   local offset based on the UTC system. 
+--   This representation is very close to RFC3339 (a stricter profile of ISO8601) strings. 
 --
 --   * The type uses multiprecision integers internally and is able to represent
---     any date in the past and in the future.
---   * The type can represent leap seconds, but they are likely to get lost
---     when doing more than parsing and rendering.
+--     any UTC date in the past and in the future with arbitrary precision
+--     (apart from the time span within a leap second).
 --   * 'Prelude.Eq' and 'Prelude.Ord' are operating on the output of
 --     'toSecondsSinceCommonEpoch' and are independant of local offsets.
 --   * The instances for 'Data.String.IsString' and 'Prelude.Show' are only
@@ -52,10 +52,10 @@ instance Ord GregorianTimestamp where
 instance Show GregorianTimestamp where
   -- The assumption is that every GregorianTimestamp is valid and renderable as Rfc3339 string
   -- and rendering failure is impossible.
-  show = fromMaybe undefined . renderRfc3339String
+  show = fromMaybe "0000-01-01T00:00:00-00:00" . renderRfc3339String
 
 instance IsString GregorianTimestamp where
-  fromString = fromMaybe undefined . parseRfc3339String
+  fromString = fromMaybe commonEpoch . parseRfc3339String
 
 instance UnixTime GregorianTimestamp where
   unixEpoch

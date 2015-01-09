@@ -5,7 +5,7 @@ module Data.Tempus
 
   -- * Representations
   -- ** UnixTimestamp
-    UnixTimestamp
+    UnixTimestamp (..)
   -- ** GregorianTimestamp
   , GregorianTimestamp
   -- * Current Clock Time
