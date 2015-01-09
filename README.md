@@ -33,5 +33,5 @@ cabal test
 [hackage]: https://hackage.haskell.org/package/tempus
 [badge-license]: https://img.shields.io/badge/license-MIT-green.svg?dummy
 [license]: https://github.com/lpeterse/tempus/blob/master/LICENSE
-[issues]: https://github.com/lunaryorn/lpeterse/tempus/issues
-[Github]: https://github.com/lunaryorn/lpeterse/tempus
+[issues]: https://github.com/lpeterse/tempus/issues
+[Github]: https://github.com/lpeterse/tempus
