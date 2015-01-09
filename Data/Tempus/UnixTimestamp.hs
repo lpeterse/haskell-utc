@@ -85,27 +85,34 @@ instance GregorianTime UnixTimestamp where
       days = yearMonthDayToDays (year t, month t, d)
 
   setHour h t
-    = return $ UnixTimestamp
-             $ (toUnixSeconds t)
-             - (hour t  * secsPerHour % 1)
-             + (h * secsPerHour % 1)
+    | h < 0     = mzero
+    | h > 23    = mzero
+    | otherwise = return $ UnixTimestamp
+                         $ (toUnixSeconds t)
+                         - (hour t  * secsPerHour % 1)
+                         + (h * secsPerHour % 1)
 
   setMinute m t
-    = return $ UnixTimestamp
-             $ (toUnixSeconds t)
-             - (minute t  * secsPerMinute % 1)
-             + (m * secsPerMinute % 1)
+    | h < 0     = mzero
+    | h > 59    = mzero
+    | otherwise = return $ UnixTimestamp
+                         $ (toUnixSeconds t)
+                         - (minute t  * secsPerMinute % 1)
+                         + (m * secsPerMinute % 1)
 
   setSecond s t
-    = return $ UnixTimestamp
-             $ (toUnixSeconds t)
-             - (second t % 1)
-             + (s  % 1)
+    | h < 0     = mzero
+    | h > 59    = mzero
+    | otherwise = return $ UnixTimestamp
+                         $ (toUnixSeconds t)
+                         - (second t % 1)
+                         + (s  % 1)
 
   setSecondFraction s (UnixTimestamp t)
-    = return $ UnixTimestamp
-             $ (truncate t % 1)
-             + s
+    | s >= 1.0  = mzero
+    | otherwise = return $ UnixTimestamp
+                         $ (truncate t % 1)
+                         + s
 
 instance LocalOffset UnixTimestamp where
   localOffset _
