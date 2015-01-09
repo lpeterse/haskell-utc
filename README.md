@@ -7,7 +7,6 @@ tempus
 
 ### Features
 
-   - Easy to use API
    - Supports arbitrary precision
    - Serious [RFC 3339](https://tools.ietf.org/html/rfc3339) parsing and rendering capability
 
