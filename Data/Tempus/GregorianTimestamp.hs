@@ -40,14 +40,14 @@ data GregorianTimestamp
 instance Eq GregorianTimestamp where
   (==) a b
     = (==)
-       (toSecondsSinceUnixEpoch a)
-       (toSecondsSinceUnixEpoch b)
+       (toUnixSeconds a)
+       (toUnixSeconds b)
 
 instance Ord GregorianTimestamp where
   compare a b
     = compare
-       (toSecondsSinceUnixEpoch a)
-       (toSecondsSinceUnixEpoch b)
+       (toUnixSeconds a)
+       (toUnixSeconds b)
 
 instance Show GregorianTimestamp where
   -- The assumption is that every GregorianTimestamp is valid and renderable as Rfc3339 string
@@ -69,7 +69,7 @@ instance UnixTime GregorianTimestamp where
       , gdtSecondFraction = 0
       , gdtOffset         = Nothing
       }
-  toSecondsSinceUnixEpoch t
+  toUnixSeconds t
     = (days       * secsPerDay    % 1)
     + (hour t     * secsPerHour   % 1)
     + (minute t   * secsPerMinute % 1)
@@ -79,7 +79,7 @@ instance UnixTime GregorianTimestamp where
     - deltaUnixEpochCommonEpoch
     where
       days = yearMonthDayToDays (year t, month t, day t)
-  fromSecondsSinceUnixEpoch u
+  fromUnixSeconds u
     = validate
     $ GregorianTimestamp
       { gdtYear           = y

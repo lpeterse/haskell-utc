@@ -3,7 +3,7 @@ module Data.Tempus.Internal
   , yearMonthDayToDays
   , deltaUnixEpochCommonEpoch
 
-  , secsPerDay, secsPerHour, secsPerMinute, secsPerMinute, minsPerHour, hoursPerDay
+  , secsPerDay, secsPerHour, secsPerMinute, minsPerHour, hoursPerDay
   ) where
 
 deltaUnixEpochCommonEpoch :: Rational

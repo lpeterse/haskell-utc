@@ -25,16 +25,16 @@ testUnixTimeInstance :: (UnixTime t, IsString t,Eq t) => String -> t -> [Test]
 testUnixTimeInstance tn t
   = (map
        (\(i64,s)->
-        testProperty ("(" ++ tn ++ ".fromSecondsSinceUnixEpoch " ++ show i64 ++ ") == Just " ++ show s)
-        $  (fromSecondsSinceUnixEpoch i64) == Just (fromString s `asTypeOf` t)
+        testProperty ("(" ++ tn ++ ".fromUnixSeconds " ++ show i64 ++ ") == Just " ++ show s)
+        $  (fromUnixSeconds i64) == Just (fromString s `asTypeOf` t)
        )
        unixEpochMsRfc3339TimeTuples
       )
       ++
       (map
        (\(i64,s)->
-        testProperty ("(" ++ tn ++ ".secondsSinceUnixEpoch (" ++ show s ++ ") == " ++ show i64)
-        $ toSecondsSinceUnixEpoch (fromString s `asTypeOf` t) == i64
+        testProperty ("(" ++ tn ++ ".toUnixSeconds (" ++ show s ++ ") == " ++ show i64)
+        $ toUnixSeconds (fromString s `asTypeOf` t) == i64
        )
        unixEpochMsRfc3339TimeTuples
       )

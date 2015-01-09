@@ -36,9 +36,9 @@ instance IsString UnixTimestamp where
 instance UnixTime UnixTimestamp where
   unixEpoch 
     = UnixTimestamp 0
-  toSecondsSinceUnixEpoch (UnixTimestamp i)
+  toUnixSeconds (UnixTimestamp i)
     = i
-  fromSecondsSinceUnixEpoch s
+  fromUnixSeconds s
     = return (UnixTimestamp s)
 
 instance GregorianTime UnixTimestamp where
@@ -63,8 +63,7 @@ instance GregorianTime UnixTimestamp where
   setYear y t
     = return $ UnixTimestamp
              $ (days * secsPerDay % 1)
-             + (truncate (toSecondsSinceUnixEpoch t) `mod` secsPerDay % 1)
-             + (secondFraction t)
+             + (daySecs t)
              - deltaUnixEpochCommonEpoch
     where
       days = yearMonthDayToDays (y, month t, day t)
@@ -72,8 +71,7 @@ instance GregorianTime UnixTimestamp where
   setMonth m t
     = return $ UnixTimestamp
              $ (days * secsPerDay % 1)
-             + (truncate (toSecondsSinceUnixEpoch t) `mod` secsPerDay % 1)
-             + (secondFraction t)
+             + (daySecs t)
              - deltaUnixEpochCommonEpoch
     where
       days = yearMonthDayToDays (year t, m, day t)
@@ -81,27 +79,26 @@ instance GregorianTime UnixTimestamp where
   setDay d t
     = return $ UnixTimestamp
              $ (days * secsPerDay % 1)
-             + (truncate (toSecondsSinceUnixEpoch t) `mod` secsPerDay % 1)
-             + (secondFraction t)
+             + (daySecs t)
              - deltaUnixEpochCommonEpoch
     where
       days = yearMonthDayToDays (year t, month t, d)
 
   setHour h t
     = return $ UnixTimestamp
-             $ (toSecondsSinceUnixEpoch t)
+             $ (toUnixSeconds t)
              - (hour t  * secsPerHour % 1)
              + (h * secsPerHour % 1)
 
   setMinute m t
     = return $ UnixTimestamp
-             $ (toSecondsSinceUnixEpoch t)
+             $ (toUnixSeconds t)
              - (minute t  * secsPerMinute % 1)
              + (m * secsPerMinute % 1)
 
   setSecond s t
     = return $ UnixTimestamp
-             $ (toSecondsSinceUnixEpoch t)
+             $ (toUnixSeconds t)
              - (second t % 1)
              + (s  % 1)
 
@@ -115,3 +112,11 @@ instance LocalOffset UnixTimestamp where
     = Nothing
   setLocalOffset _ x
     = return x
+
+-- helpers
+
+-- | The seconds since midnight.
+daySecs :: UnixTimestamp -> Rational
+daySecs u@(UnixTimestamp t)
+  = (truncate t `mod` secsPerDay % 1)
+  + (secondFraction u)

@@ -37,7 +37,7 @@ class RealtimeClock m where
 instance RealtimeClock IO where
   getTime
     = do TimeSpec s ns <- C.getTime Realtime
-         case fromSecondsSinceUnixEpoch ((fromIntegral s) % 1 + (fromIntegral ns) % 1000000000) of
+         case fromUnixSeconds ((fromIntegral s) % 1 + (fromIntegral ns) % 1000000000) of
            Just t  -> return t
            Nothing -> fail "Data.Tempus.RealtimeClock.getTime: cannot convert to UnixTime"
 
