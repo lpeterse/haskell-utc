@@ -60,11 +60,6 @@ instance GregorianTime UnixTimestamp where
   secondFraction (UnixTimestamp t)
     = t - (truncate t % 1)
 
-  fromSecondsSinceCommonEpoch i
-    = return $ UnixTimestamp (i + deltaUnixEpochCommonEpoch)
-  toSecondsSinceCommonEpoch (UnixTimestamp t)
-    = t - deltaUnixEpochCommonEpoch
-
 instance LocalOffset UnixTimestamp where
   localOffset _
     = Nothing

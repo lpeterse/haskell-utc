@@ -34,10 +34,6 @@ class GregorianTime t where
   setSecond             :: (MonadPlus m) => Integer  -> t -> m t
   setSecondFraction     :: (MonadPlus m) => Rational -> t -> m t
 
-
-  toSecondsSinceCommonEpoch   :: t -> Rational
-  fromSecondsSinceCommonEpoch :: (MonadPlus m) => Rational -> m t
-
 class LocalOffset a where
   localOffset        :: a -> Maybe Rational
   setLocalOffset     :: (MonadPlus m) => Maybe Rational -> a -> m a

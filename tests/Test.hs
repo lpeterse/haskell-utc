@@ -17,18 +17,18 @@ tests
 
       (map
        (\(i64,s)->
-        testProperty ("(fromSecondsSinceCommonEpoch " ++ show i64 ++ " :: Maybe Rfc3339Time) == Just " ++ show s)
-        $  (fromSecondsSinceCommonEpoch i64 :: Maybe GregorianTimestamp) == Just (fromString s)
+        testProperty ("(fromSecondsSinceUnixEpoch " ++ show i64 ++ " :: Maybe Rfc3339Time) == Just " ++ show s)
+        $  (fromSecondsSinceUnixEpoch i64 :: Maybe GregorianTimestamp) == Just (fromString s)
        )
-       commonEpochMsRfc3339TimeTuples
+       unixEpochMsRfc3339TimeTuples
       )
       ++
       (map
        (\(i64,s)->
-        testProperty ("secondsSinceCommonEpoch (" ++ show s ++ " :: Rfc3339Time) == " ++ show i64)
-        $ toSecondsSinceCommonEpoch (fromString s :: GregorianTimestamp) == i64
+        testProperty ("secondsSinceUnixEpoch (" ++ show s ++ " :: Rfc3339Time) == " ++ show i64)
+        $ toSecondsSinceUnixEpoch (fromString s :: GregorianTimestamp) == i64
        )
-       commonEpochMsRfc3339TimeTuples
+       unixEpochMsRfc3339TimeTuples
       )
       ++
       [ testProperty ("yearMonthDayToDays (daysToYearMonthDay x) == x")
@@ -36,12 +36,6 @@ tests
         $ \x-> yearMonthDayToDays (daysToYearMonthDay x) == x
       ]
   
-commonEpochMsRfc3339TimeTuples :: [(Rational,String)]
-commonEpochMsRfc3339TimeTuples
-  = map
-      (\(i,s)-> (i + 62167219200.000, s))
-      unixEpochMsRfc3339TimeTuples
-
 unixEpochMsRfc3339TimeTuples :: [(Rational,String)]
 unixEpochMsRfc3339TimeTuples
   = [ ( -62167219200.000, "0000-01-01T00:00:00Z")     -- verified against moment.js (lowest possible date)

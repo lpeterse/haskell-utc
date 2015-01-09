@@ -40,14 +40,14 @@ data GregorianTimestamp
 instance Eq GregorianTimestamp where
   (==) a b
     = (==)
-       (toSecondsSinceCommonEpoch a)
-       (toSecondsSinceCommonEpoch b)
+       (toSecondsSinceUnixEpoch a)
+       (toSecondsSinceUnixEpoch b)
 
 instance Ord GregorianTimestamp where
   compare a b
     = compare
-       (toSecondsSinceCommonEpoch a)
-       (toSecondsSinceCommonEpoch b)
+       (toSecondsSinceUnixEpoch a)
+       (toSecondsSinceUnixEpoch b)
 
 instance Show GregorianTimestamp where
   -- The assumption is that every GregorianTimestamp is valid and renderable as Rfc3339 string
@@ -70,9 +70,30 @@ instance UnixTime GregorianTimestamp where
       , gdtOffset         = Nothing
       }
   toSecondsSinceUnixEpoch t
-    = toSecondsSinceCommonEpoch t + deltaUnixEpochCommonEpoch
-  fromSecondsSinceUnixEpoch s
-    = fromSecondsSinceCommonEpoch (s - deltaUnixEpochCommonEpoch)
+    = (days       * secsPerDay    % 1)
+    + (hour t     * secsPerHour   % 1)
+    + (minute t   * secsPerMinute % 1)
+    + (second t                   % 1)
+    + (secondFraction t)
+    - (fromMaybe 0 $ localOffset t)
+    - deltaUnixEpochCommonEpoch
+    where
+      days = yearMonthDayToDays (year t, month t, day t)
+  fromSecondsSinceUnixEpoch u
+    = validate
+    $ GregorianTimestamp
+      { gdtYear           = y
+      , gdtMonth          = m
+      , gdtDay            = d
+      , gdtHour           = truncate s `div` secsPerHour   `mod` hoursPerDay
+      , gdtMinute         = truncate s `div` secsPerMinute `mod` minsPerHour
+      , gdtSecond         = truncate s                     `mod` secsPerMinute
+      , gdtSecondFraction = s - (truncate s % 1)
+      , gdtOffset         = Nothing
+      }
+    where
+      s         = u + deltaUnixEpochCommonEpoch
+      (y, m, d) = daysToYearMonthDay (truncate s `div` secsPerDay)
 
 instance GregorianTime GregorianTimestamp where
   year
@@ -116,31 +137,6 @@ instance GregorianTime GregorianTimestamp where
       , gdtSecondFraction = 0
       , gdtOffset         = Nothing
       }
-
-  toSecondsSinceCommonEpoch t
-    = (days       * secsPerDay    % 1)
-    + (hour t     * secsPerHour   % 1)
-    + (minute t   * secsPerMinute % 1)
-    + (second t                   % 1)
-    + (secondFraction t)
-    - (fromMaybe 0 $ localOffset t)
-    where
-      days = yearMonthDayToDays (year t, month t, day t)
-
-  fromSecondsSinceCommonEpoch s
-    = validate
-    $ GregorianTimestamp
-      { gdtYear           = y
-      , gdtMonth          = m
-      , gdtDay            = d
-      , gdtHour           = truncate s `div` secsPerHour   `mod` hoursPerDay
-      , gdtMinute         = truncate s `div` secsPerMinute `mod` minsPerHour
-      , gdtSecond         = truncate s                     `mod` secsPerMinute
-      , gdtSecondFraction = s - (truncate s % 1)
-      , gdtOffset         = Nothing
-      }
-    where
-      (y, m, d) = daysToYearMonthDay (truncate s `div` secsPerDay)
 
 instance LocalOffset GregorianTimestamp where
   localOffset
