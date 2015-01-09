@@ -46,11 +46,11 @@ instance GregorianTime UnixTimestamp where
     = UnixTimestamp (negate deltaUnixEpochCommonEpoch)
 
   year (UnixTimestamp t)
-    = let (y,_,_) = daysToYearMonthDay (truncate t `div` secsPerDay) in y
+    = let (y,_,_) = daysToYearMonthDay (truncate (t + deltaUnixEpochCommonEpoch) `div` secsPerDay) in y
   month (UnixTimestamp t)
-    = let (_,m,_) = daysToYearMonthDay (truncate t `div` secsPerDay) in m
+    = let (_,m,_) = daysToYearMonthDay (truncate (t + deltaUnixEpochCommonEpoch) `div` secsPerDay) in m
   day (UnixTimestamp t)
-    = let (_,_,d) = daysToYearMonthDay (truncate t `div` secsPerDay) in d
+    = let (_,_,d) = daysToYearMonthDay (truncate (t + deltaUnixEpochCommonEpoch) `div` secsPerDay) in d
   hour (UnixTimestamp t)
     = truncate t `div` secsPerHour   `mod` hoursPerDay
   minute (UnixTimestamp t)
@@ -59,6 +59,56 @@ instance GregorianTime UnixTimestamp where
     = truncate t                     `mod` secsPerMinute
   secondFraction (UnixTimestamp t)
     = t - (truncate t % 1)
+
+  setYear y t
+    = return $ UnixTimestamp
+             $ (days * secsPerDay % 1)
+             + (truncate (toSecondsSinceUnixEpoch t) `mod` secsPerDay % 1)
+             + (secondFraction t)
+             - deltaUnixEpochCommonEpoch
+    where
+      days = yearMonthDayToDays (y, month t, day t)
+
+  setMonth m t
+    = return $ UnixTimestamp
+             $ (days * secsPerDay % 1)
+             + (truncate (toSecondsSinceUnixEpoch t) `mod` secsPerDay % 1)
+             + (secondFraction t)
+             - deltaUnixEpochCommonEpoch
+    where
+      days = yearMonthDayToDays (year t, m, day t)
+
+  setDay d t
+    = return $ UnixTimestamp
+             $ (days * secsPerDay % 1)
+             + (truncate (toSecondsSinceUnixEpoch t) `mod` secsPerDay % 1)
+             + (secondFraction t)
+             - deltaUnixEpochCommonEpoch
+    where
+      days = yearMonthDayToDays (year t, month t, d)
+
+  setHour h t
+    = return $ UnixTimestamp
+             $ (toSecondsSinceUnixEpoch t)
+             - (hour t  * secsPerHour % 1)
+             + (h * secsPerHour % 1)
+
+  setMinute m t
+    = return $ UnixTimestamp
+             $ (toSecondsSinceUnixEpoch t)
+             - (minute t  * secsPerMinute % 1)
+             + (m * secsPerMinute % 1)
+
+  setSecond s t
+    = return $ UnixTimestamp
+             $ (toSecondsSinceUnixEpoch t)
+             - (second t % 1)
+             + (s  % 1)
+
+  setSecondFraction s (UnixTimestamp t)
+    = return $ UnixTimestamp
+             $ (truncate t % 1)
+             + s
 
 instance LocalOffset UnixTimestamp where
   localOffset _
