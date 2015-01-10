@@ -9,6 +9,7 @@ import Data.Ratio
 import Data.String
 import Data.Maybe
 
+import Data.Tempus.Epoch
 import Data.Tempus.Internal
 import Data.Tempus.UnixTime
 import Data.Tempus.GregorianTime
@@ -21,47 +22,34 @@ import Data.Tempus.Rfc3339
 --     any UTC date in the past and in the future with arbitrary precision
 --     (apart from the time span within a leap second).
 --   * The instances for 'Data.String.IsString' and 'Prelude.Show' are only
---     meant for debugging purposes and default to 'unixEpoch' in case of
+--     meant for debugging purposes and default to 'epoch' in case of
 --     failure. Don't rely on their behaviour!
 newtype UnixTimestamp
       = UnixTimestamp Rational
       deriving (Eq, Ord)
 
+instance Epoch UnixTimestamp where
+  epoch = UnixTimestamp 0
+
 instance Show UnixTimestamp where
-  -- The assumption is that every GregorianTimestamp is valid and renderable as Rfc3339 string
-  -- and rendering failure is impossible.
   show = fromMaybe "1970-01-01T00:00:00-00:00" . renderRfc3339String
 
 instance IsString UnixTimestamp where
-  fromString = fromMaybe unixEpoch . parseRfc3339String
+  fromString = fromMaybe epoch . parseRfc3339String
 
 instance UnixTime UnixTimestamp where
-  unixEpoch 
-    = UnixTimestamp 0
   toUnixSeconds (UnixTimestamp i)
     = i
   fromUnixSeconds s
     = return (UnixTimestamp s)
 
-instance GregorianTime UnixTimestamp where
-  commonEpoch
-    = UnixTimestamp (negate deltaUnixEpochCommonEpoch)
-
+instance Date UnixTimestamp where
   year (UnixTimestamp t)
     = let (y,_,_) = daysToYearMonthDay (truncate (t + deltaUnixEpochCommonEpoch) `div` secsPerDay) in y
   month (UnixTimestamp t)
     = let (_,m,_) = daysToYearMonthDay (truncate (t + deltaUnixEpochCommonEpoch) `div` secsPerDay) in m
   day (UnixTimestamp t)
     = let (_,_,d) = daysToYearMonthDay (truncate (t + deltaUnixEpochCommonEpoch) `div` secsPerDay) in d
-  hour (UnixTimestamp t)
-    = truncate t `div` secsPerHour   `mod` hoursPerDay
-  minute (UnixTimestamp t)
-    = truncate t `div` secsPerMinute `mod` minsPerHour
-  second (UnixTimestamp t)
-    = truncate t                     `mod` secsPerMinute
-  secondFraction (UnixTimestamp t)
-    = t - (truncate t % 1)
-
   setYear y t
     = return $ UnixTimestamp
              $ (days * secsPerDay % 1)
@@ -69,7 +57,6 @@ instance GregorianTime UnixTimestamp where
              - deltaUnixEpochCommonEpoch
     where
       days = yearMonthDayToDays (y, month t, day t)
-
   setMonth m t
     = return $ UnixTimestamp
              $ (days * secsPerDay % 1)
@@ -77,7 +64,6 @@ instance GregorianTime UnixTimestamp where
              - deltaUnixEpochCommonEpoch
     where
       days = yearMonthDayToDays (year t, m, day t)
-
   setDay d t
     = return $ UnixTimestamp
              $ (days * secsPerDay % 1)
@@ -86,6 +72,15 @@ instance GregorianTime UnixTimestamp where
     where
       days = yearMonthDayToDays (year t, month t, d)
 
+instance Time UnixTimestamp where
+  hour (UnixTimestamp t)
+    = truncate t `div` secsPerHour   `mod` hoursPerDay
+  minute (UnixTimestamp t)
+    = truncate t `div` secsPerMinute `mod` minsPerHour
+  second (UnixTimestamp t)
+    = truncate t                     `mod` secsPerMinute
+  secondFraction (UnixTimestamp t)
+    = t - (truncate t % 1)
   setHour h t
     | h < 0     = mzero
     | h > 23    = mzero
@@ -93,7 +88,6 @@ instance GregorianTime UnixTimestamp where
                          $ (toUnixSeconds t)
                          - (hour t  * secsPerHour % 1)
                          + (h * secsPerHour % 1)
-
   setMinute m t
     | m < 0     = mzero
     | m > 59    = mzero
@@ -101,7 +95,6 @@ instance GregorianTime UnixTimestamp where
                          $ (toUnixSeconds t)
                          - (minute t  * secsPerMinute % 1)
                          + (m * secsPerMinute % 1)
-
   setSecond s t
     | s < 0     = mzero
     | s > 59    = mzero
@@ -109,7 +102,6 @@ instance GregorianTime UnixTimestamp where
                          $ (toUnixSeconds t)
                          - (second t % 1)
                          + (s  % 1)
-
   setSecondFraction s (UnixTimestamp t)
     | s <  0.0  = mzero
     | s >= 1.0  = mzero

@@ -10,8 +10,9 @@ import Data.Attoparsec.ByteString ( Parser, skipWhile, choice, option, satisfy )
 import Data.Attoparsec.ByteString.Char8 ( char, isDigit_w8 )
 
 import Data.Tempus.GregorianTime
+import Data.Tempus.Epoch
 
-rfc3339Parser :: (MonadPlus m, GregorianTime t, LocalOffset t) => Parser (m t)
+rfc3339Parser :: (MonadPlus m, Date t, Time t, LocalOffset t, Epoch t) => Parser (m t)
 rfc3339Parser 
   = do year'    <- dateFullYear
        _        <- char '-'
@@ -26,7 +27,7 @@ rfc3339Parser
        second'  <- timeSecond
        secfrac' <- option 0 timeSecfrac
        offset'  <- timeOffset
-       return $ return commonEpoch
+       return $ return epoch
             >>= setYear                year'
             >>= setMonth               month'
             >>= setDay                 day'

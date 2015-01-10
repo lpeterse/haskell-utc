@@ -10,6 +10,7 @@ import Data.Ratio
 import Data.String
 import Data.Maybe
 
+import Data.Tempus.Epoch
 import Data.Tempus.UnixTime
 import Data.Tempus.GregorianTime
 import Data.Tempus.Rfc3339
@@ -25,7 +26,7 @@ import Data.Tempus.Internal
 --   * 'Prelude.Eq' and 'Prelude.Ord' are operating on the output of
 --     'toSecondsSinceCommonEpoch' and are independant of local offsets.
 --   * The instances for 'Data.String.IsString' and 'Prelude.Show' are only
---     meant for debugging purposes and default to 'commonEpoch' in case of
+--     meant for debugging purposes and default to 'epoch' in case of
 --     failure. Don't rely on their behaviour!
 data GregorianTimestamp
    = GregorianTimestamp
@@ -52,15 +53,13 @@ instance Ord GregorianTimestamp where
        (toUnixSeconds b)
 
 instance Show GregorianTimestamp where
-  -- The assumption is that every GregorianTimestamp is valid and renderable as Rfc3339 string
-  -- and rendering failure is impossible.
-  show = fromMaybe "0000-01-01T00:00:00-00:00" . renderRfc3339String
+  show = fromMaybe "1970-01-01T00:00:00-00:00" . renderRfc3339String
 
 instance IsString GregorianTimestamp where
-  fromString = fromMaybe commonEpoch . parseRfc3339String
+  fromString = fromMaybe epoch . parseRfc3339String
 
-instance UnixTime GregorianTimestamp where
-  unixEpoch
+instance Epoch GregorianTimestamp where
+  epoch
     = GregorianTimestamp
       { gdtYear           = 1970
       , gdtMonth          = 1
@@ -71,6 +70,8 @@ instance UnixTime GregorianTimestamp where
       , gdtSecondFraction = 0
       , gdtOffset         = Nothing
       }
+
+instance UnixTime GregorianTimestamp where
   toUnixSeconds t
     = (days       * secsPerDay    % 1)
     + (hour t     * secsPerHour   % 1)
@@ -97,13 +98,21 @@ instance UnixTime GregorianTimestamp where
       s         = u + deltaUnixEpochCommonEpoch
       (y, m, d) = daysToYearMonthDay (truncate s `div` secsPerDay)
 
-instance GregorianTime GregorianTimestamp where
+instance Date GregorianTimestamp where
   year
     = gdtYear
   month
     = gdtMonth
   day
     = gdtDay
+  setYear x gt
+    = validate $ gt { gdtYear  = x }
+  setMonth x gt
+    = validate $ gt { gdtMonth = x }
+  setDay x gt
+    = validate $ gt { gdtDay   = x }
+
+instance Time GregorianTimestamp where
   hour
     = gdtHour
   minute
@@ -113,12 +122,6 @@ instance GregorianTime GregorianTimestamp where
   secondFraction
     = gdtSecondFraction
 
-  setYear x gt
-    = validate $ gt { gdtYear           = x }
-  setMonth x gt
-    = validate $ gt { gdtMonth          = x }
-  setDay x gt
-    = validate $ gt { gdtDay            = x }
   setHour x gt
     | x < 0     = mzero
     | x > 23    = mzero
@@ -135,18 +138,6 @@ instance GregorianTime GregorianTimestamp where
     | x <  0.0  = mzero
     | x >= 1.0  = mzero
     | otherwise = validate $ gt { gdtSecondFraction = x }
-
-  commonEpoch
-    = GregorianTimestamp
-      { gdtYear           = 0
-      , gdtMonth          = 1
-      , gdtDay            = 1
-      , gdtHour           = 0
-      , gdtMinute         = 0
-      , gdtSecond         = 0
-      , gdtSecondFraction = 0
-      , gdtOffset         = Nothing
-      }
 
 instance LocalOffset GregorianTimestamp where
   localOffset

@@ -1,19 +1,24 @@
 {-# LANGUAGE FlexibleInstances, UndecidableInstances #-}
 module Data.Tempus
-  ( -- * Introduction
-    -- $introduction
-
+  ( 
+  -- * Interfaces
+  -- ** Epoch
+    Epoch(..)
+  -- ** Date
+  , Date(..)
+  -- ** Time
+  , Time (..)
+  -- ** Unix Time
+  , UnixTime(..)
+  -- ** Local Offset
+  , LocalOffset (..)
   -- * Representations
   -- ** UnixTimestamp
-    UnixTimestamp (..)
+  , UnixTimestamp (..)
   -- ** GregorianTimestamp
   , GregorianTimestamp
-  -- * Current Clock Time
+  -- * Realtime Clock
   , RealtimeClock (..)
-  -- * Common Operations
-  , GregorianTime (..)
-  , UnixTime(..)
-  , LocalOffset (..)
   -- * RFC 3339
   -- ** Parsing
   , parseRfc3339String, parseRfc3339Text, parseRfc3339LazyText, parseRfc3339ByteString, parseRfc3339LazyByteString
@@ -21,6 +26,7 @@ module Data.Tempus
   , renderRfc3339String, renderRfc3339Text, renderRfc3339LazyText, renderRfc3339ByteString, renderRfc3339LazyByteString
   ) where
 
+import Data.Tempus.Epoch
 import Data.Tempus.GregorianTime
 import Data.Tempus.GregorianTimestamp
 import Data.Tempus.UnixTime

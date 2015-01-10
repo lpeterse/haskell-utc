@@ -1,44 +1,43 @@
 {-# LANGUAGE Safe #-}
 module Data.Tempus.GregorianTime
-  ( GregorianTime(..)
+  ( Date(..)
+  , Time(..)
   , LocalOffset(..)
   , validate
   ) where
 
 import Control.Monad
 
-class GregorianTime t where
-  -- | >                "0000-00-00T00:00:00Z"     == commonEpoch
-  commonEpoch     :: t
-
-  -- | > year           "2014-⁠12-⁠24T18:11:47.042Z" ==        2014
-  year            :: t -> Integer
-  -- | > month          "2014-⁠12-⁠24T18:11:47.042Z" ==          12
-  month           :: t -> Integer
-  -- | > day            "2014-⁠12-⁠24T18:11:47.042Z" ==          24
-  day             :: t -> Integer
-  -- | > hour           "2014-⁠12-⁠24T18:11:47.042Z" ==          18
-  hour            :: t -> Integer
-  -- | > minute         "2014-⁠12-⁠24T18:11:47.042Z" ==          11
-  minute          :: t -> Integer
-  -- | > second         "2014-⁠12-⁠24T18:11:47.042Z" ==          47
-  second          :: t -> Integer
-  -- | > secondFraction "2014-⁠12-⁠24T18:11:47.042Z" ==          42
-  secondFraction  :: t -> Rational
+class Date t where
+  -- | > year  "2014-⁠12-⁠24" ==  2014
+  year                  :: t -> Integer
+  -- | > month "2014-⁠12-⁠24" ==    12
+  month                 :: t -> Integer
+  -- | > day   "2014-⁠12-⁠24" ==    24
+  day                   :: t -> Integer
   setYear               :: (MonadPlus m) => Integer  -> t -> m t
-
   setMonth              :: (MonadPlus m) => Integer  -> t -> m t
   setDay                :: (MonadPlus m) => Integer  -> t -> m t
+
+class Time t where
+  -- | > hour           "2014-⁠12-⁠24T18:11:47.042Z" ==          18
+  hour                  :: t -> Integer
+  -- | > minute         "2014-⁠12-⁠24T18:11:47.042Z" ==          11
+  minute                :: t -> Integer
+  -- | > second         "2014-⁠12-⁠24T18:11:47.042Z" ==          47
+  second                :: t -> Integer
+  -- | > secondFraction "2014-⁠12-⁠24T18:11:47.042Z" ==          42
+  secondFraction        :: t -> Rational
   setHour               :: (MonadPlus m) => Integer  -> t -> m t
   setMinute             :: (MonadPlus m) => Integer  -> t -> m t
   setSecond             :: (MonadPlus m) => Integer  -> t -> m t
   setSecondFraction     :: (MonadPlus m) => Rational -> t -> m t
 
 class LocalOffset a where
-  localOffset        :: a -> Maybe Rational
-  setLocalOffset     :: (MonadPlus m) => Maybe Rational -> a -> m a
+  localOffset           :: a -> Maybe Rational
+  setLocalOffset        :: (MonadPlus m) => Maybe Rational -> a -> m a
 
-validate :: (MonadPlus m, GregorianTime t) => t -> m t
+validate :: (MonadPlus m, Date t, Time t) => t -> m t
 validate t
   = do validateDate
        validateHour

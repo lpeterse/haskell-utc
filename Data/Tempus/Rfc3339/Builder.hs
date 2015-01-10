@@ -10,7 +10,7 @@ import Data.ByteString.Builder as BS
 
 import Data.Tempus.GregorianTime
 
-rfc3339Builder :: (MonadPlus m, GregorianTime t, LocalOffset t) => t -> m BS.Builder
+rfc3339Builder :: (MonadPlus m, Date t, Time t, LocalOffset t) => t -> m BS.Builder
 rfc3339Builder t
   = do -- calculate the single digits
        let y3 = fromIntegral $ year t   `div` 1000 `mod` 10
