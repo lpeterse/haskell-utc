@@ -82,29 +82,29 @@ instance Time UnixTimestamp where
   secondFraction (UnixTimestamp t)
     = t - (truncate t % 1)
   setHour h t
-    | h < 0     = mzero
-    | h > 23    = mzero
+    | h < 0     = fail ""
+    | h > 23    = fail ""
     | otherwise = return $ UnixTimestamp
                          $ (toUnixSeconds t)
                          - (hour t  * secsPerHour % 1)
                          + (h * secsPerHour % 1)
   setMinute m t
-    | m < 0     = mzero
-    | m > 59    = mzero
+    | m < 0     = fail ""
+    | m > 59    = fail ""
     | otherwise = return $ UnixTimestamp
                          $ (toUnixSeconds t)
                          - (minute t  * secsPerMinute % 1)
                          + (m * secsPerMinute % 1)
   setSecond s t
-    | s < 0     = mzero
-    | s > 59    = mzero
+    | s < 0     = fail ""
+    | s > 59    = fail ""
     | otherwise = return $ UnixTimestamp
                          $ (toUnixSeconds t)
                          - (second t % 1)
                          + (s  % 1)
   setSecondFraction s (UnixTimestamp t)
-    | s <  0.0  = mzero
-    | s >= 1.0  = mzero
+    | s <  0.0  = fail ""
+    | s >= 1.0  = fail ""
     | otherwise = return $ UnixTimestamp
                          $ (truncate t % 1)
                          + s

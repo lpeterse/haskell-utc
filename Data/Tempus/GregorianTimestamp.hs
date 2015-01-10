@@ -123,20 +123,20 @@ instance Time GregorianTimestamp where
     = gdtSecondFraction
 
   setHour x gt
-    | x < 0     = mzero
-    | x > 23    = mzero
+    | x < 0     = fail ""
+    | x > 23    = fail ""
     | otherwise = validate $ gt { gdtHour           = x }
   setMinute x gt
-    | x < 0     = mzero
-    | x > 59    = mzero
+    | x < 0     = fail ""
+    | x > 59    = fail ""
     | otherwise = validate $ gt { gdtMinute         = x }
   setSecond x gt
-    | x < 0     = mzero
-    | x > 59    = mzero
+    | x < 0     = fail ""
+    | x > 59    = fail ""
     | otherwise = validate $ gt { gdtSecond         = x }
   setSecondFraction x gt
-    | x <  0.0  = mzero
-    | x >= 1.0  = mzero
+    | x <  0.0  = fail ""
+    | x >= 1.0  = fail ""
     | otherwise = validate $ gt { gdtSecondFraction = x }
 
 instance LocalOffset GregorianTimestamp where

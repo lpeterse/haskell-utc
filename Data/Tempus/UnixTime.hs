@@ -6,4 +6,4 @@ import Control.Monad
 
 class UnixTime t where
   toUnixSeconds    :: t -> Rational
-  fromUnixSeconds  :: MonadPlus m => Rational -> m t
+  fromUnixSeconds  :: Monad m => Rational -> m t

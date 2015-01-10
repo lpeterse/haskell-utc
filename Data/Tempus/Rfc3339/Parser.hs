@@ -12,7 +12,7 @@ import Data.Attoparsec.ByteString.Char8 ( char, isDigit_w8 )
 import Data.Tempus.GregorianTime
 import Data.Tempus.Epoch
 
-rfc3339Parser :: (MonadPlus m, Date t, Time t, LocalOffset t, Epoch t) => Parser (m t)
+rfc3339Parser :: (Monad m, Date t, Time t, LocalOffset t, Epoch t) => Parser (m t)
 rfc3339Parser 
   = do year'    <- dateFullYear
        _        <- char '-'

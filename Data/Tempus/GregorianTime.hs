@@ -15,9 +15,9 @@ class Date t where
   month                 :: t -> Integer
   -- | > day   "2014-⁠12-⁠24" ==    24
   day                   :: t -> Integer
-  setYear               :: (MonadPlus m) => Integer  -> t -> m t
-  setMonth              :: (MonadPlus m) => Integer  -> t -> m t
-  setDay                :: (MonadPlus m) => Integer  -> t -> m t
+  setYear               :: (Monad m) => Integer  -> t -> m t
+  setMonth              :: (Monad m) => Integer  -> t -> m t
+  setDay                :: (Monad m) => Integer  -> t -> m t
 
 class Time t where
   -- | > hour           "2014-⁠12-⁠24T18:11:47.042Z" ==          18
@@ -28,16 +28,16 @@ class Time t where
   second                :: t -> Integer
   -- | > secondFraction "2014-⁠12-⁠24T18:11:47.042Z" ==          42
   secondFraction        :: t -> Rational
-  setHour               :: (MonadPlus m) => Integer  -> t -> m t
-  setMinute             :: (MonadPlus m) => Integer  -> t -> m t
-  setSecond             :: (MonadPlus m) => Integer  -> t -> m t
-  setSecondFraction     :: (MonadPlus m) => Rational -> t -> m t
+  setHour               :: (Monad m) => Integer  -> t -> m t
+  setMinute             :: (Monad m) => Integer  -> t -> m t
+  setSecond             :: (Monad m) => Integer  -> t -> m t
+  setSecondFraction     :: (Monad m) => Rational -> t -> m t
 
 class LocalOffset a where
   localOffset           :: a -> Maybe Rational
-  setLocalOffset        :: (MonadPlus m) => Maybe Rational -> a -> m a
+  setLocalOffset        :: (Monad m) => Maybe Rational -> a -> m a
 
-validate :: (MonadPlus m, Date t, Time t) => t -> m t
+validate :: (Monad m, Date t, Time t) => t -> m t
 validate t
   = do validateDate
        validateHour
@@ -61,30 +61,30 @@ validate t
                  10 -> validateDays31
                  11 -> validateDays30
                  12 -> validateDays31
-                 _  -> mzero
-          else mzero
+                 _  -> fail ""
+          else fail ""
     validateDays31
       | 1 <= day t && day t <= 31           = return ()
-      | otherwise                           = mzero
+      | otherwise                           = fail ""
     validateDays30
       | 1 <= day t && day t <= 30           = return ()
-      | otherwise                           = mzero
+      | otherwise                           = fail ""
     validateDays28or29
       | 1 <= day t && day t <= 28           = return ()
       | day t == 29 && isLeapYear           = return ()
-      | otherwise                           = mzero
+      | otherwise                           = fail ""
     validateHour
       | 0 <= hour t && hour t < 24          = return ()
-      | otherwise                           = mzero
+      | otherwise                           = fail ""
     validateMinute
       | 0 <= minute t && minute t < 60      = return ()
-      | otherwise                           = mzero
+      | otherwise                           = fail ""
     validateSecond
       | 0 <= second t && second t < 60      = return ()
-      | otherwise                           = mzero
+      | otherwise                           = fail ""
     validateSecondFraction
       | truncate (secondFraction t) == (0 :: Integer) = return ()
-      | otherwise                                     = mzero
+      | otherwise                                     = fail ""
     isLeapYear
       = let y = year t
         in  (y `mod` 4 == 0) && ((y `mod` 400 == 0) || (y `mod` 100 /= 0))
