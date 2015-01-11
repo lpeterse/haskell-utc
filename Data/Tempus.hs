@@ -32,6 +32,7 @@ module Data.Tempus
 
 import Data.Tempus.Epoch
 import Data.Tempus.Date
+import Data.Tempus.Time
 import Data.Tempus.GregorianTime
 import Data.Tempus.GregorianTimestamp
 import Data.Tempus.UnixTime
