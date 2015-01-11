@@ -3,6 +3,8 @@ module Data.Tempus.Internal
   , yearMonthDayToDays
   , deltaUnixEpochCommonEpoch
 
+  , isValidDate
+
   , secsPerDay, secsPerHour, secsPerMinute, minsPerHour, hoursPerDay
   ) where
 
@@ -112,3 +114,35 @@ daysToYearMonthDay d
     yearToDays :: Integer -> Integer
     yearToDays year
       = (year * 365) + (year `div` 4) - (year `div` 100) + (year `div` 400)
+
+isValidDate :: (Integer, Integer, Integer) -> Bool
+isValidDate (y,m,d)
+  | m < 1  = False
+  | m > 12 = False
+  | otherwise = case m of
+                   1  -> validateDays31
+                   2  -> validateDays28or29
+                   3  -> validateDays31
+                   4  -> validateDays30
+                   5  -> validateDays31
+                   6  -> validateDays30
+                   7  -> validateDays31
+                   8  -> validateDays31
+                   9  -> validateDays30
+                   10 -> validateDays31
+                   11 -> validateDays30
+                   12 -> validateDays31
+                   _  -> False
+  where
+    validateDays31
+      | 1 <= d && d <= 31           = True
+      | otherwise                   = False
+    validateDays30
+      | 1 <= d && d <= 30           = True
+      | otherwise                   = False
+    validateDays28or29
+      | 1 <= d && d <= 28           = True
+      | d == 29 && isLeapYear       = True
+      | otherwise                   = False
+    isLeapYear
+      = (y `mod` 4 == 0) && ((y `mod` 400 == 0) || (y `mod` 100 /= 0))

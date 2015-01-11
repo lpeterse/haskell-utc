@@ -9,6 +9,7 @@ module Data.Tempus.GregorianTime
 import Control.Monad
 
 import Data.Tempus.Epoch
+import Data.Tempus.Internal
 
 class Epoch t => Date t where
   -- | > year  "2014-⁠12-⁠24" ==  2014
@@ -49,32 +50,9 @@ validate t
        return t
   where
     validateDate
-      = if 1 <= month t && month t <= 12
-          then case month t of
-                 1  -> validateDays31
-                 2  -> validateDays28or29
-                 3  -> validateDays31
-                 4  -> validateDays30
-                 5  -> validateDays31
-                 6  -> validateDays30
-                 7  -> validateDays31
-                 8  -> validateDays31
-                 9  -> validateDays30
-                 10 -> validateDays31
-                 11 -> validateDays30
-                 12 -> validateDays31
-                 _  -> fail ""
+      = if isValidDate (year t, month t, day t)
+          then return ()
           else fail ""
-    validateDays31
-      | 1 <= day t && day t <= 31           = return ()
-      | otherwise                           = fail ""
-    validateDays30
-      | 1 <= day t && day t <= 30           = return ()
-      | otherwise                           = fail ""
-    validateDays28or29
-      | 1 <= day t && day t <= 28           = return ()
-      | day t == 29 && isLeapYear           = return ()
-      | otherwise                           = fail ""
     validateHour
       | 0 <= hour t && hour t < 24          = return ()
       | otherwise                           = fail ""
@@ -87,6 +65,3 @@ validate t
     validateSecondFraction
       | truncate (secondFraction t) == (0 :: Integer) = return ()
       | otherwise                                     = fail ""
-    isLeapYear
-      = let y = year t
-        in  (y `mod` 4 == 0) && ((y `mod` 400 == 0) || (y `mod` 100 /= 0))

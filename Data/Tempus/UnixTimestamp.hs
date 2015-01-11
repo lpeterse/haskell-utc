@@ -51,26 +51,32 @@ instance Date UnixTimestamp where
   day (UnixTimestamp t)
     = let (_,_,d) = daysToYearMonthDay (truncate (t + deltaUnixEpochCommonEpoch) `div` secsPerDay) in d
   setYear y t
-    = return $ UnixTimestamp
-             $ (days * secsPerDay % 1)
-             + (daySecs t)
-             - deltaUnixEpochCommonEpoch
+    | not (isValidDate (y,m,d)) = fail   $ "Date.setYear " ++ show y
+    | otherwise                 = return $ UnixTimestamp
+                                         $ (yearMonthDayToDays (y,m,d) * secsPerDay % 1)
+                                         + (daySecs t)
+                                         - deltaUnixEpochCommonEpoch
     where
-      days = yearMonthDayToDays (y, month t, day t)
+      m = month t
+      d = day t
   setMonth m t
-    = return $ UnixTimestamp
-             $ (days * secsPerDay % 1)
-             + (daySecs t)
-             - deltaUnixEpochCommonEpoch
+    | not (isValidDate (y,m,d)) = fail   $ "Date.setMonth " ++ show m
+    | otherwise                 = return $ UnixTimestamp
+                                         $ (yearMonthDayToDays (y,m,d) * secsPerDay % 1)
+                                         + (daySecs t)
+                                         - deltaUnixEpochCommonEpoch
     where
-      days = yearMonthDayToDays (year t, m, day t)
+      y = year t
+      d = day t
   setDay d t
-    = return $ UnixTimestamp
-             $ (days * secsPerDay % 1)
-             + (daySecs t)
-             - deltaUnixEpochCommonEpoch
+    | not (isValidDate (y,m,d)) = fail   $ "Date.setDay " ++ show d
+    | otherwise                 = return $ UnixTimestamp
+                                         $ (yearMonthDayToDays (y,m,d) * secsPerDay % 1)
+                                         + (daySecs t)
+                                         - deltaUnixEpochCommonEpoch
     where
-      days = yearMonthDayToDays (year t, month t, d)
+      y = year t
+      m = month t
 
 instance Time UnixTimestamp where
   hour (UnixTimestamp t)
