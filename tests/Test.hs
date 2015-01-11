@@ -14,11 +14,11 @@ import Data.Tempus.Internal
 tests :: IO [Test]
 tests
   = return $ testUnixTimeInstance "UnixTimestamp"      (undefined :: UnixTimestamp)
-          ++ testUnixTimeInstance "GregorianTimestamp" (undefined :: GregorianTimestamp)
+          ++ testUnixTimeInstance "DateTime" (undefined :: DateTime)
           ++ testDateInstance     "UnixTimestamp"      (undefined :: UnixTimestamp)
-          ++ testDateInstance     "GregorianTimestamp" (undefined :: GregorianTimestamp)
+          ++ testDateInstance     "DateTime" (undefined :: DateTime)
           ++ testTimeInstance     "UnixTimestamp"      (undefined :: UnixTimestamp)
-          ++ testTimeInstance     "GregorianTimestamp" (undefined :: GregorianTimestamp)
+          ++ testTimeInstance     "DateTime" (undefined :: DateTime)
           ++ [ testProperty ("yearMonthDayToDays (daysToYearMonthDay x) == x")
               $ forAll (choose (0, 3652424)) -- 0000-01-01 to 9999-12-31
               $ \x-> yearMonthDayToDays (daysToYearMonthDay x) == x

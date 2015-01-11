@@ -4,21 +4,21 @@ module Data.Tempus
   -- * Classes
   -- ** Date
     Dated(..)
-  , Epoch(..)
   -- ** Time
   , Timed (..)
-  , Midnight (..)
   -- ** Unix Time
   , UnixTime(..)
   -- ** Local Offset
   , LocalOffset (..)
+  -- ** Epoch
+  , Epoch(..)
   -- * Types
   -- ** Date
   , Date
+  -- ** DateTime
+  , DateTime
   -- ** UnixTimestamp
   , UnixTimestamp (..)
-  -- ** GregorianTimestamp
-  , GregorianTimestamp
   -- * Realtime Clock
   , RealtimeClock (..)
   -- * RFC 3339

@@ -29,9 +29,6 @@ newtype UnixTimestamp
 instance Epoch UnixTimestamp where
   epoch = UnixTimestamp 0
 
-instance Midnight UnixTimestamp where
-  midnight = epoch
-
 instance Show UnixTimestamp where
   show = fromMaybe "1970-01-01T00:00:00-00:00" . renderRfc3339String
 
@@ -115,6 +112,7 @@ instance Timed UnixTimestamp where
     | otherwise = return $ UnixTimestamp
                          $ (truncate t % 1)
                          + s
+  midnight = epoch
 
 instance LocalOffset UnixTimestamp where
   localOffset _

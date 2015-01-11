@@ -1,6 +1,6 @@
 module Data.Tempus.GregorianTimestamp
   ( -- * Type
-    GregorianTimestamp()
+    DateTime()
   -- * Creation
   ) where
 
@@ -9,6 +9,7 @@ import Data.String
 import Data.Maybe
 
 import Data.Tempus.Epoch
+import Data.Tempus.Date
 import Data.Tempus.UnixTime
 import Data.Tempus.GregorianTime
 import Data.Tempus.Rfc3339
@@ -26,11 +27,9 @@ import Data.Tempus.Internal
 --   * The instances for 'Data.String.IsString' and 'Prelude.Show' are only
 --     meant for debugging purposes and default to 'epoch' in case of
 --     failure. Don't rely on their behaviour!
-data GregorianTimestamp
-   = GregorianTimestamp
-     { gdtYear           :: Integer
-     , gdtMonth          :: Integer
-     , gdtDay            :: Integer
+data DateTime
+   = DateTime
+     { gdtDate           :: Date
      , gdtHour           :: Integer
      , gdtMinute         :: Integer
      , gdtSecond         :: Integer
@@ -38,30 +37,28 @@ data GregorianTimestamp
      , gdtOffset         :: (Maybe Rational)
      }
 
-instance Eq GregorianTimestamp where
+instance Eq DateTime where
   (==) a b
     = (==)
        (toUnixSeconds a)
        (toUnixSeconds b)
 
-instance Ord GregorianTimestamp where
+instance Ord DateTime where
   compare a b
     = compare
        (toUnixSeconds a)
        (toUnixSeconds b)
 
-instance Show GregorianTimestamp where
+instance Show DateTime where
   show = fromMaybe "1970-01-01T00:00:00-00:00" . renderRfc3339String
 
-instance IsString GregorianTimestamp where
+instance IsString DateTime where
   fromString = fromMaybe epoch . parseRfc3339String
 
-instance Epoch GregorianTimestamp where
+instance Epoch DateTime where
   epoch
-    = GregorianTimestamp
-      { gdtYear           = 1970
-      , gdtMonth          = 1
-      , gdtDay            = 1
+    = DateTime
+      { gdtDate           = epoch
       , gdtHour           = 0
       , gdtMinute         = 0
       , gdtSecond         = 0
@@ -69,11 +66,7 @@ instance Epoch GregorianTimestamp where
       , gdtOffset         = Nothing
       }
 
-instance Midnight GregorianTimestamp where
-  midnight
-    = epoch
-
-instance UnixTime GregorianTimestamp where
+instance UnixTime DateTime where
   toUnixSeconds t
     = (days       * secsPerDay    % 1)
     + (hour t     * secsPerHour   % 1)
@@ -83,44 +76,38 @@ instance UnixTime GregorianTimestamp where
     - (fromMaybe 0 $ localOffset t)
     - deltaUnixEpochCommonEpoch
     where
-      days = yearMonthDayToDays (year t, month t, day t)
+      days = yearMonthDayToDays (year (gdtDate t), month (gdtDate t), day (gdtDate t))
   fromUnixSeconds u
-    = return
-    $ GregorianTimestamp
-      { gdtYear           = y
-      , gdtMonth          = m
-      , gdtDay            = d
-      , gdtHour           = truncate s `div` secsPerHour   `mod` hoursPerDay
-      , gdtMinute         = truncate s `div` secsPerMinute `mod` minsPerHour
-      , gdtSecond         = truncate s                     `mod` secsPerMinute
-      , gdtSecondFraction = s - (truncate s % 1)
-      , gdtOffset         = Nothing
-      }
+    = do dt <- fromUnixSeconds u
+         return $ DateTime
+                  { gdtDate           = dt
+                  , gdtHour           = truncate s `div` secsPerHour   `mod` hoursPerDay
+                  , gdtMinute         = truncate s `div` secsPerMinute `mod` minsPerHour
+                  , gdtSecond         = truncate s                     `mod` secsPerMinute
+                  , gdtSecondFraction = s - (truncate s % 1)
+                  , gdtOffset         = Nothing
+                  }
     where
-      s         = u + deltaUnixEpochCommonEpoch
-      (y, m, d) = daysToYearMonthDay (truncate s `div` secsPerDay)
+      s = u + deltaUnixEpochCommonEpoch
 
-instance Dated GregorianTimestamp where
+instance Dated DateTime where
   year
-    = gdtYear
+    = year . gdtDate
   month
-    = gdtMonth
+    = month . gdtDate
   day
-    = gdtDay
-  setYear x t
-    = if isValidDate (x, month t, day t)
-      then return t { gdtYear  = x }
-      else fail   $ "Date.setYear "  ++ show x
-  setMonth x t
-    = if isValidDate (year t, x, day t)
-      then return t { gdtMonth = x }
-      else fail   $ "Date.setMonth " ++ show x
-  setDay x t
-    = if isValidDate (year t, month t, x)
-      then return $ t { gdtDay   = x }
-      else fail   $ "Date.setDay "   ++ show x
+    = day . gdtDate
+  setYear y t
+    = do dt <- setYear y (gdtDate t)
+         return $ t { gdtDate = dt }
+  setMonth m t
+    = do dt <- setMonth m (gdtDate t)
+         return $ t { gdtDate = dt }
+  setDay d t
+    = do dt <- setDay d (gdtDate t)
+         return $ t { gdtDate = dt }
 
-instance Timed GregorianTimestamp where
+instance Timed DateTime where
   hour
     = gdtHour
   minute
@@ -143,7 +130,10 @@ instance Timed GregorianTimestamp where
     | x < 0 || 1 <= x = fail   $ "Time.setSecondFraction " ++ show x
     | otherwise       = return $ t { gdtSecondFraction = x }
 
-instance LocalOffset GregorianTimestamp where
+  midnight
+    = epoch
+
+instance LocalOffset DateTime where
   localOffset
     = gdtOffset
   setLocalOffset mm gt

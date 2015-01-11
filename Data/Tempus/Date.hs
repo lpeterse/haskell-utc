@@ -4,7 +4,6 @@ module Data.Tempus.Date
 
 import Data.Ratio
 import Data.String
-import Data.Maybe
 
 import Data.Tempus.Epoch
 import Data.Tempus.UnixTime

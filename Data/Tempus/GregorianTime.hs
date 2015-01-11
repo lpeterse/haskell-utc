@@ -18,7 +18,7 @@ class Epoch t => Dated t where
   setMonth              :: (Monad m) => Integer  -> t -> m t
   setDay                :: (Monad m) => Integer  -> t -> m t
 
-class Midnight t => Timed t where
+class Timed t where
   -- | > hour           "2014-⁠12-⁠24T18:11:47.042Z" ==          18
   hour                  :: t -> Integer
   -- | > minute         "2014-⁠12-⁠24T18:11:47.042Z" ==          11
@@ -31,6 +31,9 @@ class Midnight t => Timed t where
   setMinute             :: (Monad m) => Integer  -> t -> m t
   setSecond             :: (Monad m) => Integer  -> t -> m t
   setSecondFraction     :: (Monad m) => Rational -> t -> m t
+  -- | The beginning of a day: 00:00:00
+  midnight :: t
+
 
 class LocalOffset a where
   localOffset           :: a -> Maybe Rational
