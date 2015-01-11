@@ -1,14 +1,13 @@
 {-# LANGUAGE Safe #-}
 module Data.Tempus.GregorianTime
-  ( Date(..)
-  , Time(..)
+  ( Dated(..)
+  , Timed(..)
   , LocalOffset(..)
   ) where
 
 import Data.Tempus.Epoch
-import Data.Tempus.Internal
 
-class Epoch t => Date t where
+class Epoch t => Dated t where
   -- | > year  "2014-⁠12-⁠24" ==  2014
   year                  :: t -> Integer
   -- | > month "2014-⁠12-⁠24" ==    12
@@ -19,7 +18,7 @@ class Epoch t => Date t where
   setMonth              :: (Monad m) => Integer  -> t -> m t
   setDay                :: (Monad m) => Integer  -> t -> m t
 
-class Midnight t => Time t where
+class Midnight t => Timed t where
   -- | > hour           "2014-⁠12-⁠24T18:11:47.042Z" ==          18
   hour                  :: t -> Integer
   -- | > minute         "2014-⁠12-⁠24T18:11:47.042Z" ==          11

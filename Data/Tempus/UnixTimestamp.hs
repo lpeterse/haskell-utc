@@ -3,8 +3,6 @@ module Data.Tempus.UnixTimestamp
    -- * Creation
   ) where
 
-import Control.Monad
-
 import Data.Ratio
 import Data.String
 import Data.Maybe
@@ -46,7 +44,7 @@ instance UnixTime UnixTimestamp where
   fromUnixSeconds s
     = return (UnixTimestamp s)
 
-instance Date UnixTimestamp where
+instance Dated UnixTimestamp where
   year (UnixTimestamp t)
     = let (y,_,_) = daysToYearMonthDay (truncate (t + deltaUnixEpochCommonEpoch) `div` secsPerDay) in y
   month (UnixTimestamp t)
@@ -81,7 +79,7 @@ instance Date UnixTimestamp where
       y = year t
       m = month t
 
-instance Time UnixTimestamp where
+instance Timed UnixTimestamp where
   hour (UnixTimestamp t)
     = truncate t `div` secsPerHour   `mod` hoursPerDay
   minute (UnixTimestamp t)

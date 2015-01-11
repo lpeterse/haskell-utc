@@ -2,8 +2,6 @@ module Data.Tempus.Rfc3339.Parser
   ( rfc3339Parser
   ) where
 
-import Control.Monad
-
 import Data.Ratio
 
 import Data.Attoparsec.ByteString ( Parser, skipWhile, choice, option, satisfy )
@@ -12,7 +10,7 @@ import Data.Attoparsec.ByteString.Char8 ( char, isDigit_w8 )
 import Data.Tempus.GregorianTime
 import Data.Tempus.Epoch
 
-rfc3339Parser :: (Monad m, Date t, Time t, LocalOffset t, Epoch t) => Parser (m t)
+rfc3339Parser :: (Monad m, Dated t, Timed t, LocalOffset t, Epoch t) => Parser (m t)
 rfc3339Parser 
   = do year'    <- dateFullYear
        _        <- char '-'

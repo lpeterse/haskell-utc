@@ -1,18 +1,18 @@
 {-# LANGUAGE FlexibleInstances, UndecidableInstances #-}
 module Data.Tempus
   ( 
-  -- * Interfaces
+  -- * Classes
   -- ** Date
-    Date(..)
+    Dated(..)
   , Epoch(..)
   -- ** Time
-  , Time (..)
+  , Timed (..)
   , Midnight (..)
   -- ** Unix Time
   , UnixTime(..)
   -- ** Local Offset
   , LocalOffset (..)
-  -- * Representations
+  -- * Types
   -- ** UnixTimestamp
   , UnixTimestamp (..)
   -- ** GregorianTimestamp

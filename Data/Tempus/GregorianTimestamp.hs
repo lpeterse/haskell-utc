@@ -4,8 +4,6 @@ module Data.Tempus.GregorianTimestamp
   -- * Creation
   ) where
 
-import Control.Monad
-
 import Data.Ratio
 import Data.String
 import Data.Maybe
@@ -102,7 +100,7 @@ instance UnixTime GregorianTimestamp where
       s         = u + deltaUnixEpochCommonEpoch
       (y, m, d) = daysToYearMonthDay (truncate s `div` secsPerDay)
 
-instance Date GregorianTimestamp where
+instance Dated GregorianTimestamp where
   year
     = gdtYear
   month
@@ -122,7 +120,7 @@ instance Date GregorianTimestamp where
       then return $ t { gdtDay   = x }
       else fail   $ "Date.setDay "   ++ show x
 
-instance Time GregorianTimestamp where
+instance Timed GregorianTimestamp where
   hour
     = gdtHour
   minute
