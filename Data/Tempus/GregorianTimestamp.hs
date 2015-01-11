@@ -1,7 +1,8 @@
 module Data.Tempus.GregorianTimestamp
   ( -- * Type
     DateTime (..)
-  -- * Creation
+  , Local (..)
+  , Offset (..)
   ) where
 
 import Data.Ratio
@@ -34,6 +35,18 @@ data DateTime
      , gdtTime           :: Time
      , gdtOffset         :: (Maybe Rational)
      }
+
+data Local t
+   = Local t Offset
+
+instance Eq t => Eq (Local t) where
+  (==) (Local a _) (Local b _)
+   = a == b
+
+data Offset
+   = OffsetUnknown
+   | OffsetSeconds Rational
+   deriving (Eq, Ord, Show)
 
 instance Eq DateTime where
   (==) a b

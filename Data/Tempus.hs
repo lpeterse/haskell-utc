@@ -18,9 +18,11 @@ module Data.Tempus
   -- ** Time
   , Time
   -- ** DateTime
-  , DateTime
+  , DateTime (..)
   -- ** UnixTimestamp
   , UnixTimestamp (..)
+  -- ** Local
+  , Local (..)
   -- * Realtime Clock
   , RealtimeClock (..)
   -- * RFC 3339
