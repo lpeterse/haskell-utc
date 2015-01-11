@@ -2,12 +2,12 @@
 module Data.Tempus
   ( 
   -- * Interfaces
-  -- ** Epoch
-    Epoch(..)
   -- ** Date
-  , Date(..)
+    Date(..)
+  , Epoch(..)
   -- ** Time
   , Time (..)
+  , Midnight (..)
   -- ** Unix Time
   , UnixTime(..)
   -- ** Local Offset

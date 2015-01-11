@@ -71,6 +71,10 @@ instance Epoch GregorianTimestamp where
       , gdtOffset         = Nothing
       }
 
+instance Midnight GregorianTimestamp where
+  midnight
+    = epoch
+
 instance UnixTime GregorianTimestamp where
   toUnixSeconds t
     = (days       * secsPerDay    % 1)

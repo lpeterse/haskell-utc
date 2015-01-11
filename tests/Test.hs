@@ -17,10 +17,50 @@ tests
           ++ testUnixTimeInstance "GregorianTimestamp" (undefined :: GregorianTimestamp)
           ++ testDateInstance     "UnixTimestamp"      (undefined :: UnixTimestamp)
           ++ testDateInstance     "GregorianTimestamp" (undefined :: GregorianTimestamp)
+          ++ testTimeInstance     "UnixTimestamp"      (undefined :: UnixTimestamp)
+          ++ testTimeInstance     "GregorianTimestamp" (undefined :: GregorianTimestamp)
           ++ [ testProperty ("yearMonthDayToDays (daysToYearMonthDay x) == x")
               $ forAll (choose (0, 3652424)) -- 0000-01-01 to 9999-12-31
               $ \x-> yearMonthDayToDays (daysToYearMonthDay x) == x
             ]
+
+testTimeInstance :: (Time t, IsString t,Eq t) => String -> t -> [Test]
+testTimeInstance tn t
+  = [ testProperty ("instance Time " ++ tn ++ ": test 1.t1")
+    $ (t1 >>= return . hour) == Just 12
+    , testProperty ("instance Time " ++ tn ++ ": test 1.t2")
+    $ (t2 >>= return . hour) == Just 12
+    , testProperty ("instance Time " ++ tn ++ ": test 2.t1")
+    $ (t2 >>= return . minute) == Just 13
+    , testProperty ("instance Time " ++ tn ++ ": test 2.t2")
+    $ (t2 >>= return . minute) == Just 13
+    , testProperty ("instance Time " ++ tn ++ ": test 3.t1")
+    $ (t2 >>= return . second) == Just 14
+    , testProperty ("instance Time " ++ tn ++ ": test 3.t2")
+    $ (t2 >>= return . second) == Just 14
+    , testProperty ("instance Time " ++ tn ++ ": test 4.t1")
+    $ (t2 >>= return . secondFraction) == Just 0.56789
+    , testProperty ("instance Time " ++ tn ++ ": test 4.t2")
+    $ (t2 >>= return . secondFraction) == Just 0.56789
+    ]
+    ++ map (\(n,d)-> testProperty ("instance Time " ++ tn ++ ": test 5." ++ n)
+                   $ d == (Nothing `asTypeOf` Just t)
+           ) invalidTimes
+  where
+    t1 = setHour 12 (midnight `asTypeOf` t) >>= setMinute 13 >>= setSecond 14 >>= setSecondFraction 0.56789
+    t2 = setSecondFraction 0.56789 (midnight `asTypeOf` t) >>= setSecond 14 >>= setMinute 13 >>= setHour 12
+    invalidTimes
+       = [ ("01", setHour (-1) midnight)
+         , ("02", setHour 24 midnight)
+         , ("03", setMinute (-1) midnight)
+         , ("04", setMinute 60 midnight)
+         , ("05", setSecond (-1) midnight)
+         , ("06", setSecond 60 midnight)
+         , ("07", setSecondFraction (-1.0) midnight)
+         , ("08", setSecondFraction (-0.1) midnight)
+         , ("09", setSecondFraction 1.0 midnight)
+         , ("10", setSecondFraction 1.1 midnight)
+         ]
 
 testUnixTimeInstance :: (UnixTime t, IsString t,Eq t) => String -> t -> [Test]
 testUnixTimeInstance tn t

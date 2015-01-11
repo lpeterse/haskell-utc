@@ -5,8 +5,6 @@ module Data.Tempus.GregorianTime
   , LocalOffset(..)
   ) where
 
-import Control.Monad
-
 import Data.Tempus.Epoch
 import Data.Tempus.Internal
 
@@ -21,7 +19,7 @@ class Epoch t => Date t where
   setMonth              :: (Monad m) => Integer  -> t -> m t
   setDay                :: (Monad m) => Integer  -> t -> m t
 
-class Epoch t => Time t where
+class Midnight t => Time t where
   -- | > hour           "2014-⁠12-⁠24T18:11:47.042Z" ==          18
   hour                  :: t -> Integer
   -- | > minute         "2014-⁠12-⁠24T18:11:47.042Z" ==          11
