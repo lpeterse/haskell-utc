@@ -1,6 +1,6 @@
 module Data.Tempus.GregorianTimestamp
   ( -- * Type
-    DateTime()
+    DateTime (..)
   -- * Creation
   ) where
 
@@ -10,6 +10,7 @@ import Data.Maybe
 
 import Data.Tempus.Epoch
 import Data.Tempus.Date
+import Data.Tempus.Time
 import Data.Tempus.UnixTime
 import Data.Tempus.GregorianTime
 import Data.Tempus.Rfc3339
@@ -30,10 +31,7 @@ import Data.Tempus.Internal
 data DateTime
    = DateTime
      { gdtDate           :: Date
-     , gdtHour           :: Integer
-     , gdtMinute         :: Integer
-     , gdtSecond         :: Integer
-     , gdtSecondFraction :: Rational
+     , gdtTime           :: Time
      , gdtOffset         :: (Maybe Rational)
      }
 
@@ -59,10 +57,7 @@ instance Epoch DateTime where
   epoch
     = DateTime
       { gdtDate           = epoch
-      , gdtHour           = 0
-      , gdtMinute         = 0
-      , gdtSecond         = 0
-      , gdtSecondFraction = 0
+      , gdtTime           = midnight
       , gdtOffset         = Nothing
       }
 
@@ -79,16 +74,12 @@ instance UnixTime DateTime where
       days = yearMonthDayToDays (year (gdtDate t), month (gdtDate t), day (gdtDate t))
   fromUnixSeconds u
     = do dt <- fromUnixSeconds u
+         tm <- fromUnixSeconds u
          return $ DateTime
                   { gdtDate           = dt
-                  , gdtHour           = truncate s `div` secsPerHour   `mod` hoursPerDay
-                  , gdtMinute         = truncate s `div` secsPerMinute `mod` minsPerHour
-                  , gdtSecond         = truncate s                     `mod` secsPerMinute
-                  , gdtSecondFraction = s - (truncate s % 1)
+                  , gdtTime           = tm
                   , gdtOffset         = Nothing
                   }
-    where
-      s = u + deltaUnixEpochCommonEpoch
 
 instance Dated DateTime where
   year
@@ -109,26 +100,25 @@ instance Dated DateTime where
 
 instance Timed DateTime where
   hour
-    = gdtHour
+    = hour . gdtTime
   minute
-    = gdtMinute
+    = minute . gdtTime
   second
-    = gdtSecond
+    = second . gdtTime
   secondFraction
-    = gdtSecondFraction
-
-  setHour x t
-    | x < 0 || 23 < x = fail   $ "Time.setHour "           ++ show x
-    | otherwise       = return $ t { gdtHour           = x }
-  setMinute x t
-    | x < 0 || 59 < x = fail   $ "Time.setMinute "         ++ show x
-    | otherwise       = return $ t { gdtMinute         = x }
-  setSecond x t
-    | x < 0 || 59 < x = fail   $ "Time.setSecond "         ++ show x
-    | otherwise       = return $ t { gdtSecond         = x }
-  setSecondFraction x t
-    | x < 0 || 1 <= x = fail   $ "Time.setSecondFraction " ++ show x
-    | otherwise       = return $ t { gdtSecondFraction = x }
+    = secondFraction . gdtTime
+  setHour y t
+    = do tm <- setHour y (gdtTime t)
+         return $ t { gdtTime = tm }
+  setMinute y t
+    = do tm <- setMinute y (gdtTime t)
+         return $ t { gdtTime = tm }
+  setSecond y t
+    = do tm <- setSecond y (gdtTime t)
+         return $ t { gdtTime = tm }
+  setSecondFraction y t
+    = do tm <- setSecondFraction y (gdtTime t)
+         return $ t { gdtTime = tm }
 
   midnight
     = epoch

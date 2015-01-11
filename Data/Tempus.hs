@@ -15,6 +15,8 @@ module Data.Tempus
   -- * Types
   -- ** Date
   , Date
+  -- ** Time
+  , Time
   -- ** DateTime
   , DateTime
   -- ** UnixTimestamp
