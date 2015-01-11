@@ -3,7 +3,6 @@ module Data.Tempus.GregorianTime
   ( Date(..)
   , Time(..)
   , LocalOffset(..)
-  , validate
   ) where
 
 import Control.Monad
@@ -40,28 +39,3 @@ class LocalOffset a where
   localOffset           :: a -> Maybe Rational
   setLocalOffset        :: (Monad m) => Maybe Rational -> a -> m a
 
-validate :: (Monad m, Date t, Time t) => t -> m t
-validate t
-  = do validateDate
-       validateHour
-       validateMinute
-       validateSecond
-       validateSecondFraction
-       return t
-  where
-    validateDate
-      = if isValidDate (year t, month t, day t)
-          then return ()
-          else fail ""
-    validateHour
-      | 0 <= hour t && hour t < 24          = return ()
-      | otherwise                           = fail ""
-    validateMinute
-      | 0 <= minute t && minute t < 60      = return ()
-      | otherwise                           = fail ""
-    validateSecond
-      | 0 <= second t && second t < 60      = return ()
-      | otherwise                           = fail ""
-    validateSecondFraction
-      | truncate (secondFraction t) == (0 :: Integer) = return ()
-      | otherwise                                     = fail ""

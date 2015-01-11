@@ -83,7 +83,7 @@ instance UnixTime GregorianTimestamp where
     where
       days = yearMonthDayToDays (year t, month t, day t)
   fromUnixSeconds u
-    = validate
+    = return
     $ GregorianTimestamp
       { gdtYear           = y
       , gdtMonth          = m
@@ -105,12 +105,18 @@ instance Date GregorianTimestamp where
     = gdtMonth
   day
     = gdtDay
-  setYear x gt
-    = validate $ gt { gdtYear  = x }
-  setMonth x gt
-    = validate $ gt { gdtMonth = x }
-  setDay x gt
-    = validate $ gt { gdtDay   = x }
+  setYear x t
+    = if isValidDate (x, month t, day t)
+      then return t { gdtYear  = x }
+      else fail   $ "Date.setYear "  ++ show x
+  setMonth x t
+    = if isValidDate (year t, x, day t)
+      then return t { gdtMonth = x }
+      else fail   $ "Date.setMonth " ++ show x
+  setDay x t
+    = if isValidDate (year t, month t, x)
+      then return $ t { gdtDay   = x }
+      else fail   $ "Date.setDay "   ++ show x
 
 instance Time GregorianTimestamp where
   hour
@@ -122,25 +128,21 @@ instance Time GregorianTimestamp where
   secondFraction
     = gdtSecondFraction
 
-  setHour x gt
-    | x < 0     = fail ""
-    | x > 23    = fail ""
-    | otherwise = validate $ gt { gdtHour           = x }
-  setMinute x gt
-    | x < 0     = fail ""
-    | x > 59    = fail ""
-    | otherwise = validate $ gt { gdtMinute         = x }
-  setSecond x gt
-    | x < 0     = fail ""
-    | x > 59    = fail ""
-    | otherwise = validate $ gt { gdtSecond         = x }
-  setSecondFraction x gt
-    | x <  0.0  = fail ""
-    | x >= 1.0  = fail ""
-    | otherwise = validate $ gt { gdtSecondFraction = x }
+  setHour x t
+    | x < 0 || 23 < x = fail   $ "Time.setHour "           ++ show x
+    | otherwise       = return $ t { gdtHour           = x }
+  setMinute x t
+    | x < 0 || 59 < x = fail   $ "Time.setMinute "         ++ show x
+    | otherwise       = return $ t { gdtMinute         = x }
+  setSecond x t
+    | x < 0 || 59 < x = fail   $ "Time.setSecond "         ++ show x
+    | otherwise       = return $ t { gdtSecond         = x }
+  setSecondFraction x t
+    | x < 0 || 1 <= x = fail   $ "Time.setSecondFraction " ++ show x
+    | otherwise       = return $ t { gdtSecondFraction = x }
 
 instance LocalOffset GregorianTimestamp where
   localOffset
     = gdtOffset
   setLocalOffset mm gt
-    = validate $ gt { gdtOffset = mm }
+    = return $ gt { gdtOffset = mm }
