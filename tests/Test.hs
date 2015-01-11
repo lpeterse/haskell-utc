@@ -15,8 +15,9 @@ tests :: IO [Test]
 tests
   = return $ testUnixTimeInstance "UnixTimestamp"      (undefined :: UnixTimestamp)
           ++ testUnixTimeInstance "GregorianTimestamp" (undefined :: GregorianTimestamp)
-          ++
-            [ testProperty ("yearMonthDayToDays (daysToYearMonthDay x) == x")
+          ++ testDateInstance     "UnixTimestamp"      (undefined :: UnixTimestamp)
+          ++ testDateInstance     "GregorianTimestamp" (undefined :: GregorianTimestamp)
+          ++ [ testProperty ("yearMonthDayToDays (daysToYearMonthDay x) == x")
               $ forAll (choose (0, 3652424)) -- 0000-01-01 to 9999-12-31
               $ \x-> yearMonthDayToDays (daysToYearMonthDay x) == x
             ]
@@ -39,7 +40,41 @@ testUnixTimeInstance tn t
        unixEpochMsRfc3339TimeTuples
       )
 
-  
+testDateInstance :: (Date t, Eq t) => String -> t -> [Test]
+testDateInstance tn t
+  = [ testProperty ("instance Date " ++ tn ++ ": year dat1")
+      $ (dat1 >>= return . year)  == Just 1972
+    , testProperty ("instance Date " ++ tn ++ ": month dat1")
+      $ (dat1 >>= return . month) == Just 7
+    , testProperty ("instance Date " ++ tn ++ ": day dat1")
+      $ (dat1 >>= return . day)   == Just 23
+    ]
+    ++ map (\(n,d)-> testProperty ("instance Date " ++ tn ++ ": " ++ n)
+                   $ d == Nothing
+           ) invalidDates
+  where
+    dat1 = (setYear 1972 epoch >>= setMonth 7 >>= setDay 23) `asTypeOf` (Just t)
+    invalidDates
+      = [-- * invalid dates
+         -- ** month or day out of bound bound
+          ("inv001", (setYear 1973 epoch >>= setMonth 0               ) `asTypeOf` (Just t))
+        , ("inv002", (setYear 1973 epoch >>= setMonth 13              ) `asTypeOf` (Just t))
+        , ("inv003", (setYear 1973 epoch                 >>= setDay 00) `asTypeOf` (Just t))
+         -- ** day beyond upper bound
+        , ("inv004", (setYear 1973 epoch >>= setMonth 1  >>= setDay 32) `asTypeOf` (Just t))
+        , ("inv005", (setYear 1973 epoch >>= setMonth 2  >>= setDay 29) `asTypeOf` (Just t))
+        , ("inv006", (setYear 1973 epoch >>= setMonth 3  >>= setDay 32) `asTypeOf` (Just t))
+        , ("inv007", (setYear 1973 epoch >>= setMonth 4  >>= setDay 31) `asTypeOf` (Just t))
+        , ("inv008", (setYear 1973 epoch >>= setMonth 5  >>= setDay 32) `asTypeOf` (Just t))
+        , ("inv009", (setYear 1973 epoch >>= setMonth 6  >>= setDay 31) `asTypeOf` (Just t))
+        , ("inv010", (setYear 1973 epoch >>= setMonth 7  >>= setDay 32) `asTypeOf` (Just t))
+        , ("inv011", (setYear 1973 epoch >>= setMonth 8  >>= setDay 32) `asTypeOf` (Just t))
+        , ("inv012", (setYear 1973 epoch >>= setMonth 9  >>= setDay 31) `asTypeOf` (Just t))
+        , ("inv013", (setYear 1973 epoch >>= setMonth 10 >>= setDay 32) `asTypeOf` (Just t))
+        , ("inv014", (setYear 1973 epoch >>= setMonth 11 >>= setDay 31) `asTypeOf` (Just t))
+        , ("inv015", (setYear 1973 epoch >>= setMonth 12 >>= setDay 32) `asTypeOf` (Just t))
+        ]
+
 unixEpochMsRfc3339TimeTuples :: [(Rational,String)]
 unixEpochMsRfc3339TimeTuples
   = [ ( -62167219200.000, "0000-01-01T00:00:00Z")     -- verified against moment.js (lowest possible date)

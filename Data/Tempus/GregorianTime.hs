@@ -8,7 +8,9 @@ module Data.Tempus.GregorianTime
 
 import Control.Monad
 
-class Date t where
+import Data.Tempus.Epoch
+
+class Epoch t => Date t where
   -- | > year  "2014-⁠12-⁠24" ==  2014
   year                  :: t -> Integer
   -- | > month "2014-⁠12-⁠24" ==    12
@@ -19,7 +21,7 @@ class Date t where
   setMonth              :: (Monad m) => Integer  -> t -> m t
   setDay                :: (Monad m) => Integer  -> t -> m t
 
-class Time t where
+class Epoch t => Time t where
   -- | > hour           "2014-⁠12-⁠24T18:11:47.042Z" ==          18
   hour                  :: t -> Integer
   -- | > minute         "2014-⁠12-⁠24T18:11:47.042Z" ==          11
