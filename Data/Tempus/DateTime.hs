@@ -6,10 +6,10 @@ module Data.Tempus.DateTime
 import Data.String
 import Data.Maybe
 
-import Data.Tempus.Class.HasEpoch
-import Data.Tempus.Class.HasDate
-import Data.Tempus.Class.HasTime
-import Data.Tempus.Class.HasUnixTime
+import Data.Tempus.Class.Epoch
+import Data.Tempus.Class.IsDate
+import Data.Tempus.Class.IsTime
+import Data.Tempus.Class.IsUnixTime
 import Data.Tempus.Local
 import Data.Tempus.Date
 import Data.Tempus.Time
@@ -39,10 +39,10 @@ instance Show DateTime where
 instance IsString DateTime where
   fromString = utc . fromMaybe epoch . parseRfc3339String
 
-instance HasEpoch DateTime where
+instance Epoch DateTime where
   epoch = DateTime epoch midnight
 
-instance HasUnixTime DateTime where
+instance IsUnixTime DateTime where
   unixSeconds (DateTime d t)
     = unixSeconds d
     + unixSeconds t
@@ -51,7 +51,7 @@ instance HasUnixTime DateTime where
          t <- fromUnixSeconds u
          return (DateTime d t)
 
-instance HasDate DateTime where
+instance IsDate DateTime where
   year
     = year . date
   month
@@ -68,7 +68,7 @@ instance HasDate DateTime where
     = do dt <- setDay d (date t)
          return $ t { date = dt }
 
-instance HasTime DateTime where
+instance IsTime DateTime where
   hour
     = hour . time
   minute

@@ -7,10 +7,10 @@ import Data.Ratio
 import Data.String
 import Data.Maybe
 
-import Data.Tempus.Class.HasDate
-import Data.Tempus.Class.HasTime
-import Data.Tempus.Class.HasEpoch
-import Data.Tempus.Class.HasUnixTime
+import Data.Tempus.Class.Epoch
+import Data.Tempus.Class.IsDate
+import Data.Tempus.Class.IsTime
+import Data.Tempus.Class.IsUnixTime
 import Data.Tempus.Local
 import Data.Tempus.Internal
 import Data.Tempus.Rfc3339
@@ -28,7 +28,7 @@ newtype UnixTimestamp
       = UnixTimestamp Rational
       deriving (Eq, Ord)
 
-instance HasEpoch UnixTimestamp where
+instance Epoch UnixTimestamp where
   epoch = UnixTimestamp 0
 
 instance Show UnixTimestamp where
@@ -37,13 +37,13 @@ instance Show UnixTimestamp where
 instance IsString UnixTimestamp where
   fromString = utc . fromMaybe epoch . parseRfc3339String
 
-instance HasUnixTime UnixTimestamp where
+instance IsUnixTime UnixTimestamp where
   unixSeconds (UnixTimestamp i)
     = i
   fromUnixSeconds s
     = return (UnixTimestamp s)
 
-instance HasDate UnixTimestamp where
+instance IsDate UnixTimestamp where
   year (UnixTimestamp t)
     = let (y,_,_) = daysToYearMonthDay (truncate (t + deltaUnixEpochCommonEpoch) `div` secsPerDay) in y
   month (UnixTimestamp t)
@@ -78,7 +78,7 @@ instance HasDate UnixTimestamp where
       y = year t
       m = month t
 
-instance HasTime UnixTimestamp where
+instance IsTime UnixTimestamp where
   hour (UnixTimestamp t)
     = truncate t `div` secsPerHour   `mod` hoursPerDay
   minute (UnixTimestamp t)

@@ -7,12 +7,12 @@ import Data.Ratio
 import Data.Attoparsec.ByteString ( Parser, skipWhile, choice, option, satisfy )
 import Data.Attoparsec.ByteString.Char8 ( char, isDigit_w8 )
 
-import Data.Tempus.Class.HasEpoch
-import Data.Tempus.Class.HasDate
-import Data.Tempus.Class.HasTime
+import Data.Tempus.Class.Epoch
+import Data.Tempus.Class.IsDate
+import Data.Tempus.Class.IsTime
 import Data.Tempus.Local
 
-rfc3339Parser :: (HasDate t, HasTime t) => Parser (Local t)
+rfc3339Parser :: (IsDate t, IsTime t) => Parser (Local t)
 rfc3339Parser 
   = do year'    <- dateFullYear
        _        <- char '-'

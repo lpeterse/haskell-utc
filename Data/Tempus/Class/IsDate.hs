@@ -1,11 +1,11 @@
 {-# LANGUAGE Safe #-}
-module Data.Tempus.Class.HasDate
-  ( HasDate (..)
+module Data.Tempus.Class.IsDate
+  ( IsDate (..)
   ) where
 
-import Data.Tempus.Class.HasEpoch
+import Data.Tempus.Class.Epoch
 
-class HasEpoch t => HasDate t where
+class Epoch t => IsDate t where
   -- | > year  "2014-⁠12-⁠24" ==  2014
   year                  :: t -> Integer
   -- | > month "2014-⁠12-⁠24" ==    12

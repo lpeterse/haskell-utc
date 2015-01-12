@@ -1,9 +1,9 @@
 {-# LANGUAGE Safe #-}
-module Data.Tempus.Class.HasTime
-  ( HasTime (..)
+module Data.Tempus.Class.IsTime
+  ( IsTime (..)
   ) where
 
-class HasTime t where
+class IsTime t where
   -- | > hour           "2014-⁠12-⁠24T18:11:47.042Z" ==          18
   hour                  :: t -> Integer
   -- | > minute         "2014-⁠12-⁠24T18:11:47.042Z" ==          11

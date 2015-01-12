@@ -25,7 +25,7 @@ tests
               $ \x-> yearMonthDayToDays (daysToYearMonthDay x) == x
             ]
 
-testTimeInstance :: (HasTime t, IsString t,Eq t) => String -> t -> [Test]
+testTimeInstance :: (IsTime t, IsString t,Eq t) => String -> t -> [Test]
 testTimeInstance tn t
   = [ testProperty ("instance Time " ++ tn ++ ": test 1.t1")
     $ (t1 >>= return . hour) == Just 12
@@ -63,7 +63,7 @@ testTimeInstance tn t
          , ("10", setSecondFraction 1.1 midnight)
          ]
 
-testUnixTimeInstance :: (HasUnixTime t, IsString t,Eq t) => String -> t -> [Test]
+testUnixTimeInstance :: (IsUnixTime t, IsString t,Eq t) => String -> t -> [Test]
 testUnixTimeInstance tn t
   = (map
        (\(i64,s)->
@@ -81,7 +81,7 @@ testUnixTimeInstance tn t
        unixEpochMsRfc3339TimeTuples
       )
 
-testDateInstance :: (HasDate t, Eq t) => String -> t -> [Test]
+testDateInstance :: (IsDate t, Eq t) => String -> t -> [Test]
 testDateInstance tn t
   = [ testProperty ("instance Date " ++ tn ++ ": year dat1")
       $ (dat1 >>= return . year)  == Just 1972
