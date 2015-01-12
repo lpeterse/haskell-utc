@@ -17,9 +17,7 @@ module Data.Tempus
   , Time
   -- ** DateTime
   , DateTime (..)
-  -- ** UnixTimestamp
-  , UnixTimestamp (..)
-  -- ** Local
+  -- ** Local Time
   , Local (..)
   -- * Realtime Clock
   , RealtimeClock (..)
