@@ -9,6 +9,7 @@ import Test.QuickCheck
 import Data.String
 
 import Data.Tempus
+import Data.Tempus.UnixTimestamp
 import Data.Tempus.Internal
 
 tests :: IO [Test]

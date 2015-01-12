@@ -6,9 +6,9 @@ module Data.Tempus.Local
 import Data.Tempus.Epoch
 import Data.Tempus.GregorianTime
 
-data Local t
+data Local time
    = Local 
-     { utc    :: t
+     { utc    :: time
      , offset :: Maybe Rational
      }
 
@@ -29,22 +29,23 @@ instance Functor Local where
     = Local (f t) o
 
 instance Dated t => Dated (Local t) where
-  year  (Local t _) = year t
-  month (Local t _) = month t
-  day   (Local t _) = day t
-  setYear  y t = undefined
-  setMonth m t = undefined
-  setDay   d t = undefined
+  year      = undefined
+  month     = undefined
+  day       = undefined
+  setYear   = undefined
+  setMonth  = undefined
+  setDay    = undefined
 
 instance Timed t => Timed (Local t) where
-  hour  (Local t _) = undefined
-  minute (Local t _) = undefined
-  second   (Local t _) = undefined
-  secondFraction   (Local t _) = undefined
-  setHour h (Local t _) = undefined
-  setMinute m (Local t _) = undefined
-  setSecond  s (Local t _) = undefined
-  setSecondFraction f (Local t _) = undefined
+  hour  = undefined
+  minute = undefined
+  second  = undefined
+  secondFraction  = undefined
+  setHour = undefined
+  setMinute  = undefined
+  setSecond   = undefined
+  setSecondFraction  = undefined
+  midnight = unknown midnight
 
 unknown :: t -> Local t
 unknown t

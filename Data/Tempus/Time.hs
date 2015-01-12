@@ -3,14 +3,9 @@ module Data.Tempus.Time
   ) where
 
 import Data.Ratio
-import Data.String
-import Data.Maybe
 
-import Data.Tempus.Epoch
-import Data.Tempus.Date
 import Data.Tempus.UnixTime
 import Data.Tempus.GregorianTime
-import Data.Tempus.Rfc3339
 import Data.Tempus.Internal
 
 data Time

@@ -1,15 +1,14 @@
-{-# LANGUAGE FlexibleInstances, UndecidableInstances #-}
 module Data.Tempus
   ( 
   -- * Classes
-  -- ** Date
-    Dated(..)
-  -- ** Time
+  -- ** HasEpoch
+    Epoch(..)
+  -- ** HasDate
+  , Dated(..)
+  -- ** HasTime
   , Timed (..)
-  -- ** Unix Time
+  -- ** HasUnixTime
   , UnixTime(..)
-  -- ** Epoch
-  , Epoch(..)
   -- * Types
   -- ** Date
   , Date
@@ -35,7 +34,6 @@ import Data.Tempus.Local
 import Data.Tempus.GregorianTime
 import Data.Tempus.GregorianTimestamp
 import Data.Tempus.UnixTime
-import Data.Tempus.UnixTimestamp
 import Data.Tempus.Rfc3339
 import Data.Tempus.RealtimeClock
 

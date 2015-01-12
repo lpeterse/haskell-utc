@@ -3,7 +3,6 @@ module Data.Tempus.GregorianTimestamp
     DateTime (..)
   ) where
 
-import Data.Ratio
 import Data.String
 import Data.Maybe
 
@@ -14,7 +13,6 @@ import Data.Tempus.Time
 import Data.Tempus.UnixTime
 import Data.Tempus.GregorianTime
 import Data.Tempus.Rfc3339
-import Data.Tempus.Internal
 
 -- | A time representation based on years, months, days, hours, minutes and seconds with
 --   local offset based on the UTC system. 
