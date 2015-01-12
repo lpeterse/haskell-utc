@@ -35,7 +35,6 @@ Library
                    , Data.Tempus.DateTime
                    , Data.Tempus.Local
                    , Data.Tempus.Rfc3339
-                   , Data.Tempus.UnixTimestamp
                    , Data.Tempus.Internal
   other-modules:     Data.Tempus.Rfc3339.Parser
                    , Data.Tempus.Rfc3339.Builder
@@ -58,7 +57,6 @@ Test-Suite test
                    , Data.Tempus.DateTime
                    , Data.Tempus.Local
                    , Data.Tempus.Rfc3339
-                   , Data.Tempus.UnixTimestamp
                    -- in library unexposed modules
                    , Data.Tempus.Rfc3339.Parser
                    , Data.Tempus.Rfc3339.Builder

@@ -9,16 +9,12 @@ import Test.QuickCheck
 import Data.String
 
 import Data.Tempus
-import Data.Tempus.UnixTimestamp
 import Data.Tempus.Internal
 
 tests :: IO [Test]
 tests
-  = return $ testUnixTimeInstance "UnixTimestamp"      (undefined :: UnixTimestamp)
-          ++ testUnixTimeInstance "DateTime"           (undefined :: DateTime)
-          ++ testDateInstance     "UnixTimestamp"      (undefined :: UnixTimestamp)
+  = return $ testUnixTimeInstance "DateTime"           (undefined :: DateTime)
           ++ testDateInstance     "DateTime"           (undefined :: DateTime)
-          ++ testTimeInstance     "UnixTimestamp"      (epoch :: UnixTimestamp)
           ++ testTimeInstance     "DateTime"           (epoch :: DateTime)
           ++ [ testProperty ("yearMonthDayToDays (daysToYearMonthDay x) == x")
               $ forAll (choose (0, 3652424)) -- 0000-01-01 to 9999-12-31
