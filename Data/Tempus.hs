@@ -35,8 +35,8 @@ import Data.Tempus.Class.IsDate
 import Data.Tempus.Class.IsTime
 import Data.Tempus.Class.IsUnixTime
 import Data.Tempus.Class.HasUnixTime
-import Data.Tempus.Date
-import Data.Tempus.Time
-import Data.Tempus.DateTime
-import Data.Tempus.Local
+import Data.Tempus.Type.Date
+import Data.Tempus.Type.Time
+import Data.Tempus.Type.DateTime
+import Data.Tempus.Type.Local
 import Data.Tempus.Rfc3339

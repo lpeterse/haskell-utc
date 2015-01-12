@@ -6,7 +6,7 @@ module Data.Tempus.Rfc3339.Builder
 import Data.Monoid
 import Data.ByteString.Builder as BS
 
-import Data.Tempus.Local
+import Data.Tempus.Type.Local
 import Data.Tempus.Class.IsDate
 import Data.Tempus.Class.IsTime
 

@@ -1,4 +1,4 @@
-module Data.Tempus.Date
+module Data.Tempus.Type.Date
   ( Date ()
   ) where
 

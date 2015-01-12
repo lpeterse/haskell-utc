@@ -30,10 +30,11 @@ Library
                    , Data.Tempus.Class.IsTime
                    , Data.Tempus.Class.IsUnixTime
                    , Data.Tempus.Class.HasUnixTime
-                   , Data.Tempus.Date
-                   , Data.Tempus.Time
-                   , Data.Tempus.DateTime
-                   , Data.Tempus.Local
+                   , Data.Tempus.Type
+                   , Data.Tempus.Type.Date
+                   , Data.Tempus.Type.Time
+                   , Data.Tempus.Type.DateTime
+                   , Data.Tempus.Type.Local
                    , Data.Tempus.Rfc3339
                    , Data.Tempus.Internal
   other-modules:     Data.Tempus.Rfc3339.Parser
@@ -52,10 +53,11 @@ Test-Suite test
                    , Data.Tempus.Class.IsTime
                    , Data.Tempus.Class.IsUnixTime
                    , Data.Tempus.Class.HasUnixTime
-                   , Data.Tempus.Date
-                   , Data.Tempus.Time
-                   , Data.Tempus.DateTime
-                   , Data.Tempus.Local
+                   , Data.Tempus.Type
+                   , Data.Tempus.Type.Date
+                   , Data.Tempus.Type.Time
+                   , Data.Tempus.Type.DateTime
+                   , Data.Tempus.Type.Local
                    , Data.Tempus.Rfc3339
                    -- in library unexposed modules
                    , Data.Tempus.Rfc3339.Parser

@@ -10,7 +10,7 @@ import Data.Attoparsec.ByteString.Char8 ( char, isDigit_w8 )
 import Data.Tempus.Class.Epoch
 import Data.Tempus.Class.IsDate
 import Data.Tempus.Class.IsTime
-import Data.Tempus.Local
+import Data.Tempus.Type.Local
 
 rfc3339Parser :: (IsDate t, IsTime t) => Parser (Local t)
 rfc3339Parser 

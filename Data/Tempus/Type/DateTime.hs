@@ -1,4 +1,4 @@
-module Data.Tempus.DateTime
+module Data.Tempus.Type.DateTime
   ( -- * Type
     DateTime (..)
   ) where
@@ -10,9 +10,9 @@ import Data.Tempus.Class.Epoch
 import Data.Tempus.Class.IsDate
 import Data.Tempus.Class.IsTime
 import Data.Tempus.Class.IsUnixTime
-import Data.Tempus.Local
-import Data.Tempus.Date
-import Data.Tempus.Time
+import Data.Tempus.Type.Local
+import Data.Tempus.Type.Date
+import Data.Tempus.Type.Time
 import Data.Tempus.Rfc3339
 import Data.Tempus.Internal
 

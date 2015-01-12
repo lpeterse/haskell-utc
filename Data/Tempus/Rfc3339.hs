@@ -19,7 +19,7 @@ import qualified Data.Text.Lazy.Encoding    as TL
 import Data.Tempus.Class.Epoch
 import Data.Tempus.Class.IsDate
 import Data.Tempus.Class.IsTime
-import Data.Tempus.Local
+import Data.Tempus.Type.Local
 import Data.Tempus.Rfc3339.Parser
 import Data.Tempus.Rfc3339.Builder
 

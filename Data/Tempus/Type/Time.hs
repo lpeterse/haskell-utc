@@ -1,4 +1,4 @@
-module Data.Tempus.Time
+module Data.Tempus.Type.Time
   ( Time ()
   , midnight
   ) where

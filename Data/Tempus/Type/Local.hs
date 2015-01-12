@@ -1,4 +1,4 @@
-module Data.Tempus.Local
+module Data.Tempus.Type.Local
   ( Local (..)
   , unknown
   ) where
