@@ -3,8 +3,9 @@ module Data.Tempus.Local
   , unknown
   ) where
 
-import Data.Tempus.Epoch
-import Data.Tempus.GregorianTime
+import Data.Tempus.Class.HasDate
+import Data.Tempus.Class.HasTime
+import Data.Tempus.Class.HasEpoch
 
 data Local time
    = Local 
@@ -20,7 +21,7 @@ instance Ord t => Ord (Local t) where
   compare (Local a _) (Local b _)
     = compare a b
 
-instance Epoch t => Epoch (Local t) where
+instance HasEpoch t => HasEpoch (Local t) where
   epoch
     = unknown epoch
 
@@ -28,7 +29,7 @@ instance Functor Local where
   fmap f (Local t o)
     = Local (f t) o
 
-instance Dated t => Dated (Local t) where
+instance HasDate t => HasDate (Local t) where
   year      = undefined
   month     = undefined
   day       = undefined
@@ -36,7 +37,7 @@ instance Dated t => Dated (Local t) where
   setMonth  = undefined
   setDay    = undefined
 
-instance Timed t => Timed (Local t) where
+instance HasTime t => HasTime (Local t) where
   hour  = undefined
   minute = undefined
   second  = undefined

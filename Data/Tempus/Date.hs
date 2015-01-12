@@ -4,9 +4,9 @@ module Data.Tempus.Date
 
 import Data.Ratio
 
-import Data.Tempus.Epoch
-import Data.Tempus.UnixTime
-import Data.Tempus.GregorianTime
+import Data.Tempus.Class.HasEpoch
+import Data.Tempus.Class.HasDate
+import Data.Tempus.Class.HasUnixTime
 import Data.Tempus.Internal
 
 data Date
@@ -16,7 +16,7 @@ data Date
      , dDay            :: Integer
      } deriving (Eq, Ord)
 
-instance Epoch Date where
+instance HasEpoch Date where
   epoch
     = Date
       { dYear           = 1970
@@ -24,8 +24,8 @@ instance Epoch Date where
       , dDay            = 1
       }
 
-instance UnixTime Date where
-  toUnixSeconds t
+instance HasUnixTime Date where
+  unixSeconds t
     = (days       * secsPerDay    % 1)
     - deltaUnixEpochCommonEpoch
     where
@@ -41,7 +41,7 @@ instance UnixTime Date where
       s         = u + deltaUnixEpochCommonEpoch
       (y, m, d) = daysToYearMonthDay (truncate s `div` secsPerDay)
 
-instance Dated Date where
+instance HasDate Date where
   year
     = dYear
   month

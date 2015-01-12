@@ -4,8 +4,9 @@ module Data.Tempus.Time
 
 import Data.Ratio
 
-import Data.Tempus.UnixTime
-import Data.Tempus.GregorianTime
+import Data.Tempus.Class.HasDate
+import Data.Tempus.Class.HasTime
+import Data.Tempus.Class.HasUnixTime
 import Data.Tempus.Internal
 
 data Time
@@ -16,8 +17,8 @@ data Time
      , tSecondFraction :: Rational
      } deriving (Eq, Ord)
 
-instance UnixTime Time where
-  toUnixSeconds t
+instance HasUnixTime Time where
+  unixSeconds t
     = (hour t     * secsPerHour   % 1)
     + (minute t   * secsPerMinute % 1)
     + (second t                   % 1)
@@ -30,7 +31,7 @@ instance UnixTime Time where
                , tSecondFraction = s - (truncate s % 1)
                }
 
-instance Timed Time where
+instance HasTime Time where
   hour
     = tHour
   minute

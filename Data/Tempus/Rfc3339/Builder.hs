@@ -7,9 +7,10 @@ import Data.Monoid
 import Data.ByteString.Builder as BS
 
 import Data.Tempus.Local
-import Data.Tempus.GregorianTime
+import Data.Tempus.Class.HasDate
+import Data.Tempus.Class.HasTime
 
-rfc3339Builder :: (Monad m, Dated t, Timed t) => Local t -> m BS.Builder
+rfc3339Builder :: (Monad m, HasDate t, HasTime t) => Local t -> m BS.Builder
 rfc3339Builder (Local t os)
   = do -- calculate the single digits
        let y3 = fromIntegral $ year t   `div` 1000 `mod` 10

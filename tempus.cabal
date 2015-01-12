@@ -23,15 +23,16 @@ Library
   hs-source-dirs:    .
   default-language:  Haskell98
   exposed-modules:   Data.Tempus
+                   , Data.Tempus.Class.HasEpoch
+                   , Data.Tempus.Class.HasDate
+                   , Data.Tempus.Class.HasTime
+                   , Data.Tempus.Class.HasUnixTime
                    , Data.Tempus.Date
                    , Data.Tempus.Time
-                   , Data.Tempus.Epoch
+                   , Data.Tempus.DateTime
                    , Data.Tempus.Local
                    , Data.Tempus.Rfc3339
-                   , Data.Tempus.UnixTime
                    , Data.Tempus.UnixTimestamp
-                   , Data.Tempus.GregorianTime
-                   , Data.Tempus.GregorianTimestamp
                    , Data.Tempus.RealtimeClock
                    , Data.Tempus.Internal
   other-modules:     Data.Tempus.Rfc3339.Parser
@@ -43,15 +44,16 @@ Test-Suite test
   hs-source-dirs:    tests .
   test-module:       Test
   other-modules:     Data.Tempus
+                   , Data.Tempus.Class.HasEpoch
+                   , Data.Tempus.Class.HasDate
+                   , Data.Tempus.Class.HasTime
+                   , Data.Tempus.Class.HasUnixTime
                    , Data.Tempus.Date
                    , Data.Tempus.Time
+                   , Data.Tempus.DateTime
                    , Data.Tempus.Local
-                   , Data.Tempus.Epoch
                    , Data.Tempus.Rfc3339
-                   , Data.Tempus.UnixTime
                    , Data.Tempus.UnixTimestamp
-                   , Data.Tempus.GregorianTime
-                   , Data.Tempus.GregorianTimestamp
                    , Data.Tempus.RealtimeClock
                    -- in library unexposed modules
                    , Data.Tempus.Rfc3339.Parser

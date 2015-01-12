@@ -7,11 +7,12 @@ import Data.Ratio
 import Data.String
 import Data.Maybe
 
-import Data.Tempus.Epoch
+import Data.Tempus.Class.HasDate
+import Data.Tempus.Class.HasTime
+import Data.Tempus.Class.HasEpoch
+import Data.Tempus.Class.HasUnixTime
 import Data.Tempus.Local
 import Data.Tempus.Internal
-import Data.Tempus.UnixTime
-import Data.Tempus.GregorianTime
 import Data.Tempus.Rfc3339
 
 -- | A time representation counting the seconds since 1970-01-01T00:00:00-00:00
@@ -27,7 +28,7 @@ newtype UnixTimestamp
       = UnixTimestamp Rational
       deriving (Eq, Ord)
 
-instance Epoch UnixTimestamp where
+instance HasEpoch UnixTimestamp where
   epoch = UnixTimestamp 0
 
 instance Show UnixTimestamp where
@@ -36,13 +37,13 @@ instance Show UnixTimestamp where
 instance IsString UnixTimestamp where
   fromString = utc . fromMaybe epoch . parseRfc3339String
 
-instance UnixTime UnixTimestamp where
-  toUnixSeconds (UnixTimestamp i)
+instance HasUnixTime UnixTimestamp where
+  unixSeconds (UnixTimestamp i)
     = i
   fromUnixSeconds s
     = return (UnixTimestamp s)
 
-instance Dated UnixTimestamp where
+instance HasDate UnixTimestamp where
   year (UnixTimestamp t)
     = let (y,_,_) = daysToYearMonthDay (truncate (t + deltaUnixEpochCommonEpoch) `div` secsPerDay) in y
   month (UnixTimestamp t)
@@ -77,7 +78,7 @@ instance Dated UnixTimestamp where
       y = year t
       m = month t
 
-instance Timed UnixTimestamp where
+instance HasTime UnixTimestamp where
   hour (UnixTimestamp t)
     = truncate t `div` secsPerHour   `mod` hoursPerDay
   minute (UnixTimestamp t)
@@ -90,21 +91,21 @@ instance Timed UnixTimestamp where
     | h < 0     = fail ""
     | h > 23    = fail ""
     | otherwise = return $ UnixTimestamp
-                         $ (toUnixSeconds t)
+                         $ (unixSeconds t)
                          - (hour t  * secsPerHour % 1)
                          + (h * secsPerHour % 1)
   setMinute m t
     | m < 0     = fail ""
     | m > 59    = fail ""
     | otherwise = return $ UnixTimestamp
-                         $ (toUnixSeconds t)
+                         $ (unixSeconds t)
                          - (minute t  * secsPerMinute % 1)
                          + (m * secsPerMinute % 1)
   setSecond s t
     | s < 0     = fail ""
     | s > 59    = fail ""
     | otherwise = return $ UnixTimestamp
-                         $ (toUnixSeconds t)
+                         $ (unixSeconds t)
                          - (second t % 1)
                          + (s  % 1)
   setSecondFraction s (UnixTimestamp t)

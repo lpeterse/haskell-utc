@@ -4,7 +4,7 @@ module Data.Tempus.RealtimeClock where
 import Data.Ratio
 import System.Clock as C
 
-import Data.Tempus.UnixTime
+import Data.Tempus.Class.HasUnixTime
 
 -- | This class defines an interface for contexts that can be asked for a timestamp.
 --
@@ -32,7 +32,7 @@ class RealtimeClock m where
   -- > printCurrentYear
   -- >   = do now <- getTime :: IO UnixTimestamp
   -- >        print (year now)
-  getTime :: (UnixTime a) => m a
+  getTime :: (HasUnixTime a) => m a
 
 instance RealtimeClock IO where
   getTime

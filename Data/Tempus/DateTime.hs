@@ -1,4 +1,4 @@
-module Data.Tempus.GregorianTimestamp
+module Data.Tempus.DateTime
   ( -- * Type
     DateTime (..)
   ) where
@@ -6,12 +6,13 @@ module Data.Tempus.GregorianTimestamp
 import Data.String
 import Data.Maybe
 
-import Data.Tempus.Epoch
+import Data.Tempus.Class.HasEpoch
+import Data.Tempus.Class.HasDate
+import Data.Tempus.Class.HasTime
+import Data.Tempus.Class.HasUnixTime
 import Data.Tempus.Local
 import Data.Tempus.Date
 import Data.Tempus.Time
-import Data.Tempus.UnixTime
-import Data.Tempus.GregorianTime
 import Data.Tempus.Rfc3339
 
 -- | A time representation based on years, months, days, hours, minutes and seconds with
@@ -38,19 +39,19 @@ instance Show DateTime where
 instance IsString DateTime where
   fromString = utc . fromMaybe epoch . parseRfc3339String
 
-instance Epoch DateTime where
+instance HasEpoch DateTime where
   epoch = DateTime epoch midnight
 
-instance UnixTime DateTime where
-  toUnixSeconds (DateTime d t)
-    = toUnixSeconds d
-    + toUnixSeconds t
+instance HasUnixTime DateTime where
+  unixSeconds (DateTime d t)
+    = unixSeconds d
+    + unixSeconds t
   fromUnixSeconds u
     = do d <- fromUnixSeconds u
          t <- fromUnixSeconds u
          return (DateTime d t)
 
-instance Dated DateTime where
+instance HasDate DateTime where
   year
     = year . date
   month
@@ -67,7 +68,7 @@ instance Dated DateTime where
     = do dt <- setDay d (date t)
          return $ t { date = dt }
 
-instance Timed DateTime where
+instance HasTime DateTime where
   hour
     = hour . time
   minute
