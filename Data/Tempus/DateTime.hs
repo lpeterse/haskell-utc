@@ -14,6 +14,7 @@ import Data.Tempus.Local
 import Data.Tempus.Date
 import Data.Tempus.Time
 import Data.Tempus.Rfc3339
+import Data.Tempus.Internal
 
 -- | A time representation based on years, months, days, hours, minutes and seconds with
 --   local offset based on the UTC system. 
@@ -89,6 +90,15 @@ instance IsTime DateTime where
   setSecondFraction y t
     = do tm <- setSecondFraction y (time t)
          return $ t { time = tm }
+
+  -- The default implementation of addHours fails whena day flows over. 
+  -- For DateTimes we can let it ripple into the days.
+  addHours h t
+    = setHour hors t >>= addDays days
+    where
+      h'   = h + (hour t)
+      hors = h' `mod` hoursPerDay
+      days = h' `div` hoursPerDay
 
   midnight
     = epoch
