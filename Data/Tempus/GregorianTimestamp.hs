@@ -1,8 +1,6 @@
 module Data.Tempus.GregorianTimestamp
   ( -- * Type
     DateTime (..)
-  , Local (..)
-  , Offset (..)
   ) where
 
 import Data.Ratio
@@ -10,6 +8,7 @@ import Data.String
 import Data.Maybe
 
 import Data.Tempus.Epoch
+import Data.Tempus.Local
 import Data.Tempus.Date
 import Data.Tempus.Time
 import Data.Tempus.UnixTime
@@ -31,113 +30,67 @@ import Data.Tempus.Internal
 --     failure. Don't rely on their behaviour!
 data DateTime
    = DateTime
-     { gdtDate           :: Date
-     , gdtTime           :: Time
-     , gdtOffset         :: (Maybe Rational)
-     }
-
-data Local t
-   = Local t Offset
-
-instance Eq t => Eq (Local t) where
-  (==) (Local a _) (Local b _)
-   = a == b
-
-data Offset
-   = OffsetUnknown
-   | OffsetSeconds Rational
-   deriving (Eq, Ord, Show)
-
-instance Eq DateTime where
-  (==) a b
-    = (==)
-       (toUnixSeconds a)
-       (toUnixSeconds b)
-
-instance Ord DateTime where
-  compare a b
-    = compare
-       (toUnixSeconds a)
-       (toUnixSeconds b)
+     { date  :: Date
+     , time  :: Time
+     } deriving (Eq, Ord)
 
 instance Show DateTime where
-  show = fromMaybe "1970-01-01T00:00:00-00:00" . renderRfc3339String
+  show = fromMaybe "1970-01-01T00:00:00-00:00" . renderRfc3339String . unknown
 
 instance IsString DateTime where
-  fromString = fromMaybe epoch . parseRfc3339String
+  fromString = utc . fromMaybe epoch . parseRfc3339String
 
 instance Epoch DateTime where
-  epoch
-    = DateTime
-      { gdtDate           = epoch
-      , gdtTime           = midnight
-      , gdtOffset         = Nothing
-      }
+  epoch = DateTime epoch midnight
 
 instance UnixTime DateTime where
-  toUnixSeconds t
-    = (days       * secsPerDay    % 1)
-    + (hour t     * secsPerHour   % 1)
-    + (minute t   * secsPerMinute % 1)
-    + (second t                   % 1)
-    + (secondFraction t)
-    - (fromMaybe 0 $ localOffset t)
-    - deltaUnixEpochCommonEpoch
-    where
-      days = yearMonthDayToDays (year (gdtDate t), month (gdtDate t), day (gdtDate t))
+  toUnixSeconds (DateTime d t)
+    = toUnixSeconds d
+    + toUnixSeconds t
   fromUnixSeconds u
-    = do dt <- fromUnixSeconds u
-         tm <- fromUnixSeconds u
-         return $ DateTime
-                  { gdtDate           = dt
-                  , gdtTime           = tm
-                  , gdtOffset         = Nothing
-                  }
+    = do d <- fromUnixSeconds u
+         t <- fromUnixSeconds u
+         return (DateTime d t)
 
 instance Dated DateTime where
   year
-    = year . gdtDate
+    = year . date
   month
-    = month . gdtDate
+    = month . date
   day
-    = day . gdtDate
+    = day . date
   setYear y t
-    = do dt <- setYear y (gdtDate t)
-         return $ t { gdtDate = dt }
+    = do dt <- setYear y (date t)
+         return $ t { date = dt }
   setMonth m t
-    = do dt <- setMonth m (gdtDate t)
-         return $ t { gdtDate = dt }
+    = do dt <- setMonth m (date t)
+         return $ t { date = dt }
   setDay d t
-    = do dt <- setDay d (gdtDate t)
-         return $ t { gdtDate = dt }
+    = do dt <- setDay d (date t)
+         return $ t { date = dt }
 
 instance Timed DateTime where
   hour
-    = hour . gdtTime
+    = hour . time
   minute
-    = minute . gdtTime
+    = minute . time
   second
-    = second . gdtTime
+    = second . time
   secondFraction
-    = secondFraction . gdtTime
+    = secondFraction . time
   setHour y t
-    = do tm <- setHour y (gdtTime t)
-         return $ t { gdtTime = tm }
+    = do tm <- setHour y (time t)
+         return $ t { time = tm }
   setMinute y t
-    = do tm <- setMinute y (gdtTime t)
-         return $ t { gdtTime = tm }
+    = do tm <- setMinute y (time t)
+         return $ t { time = tm }
   setSecond y t
-    = do tm <- setSecond y (gdtTime t)
-         return $ t { gdtTime = tm }
+    = do tm <- setSecond y (time t)
+         return $ t { time = tm }
   setSecondFraction y t
-    = do tm <- setSecondFraction y (gdtTime t)
-         return $ t { gdtTime = tm }
+    = do tm <- setSecondFraction y (time t)
+         return $ t { time = tm }
 
   midnight
     = epoch
 
-instance LocalOffset DateTime where
-  localOffset
-    = gdtOffset
-  setLocalOffset mm gt
-    = return $ gt { gdtOffset = mm }

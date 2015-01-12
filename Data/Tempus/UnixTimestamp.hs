@@ -8,6 +8,7 @@ import Data.String
 import Data.Maybe
 
 import Data.Tempus.Epoch
+import Data.Tempus.Local
 import Data.Tempus.Internal
 import Data.Tempus.UnixTime
 import Data.Tempus.GregorianTime
@@ -30,10 +31,10 @@ instance Epoch UnixTimestamp where
   epoch = UnixTimestamp 0
 
 instance Show UnixTimestamp where
-  show = fromMaybe "1970-01-01T00:00:00-00:00" . renderRfc3339String
+  show = fromMaybe "1970-01-01T00:00:00-00:00" . renderRfc3339String . unknown
 
 instance IsString UnixTimestamp where
-  fromString = fromMaybe epoch . parseRfc3339String
+  fromString = utc . fromMaybe epoch . parseRfc3339String
 
 instance UnixTime UnixTimestamp where
   toUnixSeconds (UnixTimestamp i)
@@ -113,12 +114,6 @@ instance Timed UnixTimestamp where
                          $ (truncate t % 1)
                          + s
   midnight = epoch
-
-instance LocalOffset UnixTimestamp where
-  localOffset _
-    = Nothing
-  setLocalOffset _ x
-    = return x
 
 -- helpers
 

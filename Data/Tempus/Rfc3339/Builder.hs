@@ -6,10 +6,11 @@ module Data.Tempus.Rfc3339.Builder
 import Data.Monoid
 import Data.ByteString.Builder as BS
 
+import Data.Tempus.Local
 import Data.Tempus.GregorianTime
 
-rfc3339Builder :: (Monad m, Dated t, Timed t, LocalOffset t) => t -> m BS.Builder
-rfc3339Builder t
+rfc3339Builder :: (Monad m, Dated t, Timed t) => Local t -> m BS.Builder
+rfc3339Builder (Local t os)
   = do -- calculate the single digits
        let y3 = fromIntegral $ year t   `div` 1000 `mod` 10
            y2 = fromIntegral $ year t   `div` 100  `mod` 10
@@ -47,7 +48,7 @@ rfc3339Builder t
                           else BS.char7 '.' `mappend` BS.intDec f2
                    else BS.char7 '.' `mappend` BS.intDec f2 `mappend` BS.intDec f1
             else BS.char7 '.' `mappend` BS.intDec f2 `mappend` BS.intDec f1 `mappend` BS.intDec f0
-        , case localOffset t of
+        , case os of
             Nothing -> BS.string7 "-00:00"
             Just 0  -> BS.char7 'Z'
             Just o  -> let oh1 = fromIntegral $ abs (truncate o `quot` 600          `rem` 10 :: Integer)

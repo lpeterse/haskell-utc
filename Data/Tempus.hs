@@ -8,8 +8,6 @@ module Data.Tempus
   , Timed (..)
   -- ** Unix Time
   , UnixTime(..)
-  -- ** Local Offset
-  , LocalOffset (..)
   -- ** Epoch
   , Epoch(..)
   -- * Types
@@ -35,6 +33,7 @@ module Data.Tempus
 import Data.Tempus.Epoch
 import Data.Tempus.Date
 import Data.Tempus.Time
+import Data.Tempus.Local
 import Data.Tempus.GregorianTime
 import Data.Tempus.GregorianTimestamp
 import Data.Tempus.UnixTime

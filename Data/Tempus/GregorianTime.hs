@@ -2,7 +2,6 @@
 module Data.Tempus.GregorianTime
   ( Dated(..)
   , Timed(..)
-  , LocalOffset(..)
   ) where
 
 import Data.Tempus.Epoch
@@ -33,9 +32,3 @@ class Timed t where
   setSecondFraction     :: (Monad m) => Rational -> t -> m t
   -- | The beginning of a day: 00:00:00
   midnight :: t
-
-
-class LocalOffset a where
-  localOffset           :: a -> Maybe Rational
-  setLocalOffset        :: (Monad m) => Maybe Rational -> a -> m a
-
