@@ -15,11 +15,11 @@ import Data.Tempus.Internal
 tests :: IO [Test]
 tests
   = return $ testUnixTimeInstance "UnixTimestamp"      (undefined :: UnixTimestamp)
-          ++ testUnixTimeInstance "DateTime" (undefined :: DateTime)
+          ++ testUnixTimeInstance "DateTime"           (undefined :: DateTime)
           ++ testDateInstance     "UnixTimestamp"      (undefined :: UnixTimestamp)
-          ++ testDateInstance     "DateTime" (undefined :: DateTime)
-          ++ testTimeInstance     "UnixTimestamp"      (undefined :: UnixTimestamp)
-          ++ testTimeInstance     "DateTime" (undefined :: DateTime)
+          ++ testDateInstance     "DateTime"           (undefined :: DateTime)
+          ++ testTimeInstance     "UnixTimestamp"      (epoch :: UnixTimestamp)
+          ++ testTimeInstance     "DateTime"           (epoch :: DateTime)
           ++ [ testProperty ("yearMonthDayToDays (daysToYearMonthDay x) == x")
               $ forAll (choose (0, 3652424)) -- 0000-01-01 to 9999-12-31
               $ \x-> yearMonthDayToDays (daysToYearMonthDay x) == x
@@ -48,19 +48,19 @@ testTimeInstance tn t
                    $ d == (Nothing `asTypeOf` Just t)
            ) invalidTimes
   where
-    t1 = setHour 12 (midnight `asTypeOf` t) >>= setMinute 13 >>= setSecond 14 >>= setSecondFraction 0.56789
-    t2 = setSecondFraction 0.56789 (midnight `asTypeOf` t) >>= setSecond 14 >>= setMinute 13 >>= setHour 12
+    t1 = setHour 12 (t `asTypeOf` t) >>= setMinute 13 >>= setSecond 14 >>= setSecondFraction 0.56789
+    t2 = setSecondFraction 0.56789 (t `asTypeOf` t) >>= setSecond 14 >>= setMinute 13 >>= setHour 12
     invalidTimes
-       = [ ("01", setHour (-1) midnight)
-         , ("02", setHour 24 midnight)
-         , ("03", setMinute (-1) midnight)
-         , ("04", setMinute 60 midnight)
-         , ("05", setSecond (-1) midnight)
-         , ("06", setSecond 60 midnight)
-         , ("07", setSecondFraction (-1.0) midnight)
-         , ("08", setSecondFraction (-0.1) midnight)
-         , ("09", setSecondFraction 1.0 midnight)
-         , ("10", setSecondFraction 1.1 midnight)
+       = [ ("01", setHour (-1) t)
+         , ("02", setHour 24 t)
+         , ("03", setMinute (-1) t)
+         , ("04", setMinute 60 t)
+         , ("05", setSecond (-1) t)
+         , ("06", setSecond 60 t)
+         , ("07", setSecondFraction (-1.0) t)
+         , ("08", setSecondFraction (-0.1) t)
+         , ("09", setSecondFraction 1.0 t)
+         , ("10", setSecondFraction 1.1 t)
          ]
 
 testUnixTimeInstance :: (IsUnixTime t, IsString t,Eq t) => String -> t -> [Test]

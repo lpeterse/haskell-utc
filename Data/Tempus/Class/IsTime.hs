@@ -54,6 +54,3 @@ class IsTime t where
       f'   = f + (secondFraction t)
       frcs = f' - (truncate f' % 1)
       secs = truncate f'
-
-  -- | The beginning of a day: 00:00:00
-  midnight :: t

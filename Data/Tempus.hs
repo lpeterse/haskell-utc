@@ -3,6 +3,8 @@ module Data.Tempus
   -- * Classes
   -- ** Epoch
     Epoch(..)
+  -- ** Midnight
+  , Midnight(..)
   -- ** Date
   , IsDate(..)
   -- ** Time
@@ -28,6 +30,7 @@ module Data.Tempus
   ) where
 
 import Data.Tempus.Class.Epoch
+import Data.Tempus.Class.Midnight
 import Data.Tempus.Class.IsDate
 import Data.Tempus.Class.IsTime
 import Data.Tempus.Class.IsUnixTime

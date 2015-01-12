@@ -24,6 +24,7 @@ Library
   default-language:  Haskell98
   exposed-modules:   Data.Tempus
                    , Data.Tempus.Class.Epoch
+                   , Data.Tempus.Class.Midnight
                    , Data.Tempus.Class.IsDate
                    , Data.Tempus.Class.IsTime
                    , Data.Tempus.Class.IsUnixTime
@@ -45,6 +46,7 @@ Test-Suite test
   test-module:       Test
   other-modules:     Data.Tempus
                    , Data.Tempus.Class.Epoch
+                   , Data.Tempus.Class.Midnight
                    , Data.Tempus.Class.IsDate
                    , Data.Tempus.Class.IsTime
                    , Data.Tempus.Class.IsUnixTime

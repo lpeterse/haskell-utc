@@ -1,9 +1,11 @@
 module Data.Tempus.Time
   ( Time ()
+  , midnight
   ) where
 
 import Data.Ratio
 
+import Data.Tempus.Class.Midnight
 import Data.Tempus.Class.IsTime
 import Data.Tempus.Class.IsUnixTime
 import Data.Tempus.Internal
@@ -15,6 +17,10 @@ data Time
      , tSecond         :: Integer
      , tSecondFraction :: Rational
      } deriving (Eq, Ord)
+
+instance Midnight Time where
+  midnight
+    = Time 0 0 0 0
 
 instance IsUnixTime Time where
   unixSeconds t
@@ -52,11 +58,3 @@ instance IsTime Time where
   setSecondFraction x t
     | x < 0 || 1 <= x = fail   $ "Time.setSecondFraction " ++ show x
     | otherwise       = return $ t { tSecondFraction = x }
-
-  midnight
-    = Time
-      { tHour           = 0
-      , tMinute         = 0
-      , tSecond         = 0
-      , tSecondFraction = 0
-      }

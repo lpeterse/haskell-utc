@@ -114,7 +114,6 @@ instance IsTime UnixTimestamp where
     | otherwise = return $ UnixTimestamp
                          $ (truncate t % 1)
                          + s
-  midnight = epoch
 
 -- helpers
 

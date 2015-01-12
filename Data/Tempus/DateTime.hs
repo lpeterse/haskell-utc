@@ -99,7 +99,3 @@ instance IsTime DateTime where
       h'   = h + (hour t)
       hors = h' `mod` hoursPerDay
       days = h' `div` hoursPerDay
-
-  midnight
-    = epoch
-

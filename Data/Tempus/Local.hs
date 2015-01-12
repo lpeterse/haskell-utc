@@ -4,6 +4,7 @@ module Data.Tempus.Local
   ) where
 
 import Data.Tempus.Class.Epoch
+import Data.Tempus.Class.Midnight
 import Data.Tempus.Class.IsDate
 import Data.Tempus.Class.IsTime
 
@@ -25,9 +26,17 @@ instance Epoch t => Epoch (Local t) where
   epoch
     = unknown epoch
 
+instance Midnight t => Midnight (Local t) where
+  midnight
+    = unknown midnight
+
 instance Functor Local where
   fmap f (Local t o)
     = Local (f t) o
+
+instance Bounded t => Bounded (Local t) where
+  minBound  = unknown minBound
+  maxBound  = unknown maxBound
 
 instance IsDate t => IsDate (Local t) where
   year      = undefined
@@ -46,7 +55,6 @@ instance IsTime t => IsTime (Local t) where
   setMinute  = undefined
   setSecond   = undefined
   setSecondFraction  = undefined
-  midnight = unknown midnight
 
 unknown :: t -> Local t
 unknown t
