@@ -1,10 +1,10 @@
 {-# LANGUAGE Safe #-}
-module Data.Tempus.Class.HasUnixTime where
+module Data.UTC.Class.HasUnixTime where
 
 import Data.Ratio
 import System.Clock as C
 
-import Data.Tempus.Class.IsUnixTime
+import Data.UTC.Class.IsUnixTime
 
 -- | This class defines an interface for contexts that can be asked for a timestamp.
 --
@@ -27,7 +27,7 @@ class HasUnixTime m where
   --
   -- /Example:/
   --
-  -- > import Data.Tempus
+  -- > import Data.UTC
   -- > 
   -- > printCurrentYear :: IO ()
   -- > printCurrentYear
@@ -40,5 +40,5 @@ instance HasUnixTime IO where
     = do TimeSpec s ns <- C.getTime Realtime
          case fromUnixSeconds ((fromIntegral s) % 1 + (fromIntegral ns) % 1000000000) of
            Just t  -> return t
-           Nothing -> fail "Data.Tempus.Class.HasUnixTime.getUnixTime: failed"
+           Nothing -> fail "Data.UTC.Class.HasUnixTime.getUnixTime: failed"
 

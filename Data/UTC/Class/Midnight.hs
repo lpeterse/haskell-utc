@@ -1,5 +1,5 @@
 {-# LANGUAGE Safe #-}
-module Data.Tempus.Class.Midnight
+module Data.UTC.Class.Midnight
   ( Midnight(..)
   ) where
 

@@ -1,4 +1,4 @@
-module Data.Tempus.Rfc3339.Parser
+module Data.UTC.Rfc3339.Parser
   ( rfc3339Parser
   ) where
 
@@ -7,10 +7,10 @@ import Data.Ratio
 import Data.Attoparsec.ByteString ( Parser, skipWhile, choice, option, satisfy )
 import Data.Attoparsec.ByteString.Char8 ( char, isDigit_w8 )
 
-import Data.Tempus.Class.Epoch
-import Data.Tempus.Class.IsDate
-import Data.Tempus.Class.IsTime
-import Data.Tempus.Type.Local
+import Data.UTC.Class.Epoch
+import Data.UTC.Class.IsDate
+import Data.UTC.Class.IsTime
+import Data.UTC.Type.Local
 
 rfc3339Parser :: (IsDate t, IsTime t) => Parser (Local t)
 rfc3339Parser 

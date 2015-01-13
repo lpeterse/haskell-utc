@@ -8,8 +8,8 @@ import Test.QuickCheck
 
 import Data.String
 
-import Data.Tempus
-import Data.Tempus.Internal
+import Data.UTC
+import Data.UTC.Internal
 
 tests :: IO [Test]
 tests

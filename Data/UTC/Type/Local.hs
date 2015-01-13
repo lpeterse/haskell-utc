@@ -1,16 +1,16 @@
 {-# LANGUAGE Safe, FlexibleInstances #-}
-module Data.Tempus.Type.Local
+module Data.UTC.Type.Local
   ( Local (..)
   , unknown
   ) where
 
 import Data.Maybe
 
-import Data.Tempus.Class.Epoch
-import Data.Tempus.Class.Midnight
-import Data.Tempus.Class.IsDate
-import Data.Tempus.Class.IsTime
-import Data.Tempus.Type.Time
+import Data.UTC.Class.Epoch
+import Data.UTC.Class.Midnight
+import Data.UTC.Class.IsDate
+import Data.UTC.Class.IsTime
+import Data.UTC.Type.Time
 
 data Local time
    = Local 

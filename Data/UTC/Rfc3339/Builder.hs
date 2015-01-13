@@ -1,14 +1,14 @@
 {-# LANGUAGE Safe #-}
-module Data.Tempus.Rfc3339.Builder
+module Data.UTC.Rfc3339.Builder
   ( rfc3339Builder
   ) where
 
 import Data.Monoid
 import Data.ByteString.Builder as BS
 
-import Data.Tempus.Type.Local
-import Data.Tempus.Class.IsDate
-import Data.Tempus.Class.IsTime
+import Data.UTC.Type.Local
+import Data.UTC.Class.IsDate
+import Data.UTC.Class.IsTime
 
 rfc3339Builder :: (Monad m, IsDate t, IsTime t) => Local t -> m BS.Builder
 rfc3339Builder (Local t os)

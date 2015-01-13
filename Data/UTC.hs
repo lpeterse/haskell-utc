@@ -1,4 +1,4 @@
-module Data.Tempus
+module Data.UTC
   ( 
   -- * Interfaces
   -- ** Date
@@ -29,14 +29,14 @@ module Data.Tempus
   , renderRfc3339String, renderRfc3339Text, renderRfc3339LazyText, renderRfc3339ByteString, renderRfc3339LazyByteString
   ) where
 
-import Data.Tempus.Class.Epoch
-import Data.Tempus.Class.Midnight
-import Data.Tempus.Class.IsDate
-import Data.Tempus.Class.IsTime
-import Data.Tempus.Class.IsUnixTime
-import Data.Tempus.Class.HasUnixTime
-import Data.Tempus.Type.Date
-import Data.Tempus.Type.Time
-import Data.Tempus.Type.DateTime
-import Data.Tempus.Type.Local
-import Data.Tempus.Rfc3339
+import Data.UTC.Class.Epoch
+import Data.UTC.Class.Midnight
+import Data.UTC.Class.IsDate
+import Data.UTC.Class.IsTime
+import Data.UTC.Class.IsUnixTime
+import Data.UTC.Class.HasUnixTime
+import Data.UTC.Type.Date
+import Data.UTC.Type.Time
+import Data.UTC.Type.DateTime
+import Data.UTC.Type.Local
+import Data.UTC.Rfc3339

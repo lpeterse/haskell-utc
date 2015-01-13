@@ -1,11 +1,11 @@
 {-# LANGUAGE Safe #-}
-module Data.Tempus.Class.IsTime
+module Data.UTC.Class.IsTime
   ( IsTime (..)
   ) where
 
 import Data.Ratio
 
-import Data.Tempus.Internal
+import Data.UTC.Internal
 
 class IsTime t where
   -- | > hour           "2014-⁠12-⁠24T18:11:47.042Z" ==          18

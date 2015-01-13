@@ -1,5 +1,5 @@
-tempus
-======
+utc
+===
 
 [![Available on Hackage][badge-hackage]][hackage]
 [![License MIT][badge-license]][license]
@@ -26,11 +26,11 @@ Run the default test suite:
 cabal test
 ```
 
-[badge-travis]: https://travis-ci.org/lpeterse/tempus.svg?branch=master
-[travis]: https://travis-ci.org/lpeterse/tempus
-[badge-hackage]: https://img.shields.io/hackage/v/tempus.svg?dummy
-[hackage]: https://hackage.haskell.org/package/tempus
+[badge-travis]: https://img.shields.io/travis/lpeterse/haskell-utc.svg
+[travis]: https://travis-ci.org/lpeterse/haskell-utc
+[badge-hackage]: https://img.shields.io/hackage/v/utc.svg?dummy
+[hackage]: https://hackage.haskell.org/package/utc
 [badge-license]: https://img.shields.io/badge/license-MIT-green.svg?dummy
-[license]: https://github.com/lpeterse/tempus/blob/master/LICENSE
-[issues]: https://github.com/lpeterse/tempus/issues
-[Github]: https://github.com/lpeterse/tempus
+[license]: https://github.com/lpeterse/haskell-utc/blob/master/LICENSE
+[issues]: https://github.com/lpeterse/haskell-utc/issues
+[Github]: https://github.com/lpeterse/haskell-utc

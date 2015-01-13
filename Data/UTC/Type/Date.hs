@@ -1,13 +1,13 @@
-module Data.Tempus.Type.Date
+module Data.UTC.Type.Date
   ( Date ()
   ) where
 
 import Data.Ratio
 
-import Data.Tempus.Class.Epoch
-import Data.Tempus.Class.IsDate
-import Data.Tempus.Class.IsUnixTime
-import Data.Tempus.Internal
+import Data.UTC.Class.Epoch
+import Data.UTC.Class.IsDate
+import Data.UTC.Class.IsUnixTime
+import Data.UTC.Internal
 
 data Date
    = Date

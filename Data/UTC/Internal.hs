@@ -1,4 +1,4 @@
-module Data.Tempus.Internal
+module Data.UTC.Internal
   ( daysToYearMonthDay
   , yearMonthDayToDays
   , deltaUnixEpochCommonEpoch

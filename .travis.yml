@@ -7,7 +7,7 @@ install:
   - cabal sandbox init
   - cabal install --enable-tests --only-dependencies
 script:
-  - packdeps tempus.cabal
+  - packdeps utc.cabal
   - cabal configure --enable-tests
   - cabal build
   - cabal test

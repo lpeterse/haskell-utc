@@ -1,5 +1,5 @@
 {-# LANGUAGE FlexibleInstances #-}
-module Data.Tempus.Type.DateTime
+module Data.UTC.Type.DateTime
   ( -- * Type
     DateTime (..)
   ) where
@@ -7,15 +7,15 @@ module Data.Tempus.Type.DateTime
 import Data.String
 import Data.Maybe
 
-import Data.Tempus.Class.Epoch
-import Data.Tempus.Class.IsDate
-import Data.Tempus.Class.IsTime
-import Data.Tempus.Class.IsUnixTime
-import Data.Tempus.Type.Date
-import Data.Tempus.Type.Time
-import Data.Tempus.Rfc3339
-import Data.Tempus.Type.Local
-import Data.Tempus.Internal
+import Data.UTC.Class.Epoch
+import Data.UTC.Class.IsDate
+import Data.UTC.Class.IsTime
+import Data.UTC.Class.IsUnixTime
+import Data.UTC.Type.Date
+import Data.UTC.Type.Time
+import Data.UTC.Rfc3339
+import Data.UTC.Type.Local
+import Data.UTC.Internal
 
 -- | A time representation based on years, months, days, hours, minutes and seconds with
 --   local offset based on the UTC system. 

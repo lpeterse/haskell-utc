@@ -1,4 +1,4 @@
-module Data.Tempus.Rfc3339
+module Data.UTC.Rfc3339
   ( -- * Parsing
     parseRfc3339String, parseRfc3339Text, parseRfc3339LazyText, parseRfc3339ByteString, parseRfc3339LazyByteString
     -- * Rendering
@@ -16,12 +16,12 @@ import qualified Data.Text.Encoding         as T
 import qualified Data.Text.Lazy             as TL
 import qualified Data.Text.Lazy.Encoding    as TL
 
-import Data.Tempus.Class.Epoch
-import Data.Tempus.Class.IsDate
-import Data.Tempus.Class.IsTime
-import Data.Tempus.Type.Local
-import Data.Tempus.Rfc3339.Parser
-import Data.Tempus.Rfc3339.Builder
+import Data.UTC.Class.Epoch
+import Data.UTC.Class.IsDate
+import Data.UTC.Class.IsTime
+import Data.UTC.Type.Local
+import Data.UTC.Rfc3339.Parser
+import Data.UTC.Rfc3339.Builder
 
 -- | All method's results are wrapped in 'Control.Monad.Monad' to reflect possible
 --   failure of the computation. To easily obtain a plain value just use the 'Data.Maybe.Maybe'

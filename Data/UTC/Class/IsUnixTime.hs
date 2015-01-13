@@ -1,5 +1,5 @@
 {-# LANGUAGE Safe #-}
-module Data.Tempus.Class.IsUnixTime
+module Data.UTC.Class.IsUnixTime
   ( IsUnixTime(..)
   ) where
 

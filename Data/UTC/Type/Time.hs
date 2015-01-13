@@ -1,14 +1,14 @@
-module Data.Tempus.Type.Time
+module Data.UTC.Type.Time
   ( Time ()
   , midnight
   ) where
 
 import Data.Ratio
 
-import Data.Tempus.Class.Midnight
-import Data.Tempus.Class.IsTime
-import Data.Tempus.Class.IsUnixTime
-import Data.Tempus.Internal
+import Data.UTC.Class.Midnight
+import Data.UTC.Class.IsTime
+import Data.UTC.Class.IsUnixTime
+import Data.UTC.Internal
 
 data Time
    = Time

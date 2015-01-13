@@ -1,5 +1,5 @@
 {-# LANGUAGE Safe #-}
-module Data.Tempus.Class.Epoch
+module Data.UTC.Class.Epoch
   ( Epoch(..)
   ) where
 

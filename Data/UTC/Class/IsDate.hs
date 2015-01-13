@@ -1,10 +1,10 @@
 {-# LANGUAGE Safe #-}
-module Data.Tempus.Class.IsDate
+module Data.UTC.Class.IsDate
   ( IsDate (..)
   ) where
 
-import Data.Tempus.Internal
-import Data.Tempus.Class.Epoch
+import Data.UTC.Internal
+import Data.UTC.Class.Epoch
 
 class Epoch t => IsDate t where
   -- | > year  "2014-⁠12-⁠24" ==  2014
