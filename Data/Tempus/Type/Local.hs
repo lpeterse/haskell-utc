@@ -14,8 +14,14 @@ import Data.Tempus.Type.Time
 
 data Local time
    = Local 
-     { utc    :: time
-     , offset :: Maybe Rational
+     { -- | The time to be interpreted as UTC+00:00 (__W__estern __E__uropean __T__ime)
+       utc    :: time
+     , -- | ['Nothing'] The local offset is unknown (behaves like __W__estern __E__uropean __T__ime)
+       --
+       -- ['Just' 0] UTC+00:00 (__W__estern __E__uropean __T__ime)
+       --
+       -- ['Just' 3600] UTC+01:00 (__C__entral __E__uropean __T__ime)
+       offset :: Maybe Rational
      }
 
 instance Eq t => Eq (Local t) where
