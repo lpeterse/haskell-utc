@@ -1,10 +1,10 @@
 module Data.Tempus.Class
-  ( module Data.Tempus.Class.Epoch
-  , module Data.Tempus.Class.Midnight
-  , module Data.Tempus.Class.IsDate
+  ( module Data.Tempus.Class.IsDate
   , module Data.Tempus.Class.IsTime
   , module Data.Tempus.Class.IsUnixTime
   , module Data.Tempus.Class.HasUnixTime
+  , module Data.Tempus.Class.Epoch
+  , module Data.Tempus.Class.Midnight
   ) where
 
 import Data.Tempus.Class.Epoch

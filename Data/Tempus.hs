@@ -1,16 +1,16 @@
 module Data.Tempus
   ( 
   -- * Classes
-  -- ** Epoch
-    Epoch(..)
-  -- ** Midnight
-  , Midnight(..)
   -- ** Date
-  , IsDate(..)
+    IsDate(..)
   -- ** Time
   , IsTime (..)
   -- ** Unix Time
   , IsUnixTime(..)
+  -- ** Epoch / Midnight
+  , Epoch(..)
+  , Midnight(..)
+    -- ** Getting (current) timestamps
   , HasUnixTime (..)
   -- * Types
   -- ** Date

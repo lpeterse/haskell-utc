@@ -36,9 +36,9 @@ Library
                    , Data.Tempus.Type.DateTime
                    , Data.Tempus.Type.Local
                    , Data.Tempus.Rfc3339
-                   , Data.Tempus.Internal
   other-modules:     Data.Tempus.Rfc3339.Parser
                    , Data.Tempus.Rfc3339.Builder
+                   , Data.Tempus.Internal
 
 Test-Suite test
   type:              detailed-0.9
