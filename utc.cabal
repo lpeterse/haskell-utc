@@ -2,10 +2,23 @@ name:                utc
 version:             0.1.0.0
 stability:           experimental
 synopsis:            A pragmatic time and date library.
-description:         This is a work in progress!
+description:         This library aims to supply you with common
+                     types and operations for working with time and date.
+                     .
+                       * Parsing and rendering common formats like ISO8601 and RFC3339.
+                     .
+                       * Modifying dates and times in a way that is easy to understand
+                         and not overengineered (srsly, who needs something else than the
+                         Gregorian Calendar?)
+                     .
+                       * A set of classes that provide interfaces for your own application
+                         specific or maybe more efficient time and date types. Implement the
+                         interfaces and get all the parsing and rendering functions for free!
+                     .
+                     This is a work in progress!
                      .
                      Try it out and play with it. Tell me what you think
-                     about the API and function naming, but __DON'T USE IT
+                     about the API design and naming, but __DON'T USE IT
                      IN PRODUCTION YET!__
                      .
                      Bug reports or (even better) tests are welcome.
@@ -13,7 +26,9 @@ license:             MIT
 license-file:        LICENSE
 author:              Lars Petersen
 maintainer:          lars@nyantec.com
-copyright:           Lars Petersen
+copyright:           Copyright (c) Lars Petersen 2014-2015
+homepage:            https://github.com/lpeterse/haskell-utc
+bug-reports:         https://github.com/lpeterse/haskell-utc/issues
 category:            Data, Time, Parsing
 build-type:          Simple
 cabal-version:       >=1.10
