@@ -1,6 +1,8 @@
 module Data.UTC
   ( 
-  -- * Interfaces
+  -- * Introduction
+  -- $introduction
+  -- * Interfacess
   -- ** Date
     IsDate(..)
   -- ** Time
@@ -29,6 +31,10 @@ module Data.UTC
   , renderRfc3339String, renderRfc3339Text, renderRfc3339LazyText, renderRfc3339ByteString, renderRfc3339LazyByteString
   ) where
 
+-- $introduction
+--
+-- huh
+
 import Data.UTC.Class.Epoch
 import Data.UTC.Class.Midnight
 import Data.UTC.Class.IsDate
@@ -40,3 +46,4 @@ import Data.UTC.Type.Time
 import Data.UTC.Type.DateTime
 import Data.UTC.Type.Local
 import Data.UTC.Format.Rfc3339
+

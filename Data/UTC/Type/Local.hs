@@ -11,6 +11,11 @@ import Data.UTC.Class.Midnight
 import Data.UTC.Class.IsTime
 import Data.UTC.Type.Time
 
+-- | This type is used to extend UTC time types by a local offset.
+--
+--   /Beware/: A local offset is not a time zone. It is just a fix
+--   period of time. In contrast to a time zone this does not take
+--   sommer or winter time into account.
 data Local time
    = Local 
      { -- | The time to be interpreted as UTC+00:00 (__W__estern __E__uropean __T__ime)
