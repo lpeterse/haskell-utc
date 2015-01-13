@@ -23,13 +23,10 @@ class IsTime t where
 
   addHours              :: (Monad m) => Integer  -> t -> m t
   addHours h t
-    = if days /= 0
-        then fail "IsTime.addHours: out of range"
-        else setHour hors t
+    = setHour hors t
     where
       h'   = h + (hour t)
       hors = h' `mod` hoursPerDay
-      days = h' `div` hoursPerDay
 
   addMinutes            :: (Monad m) => Integer  -> t -> m t
   addMinutes m t

@@ -1,6 +1,6 @@
 module Data.Tempus
   ( 
-  -- * Classes
+  -- * Interfaces
   -- ** Date
     IsDate(..)
   -- ** Time
@@ -12,7 +12,7 @@ module Data.Tempus
   , Midnight(..)
     -- ** Getting (current) timestamps
   , HasUnixTime (..)
-  -- * Types
+  -- * Generic date/time types
   -- ** Date
   , Date
   -- ** Time

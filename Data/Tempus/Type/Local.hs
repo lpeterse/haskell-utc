@@ -1,12 +1,16 @@
+{-# LANGUAGE Safe, FlexibleInstances #-}
 module Data.Tempus.Type.Local
   ( Local (..)
   , unknown
   ) where
 
+import Data.Maybe
+
 import Data.Tempus.Class.Epoch
 import Data.Tempus.Class.Midnight
 import Data.Tempus.Class.IsDate
 import Data.Tempus.Class.IsTime
+import Data.Tempus.Type.Time
 
 data Local time
    = Local 
@@ -38,23 +42,74 @@ instance Bounded t => Bounded (Local t) where
   minBound  = unknown minBound
   maxBound  = unknown maxBound
 
-instance IsDate t => IsDate (Local t) where
-  year      = undefined
-  month     = undefined
-  day       = undefined
-  setYear   = undefined
-  setMonth  = undefined
-  setDay    = undefined
+-- assumption: addSecondFractions for Time is always successful
+instance IsTime (Local Time) where
+  hour (Local t Nothing)
+    = hour t
+  hour (Local t (Just 0))
+    = hour t
+  hour (Local t (Just o))
+    = hour
+    $ fromMaybe undefined $ addSecondFractions o t
+  minute (Local t Nothing)
+    = minute t
+  minute (Local t (Just 0))
+    = minute t
+  minute (Local t (Just o))
+    = minute
+    $ fromMaybe undefined $ addSecondFractions o t
+  second (Local t Nothing)
+    = second t
+  second (Local t (Just 0))
+    = second t
+  second  (Local t (Just o))
+    = second
+    $ fromMaybe undefined $ addSecondFractions o t
+  secondFraction (Local t Nothing)
+    = secondFraction t
+  secondFraction (Local t (Just 0))
+    = secondFraction t
+  secondFraction (Local t (Just o))
+    = secondFraction
+    $ fromMaybe undefined $ addSecondFractions o t
+  setHour h (Local t o@Nothing)
+    = do t' <- setHour h t
+         return (Local t' o)
+  setHour h (Local t o@(Just 0))
+    = do t' <- setHour h t
+         return (Local t' o)
+  setHour h (Local t o@(Just i))
+    = do t' <- addSecondFractions i t >>= setHour h >>= addSecondFractions (negate i)
+         return (Local t' o)
+  setMinute h (Local t o@Nothing)
+    = do t' <- setMinute h t
+         return (Local t' o)
+  setMinute h (Local t o@(Just 0))
+    = do t' <- setMinute h t
+         return (Local t' o)
+  setMinute h (Local t o@(Just i))
+    = do t' <- addSecondFractions i t >>= setMinute h >>= addSecondFractions (negate i)
+         return (Local t' o)
+  setSecond h (Local t o@Nothing)
+    = do t' <- setSecond h t
+         return (Local t' o)
+  setSecond h (Local t o@(Just 0))
+    = do t' <- setSecond h t
+         return (Local t' o)
+  setSecond h (Local t o@(Just i))
+    = do t' <- addSecondFractions i t >>= setSecond h >>= addSecondFractions (negate i)
+         return (Local t' o)
+  setSecondFraction h (Local t o@Nothing)
+    = do t' <- setSecondFraction h t
+         return (Local t' o)
+  setSecondFraction h (Local t o@(Just 0))
+    = do t' <- setSecondFraction h t
+         return (Local t' o)
+  setSecondFraction h (Local t o@(Just i))
+    = do t' <- addSecondFractions i t >>= setSecondFraction h >>= addSecondFractions (negate i)
+         return (Local t' o)
 
-instance IsTime t => IsTime (Local t) where
-  hour  = undefined
-  minute = undefined
-  second  = undefined
-  secondFraction  = undefined
-  setHour = undefined
-  setMinute  = undefined
-  setSecond   = undefined
-  setSecondFraction  = undefined
+
 
 unknown :: t -> Local t
 unknown t
