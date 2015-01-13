@@ -3,18 +3,18 @@ version:             0.1.0.0
 stability:           experimental
 synopsis:            A pragmatic time and date library.
 description:         This is a work in progress!
-
+                     .
                      Try it out and play with it. Tell me what you think
                      about the API and function naming, but __DON'T USE IT
                      IN PRODUCTION YET!__
-
+                     .
                      Bug reports or (even better) tests are welcome.
 license:             MIT
 license-file:        LICENSE
 author:              Lars Petersen
 maintainer:          lars@nyantec.com
 copyright:           Lars Petersen
-category:            Data
+category:            Data, Time, Parsing
 build-type:          Simple
 cabal-version:       >=1.10
 
