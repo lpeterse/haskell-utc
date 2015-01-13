@@ -21,7 +21,7 @@ cabal-version:       >=1.10
 Library
   build-depends:     base < 5
                    , text
-                   , bytestring
+                   , bytestring >= 0.10.4.0
                    , attoparsec
                    , clock >= 0.3 && < 0.5
   ghc-options:       -Wall
@@ -70,7 +70,7 @@ Test-Suite test
                    , Data.UTC.Internal
   build-depends:     base < 5
                    , text
-                   , bytestring
+                   , bytestring >= 0.10.4.0
                    , attoparsec
                    , clock >= 0.3 && < 0.5
                    -- additional deps for testing
