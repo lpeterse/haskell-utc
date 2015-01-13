@@ -55,9 +55,9 @@ Library
                    , Data.UTC.Type.Time
                    , Data.UTC.Type.DateTime
                    , Data.UTC.Type.Local
-                   , Data.UTC.Rfc3339
-  other-modules:     Data.UTC.Rfc3339.Parser
-                   , Data.UTC.Rfc3339.Builder
+                   , Data.UTC.Format.Rfc3339
+  other-modules:     Data.UTC.Format.Rfc3339.Parser
+                   , Data.UTC.Format.Rfc3339.Builder
                    , Data.UTC.Internal
 
 Test-Suite test
@@ -78,10 +78,10 @@ Test-Suite test
                    , Data.UTC.Type.Time
                    , Data.UTC.Type.DateTime
                    , Data.UTC.Type.Local
-                   , Data.UTC.Rfc3339
+                   , Data.UTC.Format.Rfc3339
                    -- in library unexposed modules
-                   , Data.UTC.Rfc3339.Parser
-                   , Data.UTC.Rfc3339.Builder
+                   , Data.UTC.Format.Rfc3339.Parser
+                   , Data.UTC.Format.Rfc3339.Builder
                    , Data.UTC.Internal
   build-depends:     base < 5
                    , text

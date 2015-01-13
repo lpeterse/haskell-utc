@@ -1,4 +1,4 @@
-module Data.UTC.Rfc3339
+module Data.UTC.Format.Rfc3339
   ( -- * Parsing
     parseRfc3339String, parseRfc3339Text, parseRfc3339LazyText, parseRfc3339ByteString, parseRfc3339LazyByteString
     -- * Rendering
@@ -20,8 +20,8 @@ import Data.UTC.Class.Epoch
 import Data.UTC.Class.IsDate
 import Data.UTC.Class.IsTime
 import Data.UTC.Type.Local
-import Data.UTC.Rfc3339.Parser
-import Data.UTC.Rfc3339.Builder
+import Data.UTC.Format.Rfc3339.Parser
+import Data.UTC.Format.Rfc3339.Builder
 
 -- | All method's results are wrapped in 'Control.Monad.Monad' to reflect possible
 --   failure of the computation. To easily obtain a plain value just use the 'Data.Maybe.Maybe'

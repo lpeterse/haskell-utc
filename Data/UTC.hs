@@ -39,4 +39,4 @@ import Data.UTC.Type.Date
 import Data.UTC.Type.Time
 import Data.UTC.Type.DateTime
 import Data.UTC.Type.Local
-import Data.UTC.Rfc3339
+import Data.UTC.Format.Rfc3339

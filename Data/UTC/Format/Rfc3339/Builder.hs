@@ -1,5 +1,5 @@
 {-# LANGUAGE Safe #-}
-module Data.UTC.Rfc3339.Builder
+module Data.UTC.Format.Rfc3339.Builder
   ( rfc3339Builder
   ) where
 

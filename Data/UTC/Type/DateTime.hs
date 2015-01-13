@@ -13,8 +13,8 @@ import Data.UTC.Class.IsTime
 import Data.UTC.Class.IsUnixTime
 import Data.UTC.Type.Date
 import Data.UTC.Type.Time
-import Data.UTC.Rfc3339
 import Data.UTC.Type.Local
+import Data.UTC.Format.Rfc3339
 import Data.UTC.Internal
 
 -- | A time representation based on years, months, days, hours, minutes and seconds with

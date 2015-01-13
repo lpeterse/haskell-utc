@@ -8,7 +8,6 @@ import Data.Maybe
 
 import Data.UTC.Class.Epoch
 import Data.UTC.Class.Midnight
-import Data.UTC.Class.IsDate
 import Data.UTC.Class.IsTime
 import Data.UTC.Type.Time
 

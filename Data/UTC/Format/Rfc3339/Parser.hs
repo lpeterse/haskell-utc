@@ -1,4 +1,4 @@
-module Data.UTC.Rfc3339.Parser
+module Data.UTC.Format.Rfc3339.Parser
   ( rfc3339Parser
   ) where
 
