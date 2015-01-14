@@ -33,7 +33,7 @@ class HasUnixTime m where
   -- > printCurrentYear
   -- >   = do now <- getTime :: IO DateTime
   -- >        print (year now)
-  getUnixTime :: (IsUnixTime a) => m a
+  getUnixTime :: (Monad m, IsUnixTime a) => m a
 
 instance HasUnixTime IO where
   getUnixTime
