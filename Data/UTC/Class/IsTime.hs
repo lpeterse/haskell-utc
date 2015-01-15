@@ -46,7 +46,9 @@ class IsTime t where
 
   addSecondFractions    :: (Monad m) => Rational -> t -> m t
   addSecondFractions f t
-    = setSecondFraction frcs t >>= addSeconds secs
+    | f == 0    = return t
+    | f >= 0    = setSecondFraction frcs t         >>= addSeconds secs
+    | otherwise = setSecondFraction (frcs + 1.0) t >>= addSeconds (secs - 1)
     where
       f'   = f + (secondFraction t)
       frcs = f' - (truncate f' % 1)
