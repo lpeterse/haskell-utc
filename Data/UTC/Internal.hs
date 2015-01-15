@@ -39,6 +39,13 @@ hoursPerDay
 --    * year 400         is     a leap year
 --    * year 100,200,300 is not a leap year
 --    * year / 4         is     a leap year
+--    * year (-4) (5 BC) is     a leap year
+
+--    * AD/BC vs. astronomical year numbering (as used by ISO8601)
+--    * year   0         ia 1 BC
+--    * year (-1)        is 2 BC
+--    * year (-2)        is 3 BC etc.
+
 yearMonthDayToDays :: (Integer, Integer, Integer) -> Integer
 yearMonthDayToDays (year,month,day)
   = -- count of days of the "finalised" years (therefor -1)
@@ -67,13 +74,12 @@ yearMonthDayToDays (year,month,day)
       | otherwise                                                               = 0
 
 yearToDays :: Integer -> Integer
-yearToDays yyyy
-  | y    >= 0 = 366 + (y * 365) + (y `div` 4) - (y `div` 100) + (y `div` 400)
-  | otherwise = 0
-  where
-    -- the sequence of leap years is periodic in 400 years
-    -- note: (-1) `mod` 400 == 399
-    y = yyyy `mod` 400
+yearToDays y
+  = (if y >= 0 then 366 else 0) -- The year 0 is a leap year..
+  + (y * 365)                   -- .. and a normal year has 365 days ..
+  + (y `quot` 4)                -- .. and every 4 years a leap day occurs..
+  - (y `quot` 100)              -- .. but not in centuries ..
+  + (y `quot` 400)              -- .. except every 400 years.
 
 -- | Influenced by an ingenious solution from @caf found here:
 --   https://stackoverflow.com/questions/1274964/how-to-decompose-unix-time-in-c

@@ -42,21 +42,52 @@ testGroup1
 testInternalCalendarFunctions :: Test
 testInternalCalendarFunctions
   = testGroup "internal calendar functions"
-  $ [ testProperty "yearToDays 0 === 366"
-    $ yearToDays 0 === 366
-    , testProperty "yearToDays 1 === 366 + 365"
-    $ yearToDays 1 === 366 + 365
-    , testProperty "yearToDays (-1) === 0 - 365"
-    $ yearToDays (-1) === 0 - 365
-    , testProperty "yearToDays (-2) === 0 - 365 - 365"
-    $ yearToDays (-2) === 0 - 365 - 365
-    , testProperty "yearToDays (-3) === 0 - 365 - 365 - 365"
-    $ yearToDays (-3) === 0 - 365 - 365 - 365
-    , testProperty "yearToDays (-4) === 0 - 365 - 365 - 365 - 365"
-    $ yearToDays (-4) === 0 - 365 - 365 - 365 - 365
-    , testProperty "yearToDays (-5) === 0 - 365 - 365 - 365 - 365 - 366"
-    $ yearToDays (-5) === 0 - 365 - 365 - 365 - 365 - 366
+  $ [ testProperty ("yearToDays 800    === 366 + 365 * 800 + length " ++ show (js 800))
+    $ yearToDays 800    === 366 + 365 * 800 + (fromIntegral $ length (js 800))
+    , testProperty ("yearToDays 700    === 366 + 365 * 700 + length " ++ show (js 700))
+    $ yearToDays 700    === 366 + 365 * 700 + (fromIntegral $ length (js 700))
+    , testProperty ("yearToDays 600    === 366 + 365 * 600 + length " ++ show (js 600))
+    $ yearToDays 600    === 366 + 365 * 600 + (fromIntegral $ length (js 600))
+    , testProperty ("yearToDays 500    === 366 + 365 * 500 + length " ++ show (js 500))
+    $ yearToDays 500    === 366 + 365 * 500 + (fromIntegral $ length (js 500))
+    , testProperty ("yearToDays 400    === 366 + 365 * 400 + length " ++ show (js 400))
+    $ yearToDays 400    === 366 + 365 * 400 + (fromIntegral $ length (js 400))
+    , testProperty ("yearToDays 300    === 366 + 365 * 300 + length " ++ show (js 300))
+    $ yearToDays 300    === 366 + 365 * 300 + (fromIntegral $ length (js 300))
+    , testProperty ("yearToDays 200    === 366 + 365 * 200 + length " ++ show (js 200))
+    $ yearToDays 200    === 366 + 365 * 200 + (fromIntegral $ length (js 200))
+    , testProperty ("yearToDays 100    === 366 + 365 * 100 + length " ++ show (js 100))
+    $ yearToDays 100    === 366 + 365 * 100 + (fromIntegral $ length (js 100))
+    , testProperty  "yearToDays   4    === 366 + 365 + 365 + 365 + 366"
+    $ yearToDays   4    === 366 + 365 + 365 + 365 + 366
+    , testProperty  "yearToDays   3    === 366 + 365 + 365 + 365"
+    $ yearToDays   3    === 366 + 365 + 365 + 365
+    , testProperty  "yearToDays   2    === 366 + 365 + 365"
+    $ yearToDays   2    === 366 + 365 + 365
+    , testProperty  "yearToDays   1    === 366 + 365"
+    $ yearToDays   1    === 366 + 365
+    , testProperty  "yearToDays   0    === 366"
+    $ yearToDays   0    === 366
+    , testProperty  "yearToDays (-1)   === 0 - 365"
+    $ yearToDays (-1)   === 0 - 365
+    , testProperty  "yearToDays (-2)   === 0 - 365 - 365"
+    $ yearToDays (-2)   === 0 - 365 - 365
+    , testProperty  "yearToDays (-3)   === 0 - 365 - 365 - 365"
+    $ yearToDays (-3)   === 0 - 365 - 365 - 365
+    , testProperty  "yearToDays (-4)   === 0 - 365 - 365 - 365 - 366"
+    $ yearToDays (-4)   === 0 - 365 - 365 - 365 - 366
+    , testProperty ("yearToDays (-100) === (-365) * 100 - length " ++ show (ls 100))
+    $ yearToDays (-100) === (-365) * 100 - (fromIntegral $ length (ls 100))
+    , testProperty ("yearToDays (-200) === (-365) * 200 - length " ++ show (ls 200))
+    $ yearToDays (-200) === (-365) * 200 - (fromIntegral $ length (ls 200))
+    , testProperty ("yearToDays (-300) === (-365) * 300 - length " ++ show (ls 300))
+    $ yearToDays (-300) === (-365) * 300 - (fromIntegral $ length (ls 300))
+    , testProperty ("yearToDays (-400) === (-365) * 400 - length " ++ show (ls 400))
+    $ yearToDays (-400) === (-365) * 400 - (fromIntegral $ length (ls 400))
     ]
+  where
+    ls z = [x | x <- [negate z..(-1)], x `mod` 400 == 0 || (x `mod` 4 == 0 && x `mod` 100 /= 0 )]
+    js z = [x | x <- [1..z], x `mod` 400 == 0 || (x `mod` 4 == 0 && x `mod` 100 /= 0 )]
 
 testTimeInstance :: (IsTime t, Eq t) => t -> [Test]
 testTimeInstance t
