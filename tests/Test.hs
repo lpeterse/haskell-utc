@@ -15,13 +15,14 @@ tests :: IO [Test]
 tests
   = return $ testUnixTimeInstance "DateTime"           (undefined :: DateTime)
           ++ testDateInstance     "DateTime"           (undefined :: DateTime)
-          ++ testTimeInstance     "DateTime"           (epoch :: DateTime)
+          ++ testTimeInstance     "DateTime"           (epoch     :: DateTime)
+          ++ testTimeInstance     "Time"               (midnight  :: Time)
           ++ [ testProperty ("yearMonthDayToDays (daysToYearMonthDay x) == x")
               $ forAll (choose (0, 3652424)) -- 0000-01-01 to 9999-12-31
               $ \x-> yearMonthDayToDays (daysToYearMonthDay x) == x
             ]
 
-testTimeInstance :: (IsTime t, IsString t,Eq t) => String -> t -> [Test]
+testTimeInstance :: (IsTime t, Eq t) => String -> t -> [Test]
 testTimeInstance tn t
   = [ testProperty ("instance Time " ++ tn ++ ": test 1.t1")
     $ (t1 >>= return . hour) == Just 12

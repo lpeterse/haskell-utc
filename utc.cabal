@@ -89,7 +89,7 @@ Test-Suite test
                    , attoparsec
                    , clock >= 0.3 && < 0.5
                    -- additional deps for testing
-                   , Cabal
+                   , Cabal >= 1.20
                    , cabal-test-quickcheck >= 0.1.2 && < 0.2
                    , QuickCheck
   default-language:  Haskell98
