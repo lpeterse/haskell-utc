@@ -1,26 +1,33 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Test ( tests ) where
-
-import Distribution.TestSuite
-import Distribution.TestSuite.QuickCheck
+module Main (main) where
 
 import Test.QuickCheck
+import Test.Framework (defaultMain, testGroup)
+import Test.Framework (Test)
+import Test.Framework.Providers.QuickCheck2 (testProperty)
 
 import Data.String
 
 import Data.UTC
 import Data.UTC.Internal
 
-tests :: IO [Test]
-tests
-  = return $ testUnixTimeInstance "DateTime"           (undefined :: DateTime)
-          ++ testDateInstance     "DateTime"           (undefined :: DateTime)
-          ++ testTimeInstance     "DateTime"           (epoch     :: DateTime)
-          ++ testTimeInstance     "Time"               (midnight  :: Time)
-          ++ [ testProperty ("yearMonthDayToDays (daysToYearMonthDay x) == x")
-              $ forAll (choose (0, 3652424)) -- 0000-01-01 to 9999-12-31
-              $ \x-> yearMonthDayToDays (daysToYearMonthDay x) == x
-            ]
+main :: IO ()
+main
+  = defaultMain
+    [ testGroup "group 1" testGroup1
+    ]
+
+testGroup1 :: [Test]
+testGroup1
+  =  testUnixTimeInstance "DateTime"           (undefined :: DateTime)
+  ++ testDateInstance     "DateTime"           (undefined :: DateTime)
+  ++ testTimeInstance     "DateTime"           (epoch     :: DateTime)
+  ++ testTimeInstance     "Time"               (midnight  :: Time)
+  ++ [ testProperty ("yearMonthDayToDays (daysToYearMonthDay x) == x")
+      $ forAll (choose (0, 3652424)) -- 0000-01-01 to 9999-12-31
+      $ \x-> yearMonthDayToDays (daysToYearMonthDay x) == x
+     ]
+
 
 testTimeInstance :: (IsTime t, Eq t) => String -> t -> [Test]
 testTimeInstance tn t
