@@ -27,6 +27,7 @@ testGroup1
      $ testTimeInstance (epoch     :: DateTime)
      , testGroup "instance Time Time"
      $ testTimeInstance (midnight  :: Time)
+     , testInternalCalendarFunctions
      , testProperty ("yearMonthDayToDays (daysToYearMonthDay x) - x === 0 for 0 < x < 3652424")
      $ forAll (choose (0, 3652424)) -- 0000-01-01 to 9999-12-31
      $ \x-> yearMonthDayToDays (daysToYearMonthDay x) - x === 0
@@ -37,6 +38,25 @@ testGroup1
      $ forAll (choose (-1000000, 5000000)) -- 0000-01-01 to 9999-12-31
      $ \x-> yearMonthDayToDays (daysToYearMonthDay x) - x === 0
      ]
+
+testInternalCalendarFunctions :: Test
+testInternalCalendarFunctions
+  = testGroup "internal calendar functions"
+  $ [ testProperty "yearToDays 0 === 366"
+    $ yearToDays 0 === 366
+    , testProperty "yearToDays 1 === 366 + 365"
+    $ yearToDays 1 === 366 + 365
+    , testProperty "yearToDays (-1) === 0 - 365"
+    $ yearToDays (-1) === 0 - 365
+    , testProperty "yearToDays (-2) === 0 - 365 - 365"
+    $ yearToDays (-2) === 0 - 365 - 365
+    , testProperty "yearToDays (-3) === 0 - 365 - 365 - 365"
+    $ yearToDays (-3) === 0 - 365 - 365 - 365
+    , testProperty "yearToDays (-4) === 0 - 365 - 365 - 365 - 365"
+    $ yearToDays (-4) === 0 - 365 - 365 - 365 - 365
+    , testProperty "yearToDays (-5) === 0 - 365 - 365 - 365 - 365 - 366"
+    $ yearToDays (-5) === 0 - 365 - 365 - 365 - 365 - 366
+    ]
 
 testTimeInstance :: (IsTime t, Eq t) => t -> [Test]
 testTimeInstance t

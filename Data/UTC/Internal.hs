@@ -1,6 +1,7 @@
 module Data.UTC.Internal
   ( daysToYearMonthDay
   , yearMonthDayToDays
+  , yearToDays
   , deltaUnixEpochCommonEpoch
 
   , isValidDate
@@ -32,9 +33,15 @@ hoursPerDay :: Integer
 hoursPerDay
   = 24
 
+-- | Convert Year-Month-Day to since 0000-01-01 in the Gregorian Calendar
+--
+--    * year   0         is     a leap year
+--    * year 400         is     a leap year
+--    * year 100,200,300 is not a leap year
+--    * year / 4         is     a leap year
 yearMonthDayToDays :: (Integer, Integer, Integer) -> Integer
 yearMonthDayToDays (year,month,day)
-  = -- count of days of the "finalised" years
+  = -- count of days of the "finalised" years (therefor -1)
     let daysY = yearToDays (year - 1)
     -- count of days of the "finalised" months
         daysM = case month - 1 of
@@ -54,16 +61,19 @@ yearMonthDayToDays (year,month,day)
         daysD = day - 1
     in  daysY + daysM + daysD
   where
-
-    yearToDays :: Integer -> Integer
-    yearToDays y 
-      | y    >= 0 = ((y + 1) * 365) + (y `div` 4) - (y `div` 100) + (y `div` 400) + 1
-      | otherwise = 0
-
     leapDay :: Integer
     leapDay
       | (year `mod` 4 == 0) && ((year `mod` 400 == 0) || (year `mod` 100 /= 0)) = 1
       | otherwise                                                               = 0
+
+yearToDays :: Integer -> Integer
+yearToDays yyyy
+  | y    >= 0 = 366 + (y * 365) + (y `div` 4) - (y `div` 100) + (y `div` 400)
+  | otherwise = 0
+  where
+    -- the sequence of leap years is periodic in 400 years
+    -- note: (-1) `mod` 400 == 399
+    y = yyyy `mod` 400
 
 -- | Influenced by an ingenious solution from @caf found here:
 --   https://stackoverflow.com/questions/1274964/how-to-decompose-unix-time-in-c
