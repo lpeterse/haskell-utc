@@ -14,89 +14,93 @@ import Data.UTC.Internal
 main :: IO ()
 main
   = defaultMain
-    [ testGroup "group 1" testGroup1
+    [ testGroup "Main" testGroup1
     ]
 
 testGroup1 :: [Test]
 testGroup1
-  =  testUnixTimeInstance "DateTime"           (undefined :: DateTime)
-  ++ testDateInstance     "DateTime"           (undefined :: DateTime)
-  ++ testTimeInstance     "DateTime"           (epoch     :: DateTime)
-  ++ testTimeInstance     "Time"               (midnight  :: Time)
+  =  [ testGroup "instance IsUnixTime DateTime"
+     $ testUnixTimeInstance (undefined :: DateTime)
+     , testGroup "instance IsDate DateTime"
+     $ testDateInstance (undefined :: DateTime)
+     , testGroup "instance Time DateTime"
+     $ testTimeInstance (epoch     :: DateTime)
+     , testGroup "instance Time Time"
+     $ testTimeInstance (midnight  :: Time)
+     ]
   ++ [ testProperty ("yearMonthDayToDays (daysToYearMonthDay x) == x")
       $ forAll (choose (0, 3652424)) -- 0000-01-01 to 9999-12-31
       $ \x-> yearMonthDayToDays (daysToYearMonthDay x) == x
      ]
 
 
-testTimeInstance :: (IsTime t, Eq t) => String -> t -> [Test]
-testTimeInstance tn t
-  = [ testProperty ("instance Time " ++ tn ++ ": test 1.t1")
+testTimeInstance :: (IsTime t, Eq t) => t -> [Test]
+testTimeInstance t
+  = [ testProperty ("test 1.t1")
     $ (t1 >>= return . hour) == Just 12
-    , testProperty ("instance Time " ++ tn ++ ": test 1.t2")
+    , testProperty ("test 1.t2")
     $ (t2 >>= return . hour) == Just 12
-    , testProperty ("instance Time " ++ tn ++ ": test 2.t1")
+    , testProperty ("test 2.t1")
     $ (t2 >>= return . minute) == Just 13
-    , testProperty ("instance Time " ++ tn ++ ": test 2.t2")
+    , testProperty ("test 2.t2")
     $ (t2 >>= return . minute) == Just 13
-    , testProperty ("instance Time " ++ tn ++ ": test 3.t1")
+    , testProperty ("test 3.t1")
     $ (t2 >>= return . second) == Just 14
-    , testProperty ("instance Time " ++ tn ++ ": test 3.t2")
+    , testProperty ("test 3.t2")
     $ (t2 >>= return . second) == Just 14
-    , testProperty ("instance Time " ++ tn ++ ": test 4.t1")
+    , testProperty ("test 4.t1")
     $ (t2 >>= return . secondFraction) == Just 0.56789
-    , testProperty ("instance Time " ++ tn ++ ": test 4.t2")
+    , testProperty ("test 4.t2")
     $ (t2 >>= return . secondFraction) == Just 0.56789
     ]
-    ++ map (\(n,d)-> testProperty ("instance Time " ++ tn ++ ": test 5." ++ n)
+    ++ map (\(n,d)-> testProperty ("test 5." ++ n)
                    $ d == (Nothing `asTypeOf` Just t)
            ) invalidTimes
     ++
     -- Testing the add* functions of the Time class.
-    [ testProperty (pn "test 6.01 - adding 1 hour shall add 1 hour")
+    [ testProperty ("test 6.01 - adding 1 hour shall add 1 hour")
     $ (addHours 1 t >>= return . hour) == Just 1
-    , testProperty (pn "test 6.02 - adding 25 hours shall just add 1 hour")
+    , testProperty ("test 6.02 - adding 25 hours shall just add 1 hour")
     $ (addHours 25 t >>= return . hour) == Just 1
-    , testProperty (pn "test 6.03 - adding 49 hours shall just add 1 hour")
+    , testProperty ("test 6.03 - adding 49 hours shall just add 1 hour")
     $ (addHours 49 t >>= return . hour) == Just 1
-    , testProperty (pn "test 6.04 - adding a negative count of hours")
+    , testProperty ("test 6.04 - adding a negative count of hours")
     $ (addHours (-1) t >>= return . hour) == Just 23
-    , testProperty (pn "test 6.05 - addHours twice in sequence")
+    , testProperty ("test 6.05 - addHours twice in sequence")
     $ (addHours 3 t >>= addHours 4 >>= return . hour) == Just 7
-    , testProperty (pn "test 6.06 - adding 1 minute shall add 1 minute")
+    , testProperty ("test 6.06 - adding 1 minute shall add 1 minute")
     $ (addMinutes 1 t >>= return . minute) == Just 1
-    , testProperty (pn "test 6.07 - adding 60 minutes shall add 1 hour")
+    , testProperty ("test 6.07 - adding 60 minutes shall add 1 hour")
     $ (addMinutes 60 t >>= return . hour) == Just 1
-    , testProperty (pn "test 6.08 - adding 61 minutes shall add 1 hour + 1 minute")
+    , testProperty ("test 6.08 - adding 61 minutes shall add 1 hour + 1 minute")
     $ (addMinutes 61 t >>= return . hour) == Just 1 &&
       (addMinutes 61 t >>= return . minute) == Just 1
-    , testProperty (pn "test 6.09 - adding -1 minute shall result in 23:59")
+    , testProperty ("test 6.09 - adding -1 minute shall result in 23:59")
     $ (addMinutes (-1) t >>= return . hour) == Just 23 &&
       (addMinutes (-1) t >>= return . minute) == Just 59
-    , testProperty (pn "test 6.10 - adding 1 second shall add 1 second")
+    , testProperty ("test 6.10 - adding 1 second shall add 1 second")
     $ (addSeconds 1 t >>= return . second) == Just 1
-    , testProperty (pn "test 6.11 - adding 60 seconds shall add 1 minute")
+    , testProperty ("test 6.11 - adding 60 seconds shall add 1 minute")
     $ (addSeconds 60 t >>= return . minute) == Just 1
-    , testProperty (pn "test 6.12 - adding 61 seconds shall add 1 minute + 1 second")
+    , testProperty ("test 6.12 - adding 61 seconds shall add 1 minute + 1 second")
     $ (addSeconds 61 t >>= return . minute) == Just 1 &&
       (addSeconds 61 t >>= return . second) == Just 1
-    , testProperty (pn "test 6.13 - adding -1 second shall result in 23:59:59")
+    , testProperty ("test 6.13 - adding -1 second shall result in 23:59:59")
     $ (addSeconds (-1) t >>= return . hour) == Just 23 &&
       (addSeconds (-1) t >>= return . minute) == Just 59 &&
       (addSeconds (-1) t >>= return . second) == Just 59
-    , testProperty (pn "test 6.14 - adding 0.1 seconds shall add 0.1 seconds")
+    , testProperty ("test 6.14 - adding 0.1 seconds shall add 0.1 seconds")
     $ (addSecondFractions 0.1 t >>= return . secondFraction) == Just 0.1
-    , testProperty (pn "test 6.15 - adding 1.2 seconds shall add 1 second and 0.2 seconds")
+    , testProperty ("test 6.15 - adding 1.2 seconds shall add 1 second and 0.2 seconds")
     $ (addSecondFractions 1.2 t >>= return . second) == Just 1 &&
       (addSecondFractions 1.2 t >>= return . secondFraction) == Just 0.2
-    , testProperty (pn "test 6.16 - adding -0.001 seconds shall result in 23:59:59.999")
+    , testProperty ("test 6.16 - adding -0.001 seconds shall result in 23:59:59.999")
     $ (addSecondFractions (-0.001) t >>= return . hour)           == Just 23 &&
       (addSecondFractions (-0.001) t >>= return . minute)         == Just 59 &&
       (addSecondFractions (-0.001) t >>= return . second)         == Just 59 &&
       (addSecondFractions (-0.001) t >>= return . secondFraction) == Just 0.999
     ]
   where
-    pn = \x-> "instance Time " ++ tn ++ ": " ++ x
     t1 = setHour 12 (t `asTypeOf` t) >>= setMinute 13 >>= setSecond 14 >>= setSecondFraction 0.56789
     t2 = setSecondFraction 0.56789 (t `asTypeOf` t) >>= setSecond 14 >>= setMinute 13 >>= setHour 12
     invalidTimes
@@ -112,11 +116,11 @@ testTimeInstance tn t
          , ("10", setSecondFraction 1.1 t)
          ]
 
-testUnixTimeInstance :: (IsUnixTime t, IsString t,Eq t) => String -> t -> [Test]
-testUnixTimeInstance tn t
+testUnixTimeInstance :: (IsUnixTime t, IsString t,Eq t) => t -> [Test]
+testUnixTimeInstance t
   = (map
        (\(i64,s)->
-        testProperty ("(" ++ tn ++ ".fromUnixSeconds " ++ show i64 ++ ") == Just " ++ show s)
+        testProperty ("fromUnixSeconds " ++ show i64 ++ ") == Just " ++ show s)
         $  (fromUnixSeconds i64) == Just (fromString s `asTypeOf` t)
        )
        unixEpochMsRfc3339TimeTuples
@@ -124,22 +128,22 @@ testUnixTimeInstance tn t
       ++
       (map
        (\(i64,s)->
-        testProperty ("(" ++ tn ++ ".unixSeconds (" ++ show s ++ ") == " ++ show i64)
+        testProperty ("unixSeconds (" ++ show s ++ ") == " ++ show i64)
         $ unixSeconds (fromString s `asTypeOf` t) == i64
        )
        unixEpochMsRfc3339TimeTuples
       )
 
-testDateInstance :: (IsDate t, Eq t) => String -> t -> [Test]
-testDateInstance tn t
-  = [ testProperty ("instance Date " ++ tn ++ ": year dat1")
+testDateInstance :: (IsDate t, Eq t) => t -> [Test]
+testDateInstance t
+  = [ testProperty ("year dat1")
       $ (dat1 >>= return . year)  == Just 1972
-    , testProperty ("instance Date " ++ tn ++ ": month dat1")
+    , testProperty ("month dat1")
       $ (dat1 >>= return . month) == Just 7
-    , testProperty ("instance Date " ++ tn ++ ": day dat1")
+    , testProperty ("day dat1")
       $ (dat1 >>= return . day)   == Just 23
     ]
-    ++ map (\(n,d)-> testProperty ("instance Date " ++ tn ++ ": " ++ n)
+    ++ map (\(n,d)-> testProperty n
                    $ d == Nothing
            ) invalidDates
   where
