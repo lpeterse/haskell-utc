@@ -27,9 +27,12 @@ testGroup1
      $ testTimeInstance (epoch     :: DateTime)
      , testGroup "instance Time Time"
      $ testTimeInstance (midnight  :: Time)
-     , testProperty ("yearMonthDayToDays (daysToYearMonthDay x) == x")
-      $ forAll (choose (0, 3652424)) -- 0000-01-01 to 9999-12-31
-      $ \x-> yearMonthDayToDays (daysToYearMonthDay x) == x
+     , testProperty ("yearMonthDayToDays (daysToYearMonthDay x) == x for 0 < x < 3652424")
+     $ forAll (choose (0, 3652424)) -- 0000-01-01 to 9999-12-31
+     $ \x-> yearMonthDayToDays (daysToYearMonthDay x) == x
+     , testProperty ("yearMonthDayToDays (daysToYearMonthDay x) == x for -1000000 < x < 5000000")
+     $ forAll (choose (-1000000, 5000000)) -- 0000-01-01 to 9999-12-31
+     $ \x-> yearMonthDayToDays (daysToYearMonthDay x) === x
      ]
 
 testTimeInstance :: (IsTime t, Eq t) => t -> [Test]
