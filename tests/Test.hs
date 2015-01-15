@@ -27,12 +27,10 @@ testGroup1
      $ testTimeInstance (epoch     :: DateTime)
      , testGroup "instance Time Time"
      $ testTimeInstance (midnight  :: Time)
-     ]
-  ++ [ testProperty ("yearMonthDayToDays (daysToYearMonthDay x) == x")
+     , testProperty ("yearMonthDayToDays (daysToYearMonthDay x) == x")
       $ forAll (choose (0, 3652424)) -- 0000-01-01 to 9999-12-31
       $ \x-> yearMonthDayToDays (daysToYearMonthDay x) == x
      ]
-
 
 testTimeInstance :: (IsTime t, Eq t) => t -> [Test]
 testTimeInstance t
@@ -58,47 +56,58 @@ testTimeInstance t
            ) invalidTimes
     ++
     -- Testing the add* functions of the Time class.
-    [ testProperty ("test 6.01 - adding 1 hour shall add 1 hour")
-    $ (addHours 1 t >>= return . hour) == Just 1
-    , testProperty ("test 6.02 - adding 25 hours shall just add 1 hour")
-    $ (addHours 25 t >>= return . hour) == Just 1
-    , testProperty ("test 6.03 - adding 49 hours shall just add 1 hour")
-    $ (addHours 49 t >>= return . hour) == Just 1
-    , testProperty ("test 6.04 - adding a negative count of hours")
-    $ (addHours (-1) t >>= return . hour) == Just 23
-    , testProperty ("test 6.05 - addHours twice in sequence")
-    $ (addHours 3 t >>= addHours 4 >>= return . hour) == Just 7
-    , testProperty ("test 6.06 - adding 1 minute shall add 1 minute")
-    $ (addMinutes 1 t >>= return . minute) == Just 1
-    , testProperty ("test 6.07 - adding 60 minutes shall add 1 hour")
-    $ (addMinutes 60 t >>= return . hour) == Just 1
-    , testProperty ("test 6.08 - adding 61 minutes shall add 1 hour + 1 minute")
-    $ (addMinutes 61 t >>= return . hour) == Just 1 &&
-      (addMinutes 61 t >>= return . minute) == Just 1
-    , testProperty ("test 6.09 - adding -1 minute shall result in 23:59")
-    $ (addMinutes (-1) t >>= return . hour) == Just 23 &&
-      (addMinutes (-1) t >>= return . minute) == Just 59
-    , testProperty ("test 6.10 - adding 1 second shall add 1 second")
-    $ (addSeconds 1 t >>= return . second) == Just 1
-    , testProperty ("test 6.11 - adding 60 seconds shall add 1 minute")
-    $ (addSeconds 60 t >>= return . minute) == Just 1
-    , testProperty ("test 6.12 - adding 61 seconds shall add 1 minute + 1 second")
-    $ (addSeconds 61 t >>= return . minute) == Just 1 &&
-      (addSeconds 61 t >>= return . second) == Just 1
-    , testProperty ("test 6.13 - adding -1 second shall result in 23:59:59")
-    $ (addSeconds (-1) t >>= return . hour) == Just 23 &&
-      (addSeconds (-1) t >>= return . minute) == Just 59 &&
-      (addSeconds (-1) t >>= return . second) == Just 59
-    , testProperty ("test 6.14 - adding 0.1 seconds shall add 0.1 seconds")
-    $ (addSecondFractions 0.1 t >>= return . secondFraction) == Just 0.1
-    , testProperty ("test 6.15 - adding 1.2 seconds shall add 1 second and 0.2 seconds")
-    $ (addSecondFractions 1.2 t >>= return . second) == Just 1 &&
-      (addSecondFractions 1.2 t >>= return . secondFraction) == Just 0.2
-    , testProperty ("test 6.16 - adding -0.001 seconds shall result in 23:59:59.999")
-    $ (addSecondFractions (-0.001) t >>= return . hour)           == Just 23 &&
-      (addSecondFractions (-0.001) t >>= return . minute)         == Just 59 &&
-      (addSecondFractions (-0.001) t >>= return . second)         == Just 59 &&
-      (addSecondFractions (-0.001) t >>= return . secondFraction) == Just 0.999
+    [ testGroup "addHours"
+      [ testProperty ("adding 1 hour should result in 01:00")
+      $ (addHours 1 t >>= return . hour) == Just 1
+      , testProperty ("adding 25 hours should result in 01:00")
+      $ (addHours 25 t >>= return . hour) == Just 1
+      , testProperty ("adding 49 hours should result in 01:00")
+      $ (addHours 49 t >>= return . hour) == Just 1
+      , testProperty ("adding -1 hours should result in 23:00")
+      $ (addHours (-1) t >>= return . hour) == Just 23
+      , testProperty ("adding twice in sequence")
+      $ (addHours 3 t >>= addHours 4 >>= return . hour) == Just 7
+      ]
+    , testGroup "addMinutes"
+      [ testProperty ("adding 1 minute should result in 00:01")
+      $ (addMinutes 1 t >>= return . hour) == Just 0 &&
+        (addMinutes 1 t >>= return . minute) == Just 1
+      , testProperty ("adding 60 minutes should result in 01:00")
+      $ (addMinutes 60 t >>= return . hour) == Just 1 &&
+        (addMinutes 60 t >>= return . minute) == Just 0 
+      , testProperty ("adding 62 minutes should result in 01:02")
+      $ (addMinutes 62 t >>= return . hour) == Just 1 &&
+        (addMinutes 62 t >>= return . minute) == Just 2
+      , testProperty ("adding -1 minute should result in 23:59")
+      $ (addMinutes (-1) t >>= return . hour) == Just 23 &&
+        (addMinutes (-1) t >>= return . minute) == Just 59
+      ]
+    , testGroup "addSeconds"
+      [ testProperty ("adding 1 second should result in 00:00:01")
+      $ (addSeconds 1 t >>= return . second) == Just 1
+      , testProperty ("adding 60 seconds should result in 00:01:00")
+      $ (addSeconds 60 t >>= return . minute) == Just 1 &&
+        (addSeconds 60 t >>= return . second) == Just 0
+      , testProperty ("adding 61 seconds should result in 00:01:02")
+      $ (addSeconds 62 t >>= return . minute) == Just 1 &&
+        (addSeconds 62 t >>= return . second) == Just 2
+      , testProperty ("adding -1 second should result in 23:59:59")
+      $ (addSeconds (-1) t >>= return . hour) == Just 23 &&
+        (addSeconds (-1) t >>= return . minute) == Just 59 &&
+        (addSeconds (-1) t >>= return . second) == Just 59
+      ]
+    , testGroup "addSecondFractions"
+      [ testProperty ("adding 0.1 seconds should add 0.1 seconds")
+      $ (addSecondFractions 0.1 t >>= return . secondFraction) == Just 0.1
+      , testProperty ("adding 1.2 seconds should add 1 second and 0.2 seconds")
+      $ (addSecondFractions 1.2 t >>= return . second) == Just 1 &&
+        (addSecondFractions 1.2 t >>= return . secondFraction) == Just 0.2
+      , testProperty ("adding -0.001 seconds should result in 23:59:59.999")
+      $ (addSecondFractions (-0.001) t >>= return . hour)           == Just 23 &&
+        (addSecondFractions (-0.001) t >>= return . minute)         == Just 59 &&
+        (addSecondFractions (-0.001) t >>= return . second)         == Just 59 &&
+        (addSecondFractions (-0.001) t >>= return . secondFraction) == Just 0.999
+      ]
     ]
   where
     t1 = setHour 12 (t `asTypeOf` t) >>= setMinute 13 >>= setSecond 14 >>= setSecondFraction 0.56789
