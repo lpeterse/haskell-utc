@@ -14,12 +14,7 @@ import Data.UTC.Internal
 main :: IO ()
 main
   = defaultMain
-    [ testGroup "Main" testGroup1
-    ]
-
-testGroup1 :: [Test]
-testGroup1
-  =  [ testGroup "instance IsUnixTime DateTime"
+     [ testGroup "instance IsUnixTime DateTime"
      $ testUnixTimeInstance (undefined :: DateTime)
      , testGroup "instance IsDate DateTime"
      $ testDateInstance (undefined :: DateTime)
@@ -27,43 +22,61 @@ testGroup1
      $ testTimeInstance (epoch     :: DateTime)
      , testGroup "instance Time Time"
      $ testTimeInstance (midnight  :: Time)
-     , testInternalCalendarFunctions
 
-     , testProperty ("yearMonthDayToDays (0,1,1) === 0")
-     $ yearMonthDayToDays (0,1,1) === 0
-
-     , testProperty ("yearMonthDayToDays (1,1,1) === 366 + 365")
-     $ yearMonthDayToDays (1,1,1) === 366
-
-     , testProperty ("yearMonthDayToDays (2,1,1) === 366 + 365")
-     $ yearMonthDayToDays (2,1,1) === 366 + 365
-
-     , testProperty ("yearMonthDayToDays (3,1,1) === 366 + 365 + 365")
-     $ yearMonthDayToDays (3,1,1) === 366 + 365 + 365
-
-     , testProperty ("yearMonthDayToDays (4,1,1) === 366 + 365 + 365 + 365")
-     $ yearMonthDayToDays (4,1,1) === 366 + 365 + 365 + 365
-
-     , testProperty ("yearMonthDayToDays (daysToYearMonthDay x) - x === 0 for 0 < x < 1000")
-     $ forAll (choose (0, 1000))
-     $ \x-> yearMonthDayToDays (daysToYearMonthDay x) - x === 0
-     , testProperty ("yearMonthDayToDays (daysToYearMonthDay x) - x === 0 for 0 < x < 2000")
-     $ forAll (choose (0, 2000))
-     $ \x-> yearMonthDayToDays (daysToYearMonthDay x) - x === 0
-     , testProperty ("yearMonthDayToDays (daysToYearMonthDay x) - x === 0 for 0 < x < 3652424")
-     $ forAll (choose (0, 3652424)) -- 0000-01-01 to 9999-12-31
-     $ \x-> yearMonthDayToDays (daysToYearMonthDay x) - x === 0
-     , testProperty ("yearMonthDayToDays (daysToYearMonthDay x) - x === 0 for -100 < x < 100")
-     $ forAll (choose ((-100), 100)) -- 0000-01-01 to 9999-12-31
-     $ \x-> yearMonthDayToDays (daysToYearMonthDay x) - x === 0
-     , testProperty ("yearMonthDayToDays (daysToYearMonthDay x) - x === 0 for -1000000 < x < 5000000")
-     $ forAll (choose (-1000000, 5000000)) -- 0000-01-01 to 9999-12-31
-     $ \x-> yearMonthDayToDays (daysToYearMonthDay x) - x === 0
+     , testYearToDays
+     , testYearMonthDayToDays
+     , testYearMonthDayToDaysAndBack
      ]
 
-testInternalCalendarFunctions :: Test
-testInternalCalendarFunctions
-  = testGroup "internal calendar functions"
+testYearMonthDayToDays :: Test
+testYearMonthDayToDays
+  = testGroup "yearMonthDayToDays"
+  $ [ testProperty ("yearMonthDayToDays (0,1,1) === 0")
+    $ yearMonthDayToDays (0,1,1) === 0
+
+    , testProperty ("yearMonthDayToDays (1,1,1) === 366 + 365")
+    $ yearMonthDayToDays (1,1,1) === 366
+
+    , testProperty ("yearMonthDayToDays (2,1,1) === 366 + 365")
+    $ yearMonthDayToDays (2,1,1) === 366 + 365
+
+    , testProperty ("yearMonthDayToDays (3,1,1) === 366 + 365 + 365")
+    $ yearMonthDayToDays (3,1,1) === 366 + 365 + 365
+
+    , testProperty ("yearMonthDayToDays (4,1,1) === 366 + 365 + 365 + 365")
+    $ yearMonthDayToDays (4,1,1) === 366 + 365 + 365 + 365
+
+    , testProperty ("yearMonthDayToDays (4,3,3) === 366 + 365 + 365 + 365 + 31 + 29 + 2")
+    $ yearMonthDayToDays (4,3,3) === 366 + 365 + 365 + 365 + 31 + 29 + 2
+    ]
+
+testYearMonthDayToDaysAndBack :: Test
+testYearMonthDayToDaysAndBack
+  = testGroup "yearMonthDayToDays <-> daysToYearMonthDay"
+  $ [ testProperty ("yearMonthDayToDays (daysToYearMonthDay x) - x === 0 for 0 < x < 1000")
+    $ forAll (choose (0, 1000))
+    $ \x-> yearMonthDayToDays (daysToYearMonthDay x) - x === 0
+
+    , testProperty ("yearMonthDayToDays (daysToYearMonthDay x) - x === 0 for 0 < x < 2000")
+    $ forAll (choose (0, 2000))
+    $ \x-> yearMonthDayToDays (daysToYearMonthDay x) - x === 0
+
+    , testProperty ("yearMonthDayToDays (daysToYearMonthDay x) - x === 0 for 0 < x < 3652424")
+    $ forAll (choose (0, 3652424)) -- 0000-01-01 to 9999-12-31
+    $ \x-> yearMonthDayToDays (daysToYearMonthDay x) - x === 0
+
+    , testProperty ("yearMonthDayToDays (daysToYearMonthDay x) - x === 0 for -100 < x < 100")
+    $ forAll (choose ((-100), 100)) -- 0000-01-01 to 9999-12-31
+    $ \x-> yearMonthDayToDays (daysToYearMonthDay x) - x === 0
+
+    , testProperty ("yearMonthDayToDays (daysToYearMonthDay x) - x === 0 for -1000000 < x < 5000000")
+    $ forAll (choose (-1000000, 5000000)) -- 0000-01-01 to 9999-12-31
+    $ \x-> yearMonthDayToDays (daysToYearMonthDay x) - x === 0
+    ]
+
+testYearToDays :: Test
+testYearToDays
+  = testGroup "yearToDays"
   $ [ testProperty ("yearToDays 800    === 365 * 800 + length " ++ show (js 800))
     $ yearToDays 800    === 365 * 800 + (fromIntegral $ length (js 800))
     , testProperty ("yearToDays 700    === 365 * 700 + length " ++ show (js 700))
