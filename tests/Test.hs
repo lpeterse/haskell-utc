@@ -86,8 +86,10 @@ testInternalCalendarFunctions
     $ yearToDays (-400) === (-365) * 400 - (fromIntegral $ length (ls 400))
     ]
   where
-    ls z = [x | x <- [negate z..(-1)], x `mod` 400 == 0 || (x `mod` 4 == 0 && x `mod` 100 /= 0 )] :: [Int]
-    js z = [x | x <- [0..z], x `mod` 400 == 0 || (x `mod` 4 == 0 && x `mod` 100 /= 0 )] :: [Int]
+    ls  :: Int -> [Int]
+    ls z = [x | x <- [negate z..(-1)], x `mod` 400 == 0 || (x `mod` 4 == 0 && x `mod` 100 /= 0 )]
+    js  :: Int -> [Int]
+    js z = [x | x <- [0..z], x `mod` 400 == 0 || (x `mod` 4 == 0 && x `mod` 100 /= 0 )]
 
 testTimeInstance :: (IsTime t, Eq t) => t -> [Test]
 testTimeInstance t
