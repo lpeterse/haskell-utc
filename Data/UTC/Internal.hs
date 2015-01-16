@@ -49,7 +49,7 @@ hoursPerDay
 yearMonthDayToDays :: (Integer, Integer, Integer) -> Integer
 yearMonthDayToDays (year,month,day)
   = -- count of days of the "finalised" years (therefor -1)
-    let daysY = yearToDays (year - 1)
+    let daysY = yearToDays year
     -- count of days of the "finalised" months
         daysM = case month - 1 of
                   1  -> 31

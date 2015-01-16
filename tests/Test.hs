@@ -184,12 +184,12 @@ testTimeInstance t
          , ("10", setSecondFraction 1.1 t)
          ]
 
-testUnixTimeInstance :: (IsUnixTime t, IsString t,Eq t) => t -> [Test]
+testUnixTimeInstance :: (Show t, IsUnixTime t, IsString t,Eq t) => t -> [Test]
 testUnixTimeInstance t
   = (map
        (\(i64,s)->
         testProperty ("fromUnixSeconds " ++ show i64 ++ ") == Just " ++ show s)
-        $  (fromUnixSeconds i64) == Just (fromString s `asTypeOf` t)
+        $  (fromUnixSeconds i64) === Just (fromString s `asTypeOf` t)
        )
        unixEpochMsRfc3339TimeTuples
       )
@@ -197,7 +197,7 @@ testUnixTimeInstance t
       (map
        (\(i64,s)->
         testProperty ("unixSeconds (" ++ show s ++ ") == " ++ show i64)
-        $ unixSeconds (fromString s `asTypeOf` t) == i64
+        $ unixSeconds (fromString s `asTypeOf` t) === i64
        )
        unixEpochMsRfc3339TimeTuples
       )
