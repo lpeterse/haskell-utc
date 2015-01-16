@@ -28,6 +28,28 @@ testGroup1
      , testGroup "instance Time Time"
      $ testTimeInstance (midnight  :: Time)
      , testInternalCalendarFunctions
+
+     , testProperty ("yearMonthDayToDays (0,1,1) === 0")
+     $ yearMonthDayToDays (0,1,1) === 0
+
+     , testProperty ("yearMonthDayToDays (1,1,1) === 366 + 365")
+     $ yearMonthDayToDays (1,1,1) === 366
+
+     , testProperty ("yearMonthDayToDays (2,1,1) === 366 + 365")
+     $ yearMonthDayToDays (2,1,1) === 366 + 365
+
+     , testProperty ("yearMonthDayToDays (3,1,1) === 366 + 365 + 365")
+     $ yearMonthDayToDays (3,1,1) === 366 + 365 + 365
+
+     , testProperty ("yearMonthDayToDays (4,1,1) === 366 + 365 + 365 + 365")
+     $ yearMonthDayToDays (4,1,1) === 366 + 365 + 365 + 365
+
+     , testProperty ("yearMonthDayToDays (daysToYearMonthDay x) - x === 0 for 0 < x < 1000")
+     $ forAll (choose (0, 1000))
+     $ \x-> yearMonthDayToDays (daysToYearMonthDay x) - x === 0
+     , testProperty ("yearMonthDayToDays (daysToYearMonthDay x) - x === 0 for 0 < x < 2000")
+     $ forAll (choose (0, 2000))
+     $ \x-> yearMonthDayToDays (daysToYearMonthDay x) - x === 0
      , testProperty ("yearMonthDayToDays (daysToYearMonthDay x) - x === 0 for 0 < x < 3652424")
      $ forAll (choose (0, 3652424)) -- 0000-01-01 to 9999-12-31
      $ \x-> yearMonthDayToDays (daysToYearMonthDay x) - x === 0
@@ -50,14 +72,22 @@ testInternalCalendarFunctions
     $ yearToDays 600    === 365 * 600 + (fromIntegral $ length (js 600))
     , testProperty ("yearToDays 500    === 365 * 500 + length " ++ show (js 500))
     $ yearToDays 500    === 365 * 500 + (fromIntegral $ length (js 500))
+    , testProperty ("yearToDays 401    === 365 * 401 + length " ++ show (js 401))
+    $ yearToDays 401    === 365 * 401 + (fromIntegral $ length (js 401))
     , testProperty ("yearToDays 400    === 365 * 400 + length " ++ show (js 400))
     $ yearToDays 400    === 365 * 400 + (fromIntegral $ length (js 400))
+    , testProperty ("yearToDays 399    === 365 * 399 + length " ++ show (js 399))
+    $ yearToDays 399    === 365 * 399 + (fromIntegral $ length (js 399))
     , testProperty ("yearToDays 300    === 365 * 300 + length " ++ show (js 300))
     $ yearToDays 300    === 365 * 300 + (fromIntegral $ length (js 300))
     , testProperty ("yearToDays 200    === 365 * 200 + length " ++ show (js 200))
     $ yearToDays 200    === 365 * 200 + (fromIntegral $ length (js 200))
+    , testProperty ("yearToDays 101    === 365 * 101 + length " ++ show (js 101))
+    $ yearToDays 101    === 365 * 101 + (fromIntegral $ length (js 101))
     , testProperty ("yearToDays 100    === 365 * 100 + length " ++ show (js 100))
     $ yearToDays 100    === 365 * 100 + (fromIntegral $ length (js 100))
+    , testProperty ("yearToDays  99    === 365 *  99 + length " ++ show (js 99))
+    $ yearToDays  99    === 365 * 99 + (fromIntegral $ length (js 99))
     , testProperty ("yearToDays   4    === 365 * 4 + length " ++ show (js 4))
     $ yearToDays   4    === 365 * 4 + (fromIntegral $ length (js 4))
     , testProperty ("yearToDays   3    === 365 * 3 + length " ++ show (js 3))
@@ -89,7 +119,7 @@ testInternalCalendarFunctions
     ls  :: Int -> [Int]
     ls z = [x | x <- [negate z..(-1)], x `mod` 400 == 0 || (x `mod` 4 == 0 && x `mod` 100 /= 0 )]
     js  :: Int -> [Int]
-    js z = [x | x <- [0..z], x `mod` 400 == 0 || (x `mod` 4 == 0 && x `mod` 100 /= 0 )]
+    js z = [x | x <- [0..(z-1)], x `mod` 400 == 0 || (x `mod` 4 == 0 && x `mod` 100 /= 0 )]
 
 testTimeInstance :: (IsTime t, Eq t) => t -> [Test]
 testTimeInstance t

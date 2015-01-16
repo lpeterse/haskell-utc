@@ -48,7 +48,7 @@ hoursPerDay
 
 yearMonthDayToDays :: (Integer, Integer, Integer) -> Integer
 yearMonthDayToDays (year,month,day)
-  = -- count of days of the "finalised" years (therefor -1)
+  = -- count of days of the "finalised" years
     let daysY = yearToDays year
     -- count of days of the "finalised" months
         daysM = case month - 1 of
@@ -75,11 +75,16 @@ yearMonthDayToDays (year,month,day)
 
 yearToDays :: Integer -> Integer
 yearToDays y
-  = (y * 365)                   -- .. and a normal year has 365 days ..
-  + (y `quot` 4)                -- .. and every 4 years a leap day occurs..
-  - (y `quot` 100)              -- .. but not in centuries ..
-  + (y `quot` 400)              -- .. except every 400 years.
-  + (if y > 0 then 1 else 0)
+  | y == 0    = 0
+  | y >= 0    = 366
+              + ((y-1) * 365)       -- .. and a normal year has 365 days ..
+              + ((y-1) `quot` 4)    -- .. and every 4 years a leap day occurs..
+              - ((y-1) `quot` 100)  -- .. but not in centuries ..
+              + ((y-1) `quot` 400)  -- .. except every 400 years.
+  | otherwise = (y * 365)
+              + (y `quot` 4)
+              - (y `quot` 100)
+              + (y `quot` 400)
 
 -- | Influenced by an ingenious solution from @caf found here:
 --   https://stackoverflow.com/questions/1274964/how-to-decompose-unix-time-in-c
