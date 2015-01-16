@@ -75,11 +75,11 @@ yearMonthDayToDays (year,month,day)
 
 yearToDays :: Integer -> Integer
 yearToDays y
-  = (if y >= 0 then 366 else 0) -- The year 0 is a leap year..
-  + (y * 365)                   -- .. and a normal year has 365 days ..
+  = (y * 365)                   -- .. and a normal year has 365 days ..
   + (y `quot` 4)                -- .. and every 4 years a leap day occurs..
   - (y `quot` 100)              -- .. but not in centuries ..
   + (y `quot` 400)              -- .. except every 400 years.
+  + (if y > 0 then 1 else 0)
 
 -- | Influenced by an ingenious solution from @caf found here:
 --   https://stackoverflow.com/questions/1274964/how-to-decompose-unix-time-in-c
