@@ -63,7 +63,7 @@ Library
 Test-Suite test
   type:              exitcode-stdio-1.0
   main-is:           Test.hs
-  ghc-options:       -Wall
+  ghc-options:       -Wall -O2
   hs-source-dirs:    tests .
   other-modules:     Data.UTC
                    , Data.UTC.Class

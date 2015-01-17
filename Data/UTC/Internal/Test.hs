@@ -14,7 +14,26 @@ test
     , testYearToDays
     , testDaysToYearMonthDay
     , testYearMonthDayToDaysAndDaysToYearMonthDay
+
+    , testProperty "yearMonthDayToDays for every day in year 0-400"
+    $ conjoin
+    $ map (\(ds, ymd)-> ds == yearMonthDayToDays ymd
+          ) (dayDateTuples)
+
+    , testProperty "daysToYearMonthDay for every day in year 0-400"
+    $ conjoin
+    $ map (\(ds, ymd)-> daysToYearMonthDay ds == ymd
+          ) (dayDateTuples)
     ]
+
+dayDateTuples :: [(Integer, (Integer, Integer, Integer))]
+dayDateTuples
+  = zip [0..]
+        [ (y,m,d) | y <- [0..400]
+                  , m <- [1..12]
+                  , d <- [1..31]
+                  , isValidDate (y,m,d)
+        ]
 
 testYearMonthDayToDays :: Test
 testYearMonthDayToDays
@@ -42,7 +61,9 @@ testYearMonthDayToDays
 testYearToDays :: Test
 testYearToDays
   = testGroup "yearToDays"
-  $ [ testProperty ("yearToDays 800    === 365 * 800 + length " ++ show (js 800))
+  $ [ testProperty "400 years are 146463 days"
+    $ yearToDays 401    === (fromIntegral $ length dayDateTuples)
+    , testProperty ("yearToDays 800    === 365 * 800 + length " ++ show (js 800))
     $ yearToDays 800    === 365 * 800 + (fromIntegral $ length (js 800))
     , testProperty ("yearToDays 700    === 365 * 700 + length " ++ show (js 700))
     $ yearToDays 700    === 365 * 700 + (fromIntegral $ length (js 700))
