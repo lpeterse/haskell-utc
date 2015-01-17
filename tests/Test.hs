@@ -26,7 +26,108 @@ main
      , testYearToDays
      , testYearMonthDayToDays
      , testYearMonthDayToDaysAndBack
+     , testDaysToYearMonthDay
      ]
+
+testDaysToYearMonthDay :: Test
+testDaysToYearMonthDay
+  = testGroup "daysToYearMonthDay"
+  $ [ testProperty "daysToYearMonthDay 0 === (0,1,1)"
+    $ daysToYearMonthDay 0 === (0,1,1)
+
+    , testProperty "daysToYearMonthDay (-1) === (-1,12,31)"
+    $ daysToYearMonthDay (-1) === (-1,12,31)
+
+    , testProperty "daysToYearMonthDay (-31) === (-1,12,1)"
+    $ daysToYearMonthDay (-31) === (-1,12,1)
+
+    , testProperty "daysToYearMonthDay (-32) === (-1,11,30)"
+    $ daysToYearMonthDay (-32) === (-1,11,30)
+
+    , testProperty "daysToYearMonthDay (-61) === (-1,11,1)"
+    $ daysToYearMonthDay (-61) === (-1,11,1)
+
+    , testProperty "daysToYearMonthDay (-62) === (-1,10,31)"
+    $ daysToYearMonthDay (-62) === (-1,10,31)
+
+    , testProperty "daysToYearMonthDay (-92) === (-1,10,1)"
+    $ daysToYearMonthDay (-92) === (-1,10,1)
+
+    , testProperty "daysToYearMonthDay (-93) === (-1,9,30)"
+    $ daysToYearMonthDay (-93) === (-1,9,30)
+
+    , testProperty "daysToYearMonthDay (-103) === (-1,9,20)"
+    $ daysToYearMonthDay (-103) === (-1,9,20)
+
+    , testProperty "daysToYearMonthDay (-108) === (-1,9,15)"
+    $ daysToYearMonthDay (-108) === (-1,9,15)
+
+    , testProperty "daysToYearMonthDay (-111) === (-1,9,12)"
+    $ daysToYearMonthDay (-111) === (-1,9,12)
+
+    , testProperty "daysToYearMonthDay (-112) === (-1,9,11)"
+    $ daysToYearMonthDay (-112) === (-1,9,11)
+
+    , testProperty "daysToYearMonthDay (-113) === (-1,9,10)"
+    $ daysToYearMonthDay (-113) === (-1,9,10)
+
+    , testProperty "daysToYearMonthDay (-114) === (-1,9,9)"
+    $ daysToYearMonthDay (-114) === (-1,9,9)
+
+    , testProperty "daysToYearMonthDay (-122) === (-1,9,1)"
+    $ daysToYearMonthDay (-122) === (-1,9,1)
+
+    , testProperty "daysToYearMonthDay (-123) === (-1,8,31)"
+    $ daysToYearMonthDay (-123) === (-1,8,31)
+
+    , testProperty "daysToYearMonthDay (-153) === (-1,8,1)"
+    $ daysToYearMonthDay (-153) === (-1,8,1)
+
+    , testProperty "daysToYearMonthDay (-154) === (-1,7,31)"
+    $ daysToYearMonthDay (-154) === (-1,7,31)
+
+    , testProperty "daysToYearMonthDay (-184) === (-1,7,1)"
+    $ daysToYearMonthDay (-184) === (-1,7,1)
+
+    , testProperty "daysToYearMonthDay (-185) === (-1,6,30)"
+    $ daysToYearMonthDay (-185) === (-1,6,30)
+
+    , testProperty "daysToYearMonthDay (-214) === (-1,6,1)"
+    $ daysToYearMonthDay (-214) === (-1,6,1)
+
+    , testProperty "daysToYearMonthDay (-215) === (-1,5,31)"
+    $ daysToYearMonthDay (-215) === (-1,5,31)
+
+    , testProperty "daysToYearMonthDay (-245) === (-1,5,1)"
+    $ daysToYearMonthDay (-245) === (-1,5,1)
+
+    , testProperty "daysToYearMonthDay (-246) === (-1,4,30)"
+    $ daysToYearMonthDay (-246) === (-1,4,30)
+
+    , testProperty "daysToYearMonthDay (-275) === (-1,4,1)"
+    $ daysToYearMonthDay (-275) === (-1,4,1)
+
+    , testProperty "daysToYearMonthDay (-276) === (-1,3,31)"
+    $ daysToYearMonthDay (-276) === (-1,3,31)
+
+    , testProperty "daysToYearMonthDay (-306) === (-1,3,1)"
+    $ daysToYearMonthDay (-306) === (-1,3,1)
+
+    , testProperty "daysToYearMonthDay (-307) === (-1,2,28)"
+    $ daysToYearMonthDay (-307) === (-1,2,28)
+
+    , testProperty "daysToYearMonthDay (-334) === (-1,2,1)"
+    $ daysToYearMonthDay (-334) === (-1,2,1)
+
+    , testProperty "daysToYearMonthDay (-335) === (-1,1,31)"
+    $ daysToYearMonthDay (-335) === (-1,1,31)
+
+    , testProperty "daysToYearMonthDay (-365) === (-1,1,1)"
+    $ daysToYearMonthDay (-365) === (-1,1,1)
+
+    , testProperty "daysToYearMonthDay (-366) === (-2,12,31)"
+    $ daysToYearMonthDay (-366) === (-2,12,31)
+    ]
 
 testYearMonthDayToDays :: Test
 testYearMonthDayToDays
@@ -53,7 +154,10 @@ testYearMonthDayToDays
 testYearMonthDayToDaysAndBack :: Test
 testYearMonthDayToDaysAndBack
   = testGroup "yearMonthDayToDays <-> daysToYearMonthDay"
-  $ [ testProperty ("yearMonthDayToDays (daysToYearMonthDay x) - x === 0 for 0 < x < 1000")
+  $ [ testProperty ("daysToYearMonthDay (yearMonthDayToDays (0,1,1)) === (0,1,1)")
+    $ daysToYearMonthDay (yearMonthDayToDays (0,1,1)) === (0,1,1)
+
+    , testProperty ("yearMonthDayToDays (daysToYearMonthDay x) - x === 0 for 0 < x < 1000")
     $ forAll (choose (0, 1000))
     $ \x-> yearMonthDayToDays (daysToYearMonthDay x) - x === 0
 

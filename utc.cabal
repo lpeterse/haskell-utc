@@ -56,9 +56,9 @@ Library
                    , Data.UTC.Type.DateTime
                    , Data.UTC.Type.Local
                    , Data.UTC.Format.Rfc3339
+                   , Data.UTC.Internal
   other-modules:     Data.UTC.Format.Rfc3339.Parser
                    , Data.UTC.Format.Rfc3339.Builder
-                   , Data.UTC.Internal
 
 Test-Suite test
   type:              exitcode-stdio-1.0
