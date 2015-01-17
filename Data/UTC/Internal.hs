@@ -92,17 +92,18 @@ daysToYearMonthDay :: Integer -> (Integer, Integer, Integer)
 daysToYearMonthDay d'
   = let -- begin FIXME: this is a hack that restricts input into 400 year range
         -- the function following should be refactored and documented
-        d                         = d' `mod` (yearToDays 400)
-        quartcents                = d' `div` (yearToDays 400)
+        d400                      = yearToDays 400
+        d                         = d' `mod` d400
+        quartcents                = d' `div` d400
         -- end FIXME
-        days                      = d + 146068 -- 400 years and 2 months
-        yearMarFeb                = shrinkYearMarFeb days 399 10400
+        days                      = d + d400 - 29 -- 400 years and 2 months
+        yearMarFeb                = shrinkYearMarFeb days 399 799
         remainingDays             = days - (yearToDays yearMarFeb)
         monthMarFeb               = selectMonthMarFeb remainingDays
         (yearJanDec, monthJanDec) = if monthMarFeb > 10
                                        then (yearMarFeb + 1, monthMarFeb - 10)
                                        else (yearMarFeb,     monthMarFeb + 2)
-    in  (yearJanDec - 400 + (quartcents*400), monthJanDec, remainingDays - (367 * monthMarFeb `div` 12))
+    in  (yearJanDec + (quartcents*400) - 400, monthJanDec, remainingDays - (367 * monthMarFeb `div` 12))
   where
 
     shrinkYearMarFeb :: Integer -> Integer -> Integer -> Integer
