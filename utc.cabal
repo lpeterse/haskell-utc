@@ -83,6 +83,7 @@ Test-Suite test
                    , Data.UTC.Format.Rfc3339.Parser
                    , Data.UTC.Format.Rfc3339.Builder
                    , Data.UTC.Internal
+                   , Data.UTC.Internal.Test
   build-depends:     base < 5
                    , text
                    , bytestring >= 0.10.4.0
