@@ -32,7 +32,83 @@ main
 testDaysToYearMonthDay :: Test
 testDaysToYearMonthDay
   = testGroup "daysToYearMonthDay"
-  $ [ testProperty "daysToYearMonthDay 0 === (0,1,1)"
+  $ [ 
+      testProperty "daysToYearMonthDay 366 === (1,1,1)"
+    $ daysToYearMonthDay 366 === (1,1,1)
+
+    , testProperty "daysToYearMonthDay 365 === (0,12,31)"
+    $ daysToYearMonthDay 365 === (0,12,31)
+
+    , testProperty "daysToYearMonthDay 335 === (0,12,1)"
+    $ daysToYearMonthDay 335 === (0,12,1)
+
+    , testProperty "daysToYearMonthDay 334 === (0,11,30)"
+    $ daysToYearMonthDay 334 === (0,11,30)
+
+    , testProperty "daysToYearMonthDay 305 === (0,11,1)"
+    $ daysToYearMonthDay 305 === (0,11,1)
+
+    , testProperty "daysToYearMonthDay 304 === (0,10,31)"
+    $ daysToYearMonthDay 304 === (0,10,31)
+
+    , testProperty "daysToYearMonthDay 274 === (0,10,1)"
+    $ daysToYearMonthDay 274 === (0,10,1)
+
+    , testProperty "daysToYearMonthDay 273 === (0,9,30)"
+    $ daysToYearMonthDay 273 === (0,9,30)
+
+    , testProperty "daysToYearMonthDay 244 === (0,9,1)"
+    $ daysToYearMonthDay 244 === (0,9,1)
+
+    , testProperty "daysToYearMonthDay 243 === (0,8,31)"
+    $ daysToYearMonthDay 243 === (0,8,31)
+
+    , testProperty "daysToYearMonthDay 213 === (0,8,1)"
+    $ daysToYearMonthDay 213 === (0,8,1)
+
+    , testProperty "daysToYearMonthDay 212 === (0,7,31)"
+    $ daysToYearMonthDay 212 === (0,7,31)
+
+    , testProperty "daysToYearMonthDay 182 === (0,7,1)"
+    $ daysToYearMonthDay 182 === (0,7,1)
+
+    , testProperty "daysToYearMonthDay 181 === (0,6,30)"
+    $ daysToYearMonthDay 181 === (0,6,30)
+
+    , testProperty "daysToYearMonthDay 152 === (0,6,1)"
+    $ daysToYearMonthDay 152 === (0,6,1)
+
+    , testProperty "daysToYearMonthDay 151 === (0,5,31)"
+    $ daysToYearMonthDay 151 === (0,5,31)
+
+    , testProperty "daysToYearMonthDay 121 === (0,5,1)"
+    $ daysToYearMonthDay 121 === (0,5,1)
+
+    , testProperty "daysToYearMonthDay 120 === (0,4,30)"
+    $ daysToYearMonthDay 120 === (0,4,30)
+
+    , testProperty "daysToYearMonthDay 91 === (0,4,1)"
+    $ daysToYearMonthDay 91 === (0,4,1)
+
+    , testProperty "daysToYearMonthDay 90 === (0,3,31)"
+    $ daysToYearMonthDay 90 === (0,3,31)
+
+    , testProperty "daysToYearMonthDay 60 === (0,3,1)"
+    $ daysToYearMonthDay 60 === (0,3,1)
+
+    , testProperty "daysToYearMonthDay 59 === (0,2,29)"
+    $ daysToYearMonthDay 59 === (0,2,29)
+
+    , testProperty "daysToYearMonthDay 58 === (0,2,28)"
+    $ daysToYearMonthDay 58 === (0,2,28)
+
+    , testProperty "daysToYearMonthDay 31 === (0,2,1)"
+    $ daysToYearMonthDay 31 === (0,2,1)
+
+    , testProperty "daysToYearMonthDay 30 === (0,1,31)"
+    $ daysToYearMonthDay 30 === (0,1,31)
+
+    , testProperty "daysToYearMonthDay 0 === (0,1,1)"
     $ daysToYearMonthDay 0 === (0,1,1)
 
     , testProperty "daysToYearMonthDay (-1) === (-1,12,31)"
