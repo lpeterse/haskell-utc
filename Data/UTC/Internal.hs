@@ -89,15 +89,20 @@ yearToDays y
 -- | Influenced by an ingenious solution from @caf found here:
 --   https://stackoverflow.com/questions/1274964/how-to-decompose-unix-time-in-c
 daysToYearMonthDay :: Integer -> (Integer, Integer, Integer)
-daysToYearMonthDay d
-  = let days                      = d + 146068 -- 400 years and 2 months
+daysToYearMonthDay d'
+  = let -- begin FIXME: this is a hack that restricts input into 400 year range
+        -- the function following should be refactored and documented
+        d                         = d' `mod` (yearToDays 400)
+        quartcents                = d' `div` (yearToDays 400)
+        -- end FIXME
+        days                      = d + 146068 -- 400 years and 2 months
         yearMarFeb                = shrinkYearMarFeb days 399 10400
         remainingDays             = days - (yearToDays yearMarFeb)
         monthMarFeb               = selectMonthMarFeb remainingDays
         (yearJanDec, monthJanDec) = if monthMarFeb > 10
                                        then (yearMarFeb + 1, monthMarFeb - 10)
                                        else (yearMarFeb,     monthMarFeb + 2)
-    in  (yearJanDec - 400, monthJanDec, remainingDays - (367 * monthMarFeb `div` 12))
+    in  (yearJanDec - 400 + (quartcents*400), monthJanDec, remainingDays - (367 * monthMarFeb `div` 12))
   where
 
     shrinkYearMarFeb :: Integer -> Integer -> Integer -> Integer
