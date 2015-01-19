@@ -1,8 +1,9 @@
+{-# LANGUAGE FlexibleInstances #-}
 module Data.UTC.Format.Rfc3339
   ( -- * Parsing
-    parseRfc3339String, parseRfc3339Text, parseRfc3339LazyText, parseRfc3339ByteString, parseRfc3339LazyByteString
+    Rfc3339Parser(..)
     -- * Rendering
-  , renderRfc3339String, renderRfc3339Text, renderRfc3339LazyText, renderRfc3339ByteString, renderRfc3339LazyByteString
+  , Rfc3339Renderer(..)
     -- * Low-Level
   , rfc3339Parser, rfc3339Builder
   ) where
@@ -32,44 +33,52 @@ import Data.UTC.Format.Rfc3339.Builder
 -- > fromMaybe (Epoch 0)   (parseRfc3339String "1970-01-32T00:00:00Z")
 -- > > "1970-01-01T00:00:00Z"
 
-renderRfc3339ByteString        :: (Monad m, IsDate t, IsTime t, Epoch t) => Local t -> m BS.ByteString
-renderRfc3339ByteString t
-  = renderRfc3339LazyByteString t >>= return . BSL.toStrict
+class Rfc3339Parser a where
+  parseRfc3339 :: (Monad m, IsDate t, IsTime t, Epoch t) => a -> m (Local t)
 
-renderRfc3339LazyByteString    :: (Monad m, IsDate t, IsTime t, Epoch t) => Local t -> m BSL.ByteString
-renderRfc3339LazyByteString t
-  = rfc3339Builder t              >>= return . B.toLazyByteString
+instance Rfc3339Parser BS.ByteString where
+  parseRfc3339 s
+    = case Atto.parseOnly rfc3339Parser s of
+        Right t -> return t
+        Left  _ -> fail ""
 
-renderRfc3339Text              :: (Monad m, IsDate t, IsTime t, Epoch t) => Local t -> m T.Text
-renderRfc3339Text t
-  = renderRfc3339ByteString     t >>= return . T.decodeUtf8
+instance Rfc3339Parser BSL.ByteString where
+  parseRfc3339 s
+    = parseRfc3339 (BSL.toStrict s)
 
-renderRfc3339LazyText          :: (Monad m, IsDate t, IsTime t, Epoch t) => Local t -> m TL.Text
-renderRfc3339LazyText         t
-  = renderRfc3339LazyByteString t >>= return . TL.decodeUtf8
+instance Rfc3339Parser T.Text where
+  parseRfc3339 s
+    = parseRfc3339 (T.encodeUtf8 s)
 
-renderRfc3339String            :: (Monad m, IsDate t, IsTime t, Epoch t) => Local t -> m String
-renderRfc3339String t
-  = renderRfc3339Text           t >>= return . T.unpack
+instance Rfc3339Parser TL.Text where
+  parseRfc3339 s
+    = parseRfc3339 (TL.encodeUtf8 s)
 
-parseRfc3339ByteString         :: (Monad m, IsDate t, IsTime t, Epoch t) => BS.ByteString  -> m (Local t)
-parseRfc3339ByteString s
-  = case Atto.parseOnly rfc3339Parser s of
-      Right t -> return t
-      Left  _ -> fail ""
+instance Rfc3339Parser [Char] where
+  parseRfc3339 s
+    = parseRfc3339 (T.pack s)
 
-parseRfc3339LazyByteString     :: (Monad m, IsDate t, IsTime t, Epoch t) => BSL.ByteString -> m (Local t)
-parseRfc3339LazyByteString s
-  = parseRfc3339ByteString      (BSL.toStrict s)
 
-parseRfc3339Text               :: (Monad m, IsDate t, IsTime t, Epoch t) => T.Text         -> m (Local t)
-parseRfc3339Text s
-  = parseRfc3339ByteString      (T.encodeUtf8 s)
+class Rfc3339Renderer a where
+  renderRfc3339 :: (Monad m, IsDate t, IsTime t, Epoch t) => Local t -> m a
 
-parseRfc3339LazyText           :: (Monad m, IsDate t, IsTime t, Epoch t) => TL.Text        -> m (Local t)
-parseRfc3339LazyText s
-  = parseRfc3339LazyByteString (TL.encodeUtf8 s)
 
-parseRfc3339String             :: (Monad m, IsDate t, IsTime t, Epoch t) => String         -> m (Local t)
-parseRfc3339String s
-  = parseRfc3339Text                  (T.pack s)
+instance Rfc3339Renderer BS.ByteString where
+  renderRfc3339 t
+    = renderRfc3339 t     >>= return . BSL.toStrict
+
+instance Rfc3339Renderer BSL.ByteString where
+  renderRfc3339 t
+    = rfc3339Builder t    >>= return . B.toLazyByteString
+
+instance Rfc3339Renderer T.Text where
+  renderRfc3339 t
+    = renderRfc3339     t >>= return . T.decodeUtf8
+
+instance Rfc3339Renderer TL.Text where
+  renderRfc3339 t
+    = renderRfc3339     t >>= return . TL.decodeUtf8
+
+instance Rfc3339Renderer [Char] where
+  renderRfc3339 t 
+    = renderRfc3339     t >>= return . T.unpack

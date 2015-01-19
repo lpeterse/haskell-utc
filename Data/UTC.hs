@@ -24,11 +24,12 @@ module Data.UTC
   -- ** Local Time
   , Local (..)
 
-  -- * RFC 3339
-  -- ** Parsing
-  , parseRfc3339String, parseRfc3339Text, parseRfc3339LazyText, parseRfc3339ByteString, parseRfc3339LazyByteString
-  -- ** Rendering
-  , renderRfc3339String, renderRfc3339Text, renderRfc3339LazyText, renderRfc3339ByteString, renderRfc3339LazyByteString
+  -- * Formatting
+  -- ** RFC 3339
+  -- *** Parsing
+  , Rfc3339Parser(..)
+  -- *** Rendering
+  , Rfc3339Renderer(..)
   ) where
 
 import Data.UTC.Class.Epoch

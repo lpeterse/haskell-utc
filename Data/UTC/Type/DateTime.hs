@@ -36,10 +36,10 @@ data DateTime
      } deriving (Eq, Ord)
 
 instance Show DateTime where
-  show = fromMaybe "1970-01-01T00:00:00-00:00" . renderRfc3339String . unknown
+  show = fromMaybe "1970-01-01T00:00:00-00:00" . renderRfc3339 . unknown
 
 instance IsString DateTime where
-  fromString = utc . fromMaybe epoch . parseRfc3339String
+  fromString = utc . fromMaybe epoch . parseRfc3339
 
 instance Epoch DateTime where
   epoch = DateTime epoch midnight
