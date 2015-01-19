@@ -1,8 +1,13 @@
 module Data.UTC
   ( 
   -- * Introduction
-  -- This is an introduction.
-  -- * Interfacess
+  -- ** Quickstart
+  -- $quickstart
+
+  -- ** General Concept
+  -- $concept
+
+  -- * Interfaces
   -- ** Date
     IsDate(..)
   -- ** Time
@@ -12,9 +17,9 @@ module Data.UTC
   -- ** Epoch / Midnight
   , Epoch(..)
   , Midnight(..)
-    -- ** Getting (current) timestamps
+    -- ** Getting (Current) Timestamps
   , HasUnixTime (..)
-  -- * Generic date/time types
+  -- * Generic Date/Time Types
   -- ** Date
   , Date
   -- ** Time
@@ -44,3 +49,10 @@ import Data.UTC.Type.DateTime
 import Data.UTC.Type.Local
 import Data.UTC.Format.Rfc3339
 
+-- $quickstart
+--
+-- Use the 'DateTime' type! It supports all functions you find below.
+-- Use 'Maybe' for all occurences of 'm'.
+
+-- $concept
+-- TODO: describe the library's concept here.
