@@ -1,7 +1,7 @@
 module Data.UTC
   ( 
   -- * Introduction
-  -- $introduction
+  -- This is an introduction.
   -- * Interfacess
   -- ** Date
     IsDate(..)
@@ -30,10 +30,6 @@ module Data.UTC
   -- ** Rendering
   , renderRfc3339String, renderRfc3339Text, renderRfc3339LazyText, renderRfc3339ByteString, renderRfc3339LazyByteString
   ) where
-
--- $introduction
---
--- huh
 
 import Data.UTC.Class.Epoch
 import Data.UTC.Class.Midnight
