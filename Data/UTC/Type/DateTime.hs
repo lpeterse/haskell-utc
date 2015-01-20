@@ -17,12 +17,12 @@ import Data.UTC.Type.Local
 import Data.UTC.Format.Rfc3339
 import Data.UTC.Internal
 
--- | A time representation based on years, months, days, hours, minutes, seconds and second fractions. 
+-- | A time representation based on a 'Data.UTC.Date' and the 'Data.UTC.Time' of the day.
 --
 --   * The type uses multiprecision integers internally and is able to represent
 --     any UTC date in the past and in the future with arbitrary precision
 --     (apart from the time span within a leap second).
---   * The instances for 'Data.String.IsString' and 'Prelude.Show' are only
+--   * The instances of 'Data.String.IsString' and 'Prelude.Show' are only
 --     meant for debugging purposes and default to 'epoch' in case of
 --     failure. Don't rely on their behaviour!
 data DateTime

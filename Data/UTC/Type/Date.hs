@@ -9,6 +9,14 @@ import Data.UTC.Class.IsDate
 import Data.UTC.Class.IsUnixTime
 import Data.UTC.Internal
 
+-- | This type represents dates in the __Proleptic Gregorian Calendar__.
+--
+--   * It can represent any date in the past and in the future by using
+--     'Prelude.Integer' internally.
+--   * The internal structure is not exposed to avoid the construction of invalid values.
+--     Use 'Data.UTC.epoch' or a parser to construct values.
+--   * The instance of 'Prelude.Show' is only meant for debugging purposes
+--     and is subject to change.
 data Date
    = Date
      { dYear           :: Integer

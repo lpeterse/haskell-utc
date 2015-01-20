@@ -11,7 +11,7 @@ import Data.UTC.Class.Midnight
 import Data.UTC.Class.IsTime
 import Data.UTC.Type.Time
 
--- | This type is used to extend UTC time types by a local offset.
+-- | This type is used to extend UTC time types by a local offset in seconds (positive or negative).
 --
 --   /Beware/: A local offset is not a time zone. It is just a fix
 --   period of time. In contrast to a time zone this does not take

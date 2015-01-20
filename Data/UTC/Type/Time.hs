@@ -10,6 +10,14 @@ import Data.UTC.Class.IsTime
 import Data.UTC.Class.IsUnixTime
 import Data.UTC.Internal
 
+-- | This type represents time instants during a day (__00:00:00 - 23:59:59.999__..)
+--   with arbitrary precision (uses 'Prelude.Integer' internally).
+--
+--   * The internal structure is not exposed to avoid the creation of
+--     invalid values.
+--     Use 'Data.UTC.midnight' or a parser to construct values.
+--   * The instance of 'Prelude.Show' is only meant for debugging purposes
+--     and is subject to change.
 data Time
    = Time
      { tHour           :: Integer
