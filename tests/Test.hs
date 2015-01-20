@@ -1,4 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
 module Main (main) where
 
 import Test.QuickCheck
@@ -27,6 +26,10 @@ main
 
      , Data.UTC.Internal.Test.test
      , Data.UTC.Class.IsDate.Test.test
+
+     , testProperty "(parseRfc3339 \"2014-12-24T13:37:00Z\" :: Maybe (Local DateTime)) >>= addHours 25 >>= setMonth 1 >>= renderRfc3339"
+     $ ((parseRfc3339 "2014-12-24T13:37:00Z" :: Maybe (Local DateTime)) >>= addHours 25 >>= setMonth 1 >>= renderRfc3339)
+       === (Just "2014-01-25T14:37:00Z" :: Maybe String)
      ]
 
 testTimeInstance :: (IsTime t, Eq t) => t -> [Test]
