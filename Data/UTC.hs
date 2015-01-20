@@ -7,6 +7,9 @@ module Data.UTC
   -- ** General Concepts
   -- $concept
 
+  -- *** Leap Seconds
+  -- $leapseconds
+
   -- * Interfaces
   -- ** Date
     IsDate(..)
@@ -58,4 +61,21 @@ import Data.UTC.Format.Rfc3339
 -- > > Just 2014-01-24T23:37:00Z
 
 -- $concept
+--
 -- TODO: describe the library's concept here.
+
+-- $leapseconds
+--
+-- As most other date and time libraries this library does __not support__ handling of leap seconds.
+--
+-- The problem is not so much that this task would be tedious and difficult, but
+-- rather that future leap seconds are not known in advance and are announced
+-- just a few weeks before they occur.
+--
+-- How should a library deal with this? Changing the function's semantic from version to version whenever
+-- a leap second occured? Probably not desireable. To me the only sane answer seems to be: /Not at all!/
+--
+-- In reality the problem is less severe than it seems: Your system clock is most probably
+-- counting unix seconds and does not know about leap seconds either. So chances are that
+-- when dealing with computer generated timestamps you'll never encounter problems with
+-- leap seconds.

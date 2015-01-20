@@ -64,7 +64,9 @@ class Epoch t => IsDate t where
   -- | A /month/ is a relative amount of time.
   -- The function's semantic is equivalent to that of 'addYears'.
   --
-  -- The function fails if the resulting date is out of the instance type's range (like 'addYears').
+  -- The function fails if the resulting date is out of the instance type's range
+  -- (cannot happen for 'Data.UTC.Date' and 'Data.UTC.DateTime' as they use 
+  --  multiprecision integers).
   --
   -- > addMonths (-13) "1970-01-01" :: Maybe Date
   -- > > Just 1968-12-01
@@ -74,7 +76,9 @@ class Epoch t => IsDate t where
 
   -- | A /day/ is an absolute amount of time. There is no surprise to expect.
   --
-  -- The function fails if the resulting date is out of the instance type's range (like 'addYears').
+  -- The function fails if the resulting date is out of the instance type's range
+  -- (cannot happen for 'Data.UTC.Date' and 'Data.UTC.DateTime' as they use 
+  --  multiprecision integers).
   --
   -- > addDays 365 "1970-01-01" :: Maybe Date
   -- > > Just 1971-01-01
