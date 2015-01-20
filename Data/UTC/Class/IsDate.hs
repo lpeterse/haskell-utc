@@ -25,7 +25,7 @@ class Epoch t => IsDate t where
   -- The function only returns values ranging from 1 to 12.
   month                 :: t -> Integer
   -- | > day   "2014-⁠12-⁠24" == 24
-    -- The function only returns values ranging from 1 to 31.
+  -- The function only returns values ranging from 1 to 31.
   day                   :: t -> Integer
 
   -- | Sets the year and fails if the result would be invalid.
@@ -36,8 +36,12 @@ class Epoch t => IsDate t where
   -- > > Nothing
   setYear               :: (Monad m) => Integer  -> t -> m t
   -- | Sets the month of year and fails if the result would be invalid.
+  --
+  -- The function only accepts input ranging from 1 to 12.
   setMonth              :: (Monad m) => Integer  -> t -> m t
   -- | Sets the day of month and fails if the result would be invalid.
+  --
+  -- The function only accepts input ranging from 1 to 31 (or less depending on month and year).
   setDay                :: (Monad m) => Integer  -> t -> m t
 
   -- | A /year/ is a relative amount of time.
@@ -61,6 +65,9 @@ class Epoch t => IsDate t where
   -- The function's semantic is equivalent to that of 'addYears'.
   --
   -- The function fails if the resulting date is out of the instance type's range (like 'addYears').
+  --
+  -- > addMonths (-13) "1970-01-01" :: Maybe Date
+  -- > > Just 1968-12-01
   addMonths             :: (Monad m) => Integer  -> t -> m t
   addMonths ms t
     = undefined
@@ -68,6 +75,9 @@ class Epoch t => IsDate t where
   -- | A /day/ is an absolute amount of time. There is no surprise to expect.
   --
   -- The function fails if the resulting date is out of the instance type's range (like 'addYears').
+  --
+  -- > addDays 400 "1970-01-01" :: Maybe Date
+  -- > > Just 1971-01-05
   addDays               :: (Monad m) => Integer  -> t -> m t
   addDays ds t
     -- setDay 1 to avoid intermediate generation of invalid dates!
