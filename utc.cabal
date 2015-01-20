@@ -96,3 +96,7 @@ Test-Suite test
                    , test-framework-quickcheck2 >= 0.3.0.3
                    , QuickCheck
   default-language:  Haskell98
+
+source-repository head
+  type:     git
+  location: https://github.com/lpeterse/haskell-utc.git

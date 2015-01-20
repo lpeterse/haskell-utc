@@ -4,7 +4,8 @@ module Data.UTC.Class.IsUnixTime
   ) where
 
 -- | This class is for types that have a well-defined
--- mapping to and from the <https://en.wikipedia.org/wiki/Unix_time Unix Time> system.
+-- mapping to and from the <https://en.wikipedia.org/wiki/Unix_time Unix Time> system 
+-- (based on <https://en.wikipedia.org/wiki/Coordinated_Universal_Time UTC>).
 --
 -- /Beware/: It is a common misconception that the Unix time in general counts
 -- <https://en.wikipedia.org/wiki/International_System_of_Units SI> seconds since 1970-01-01T00:00:00Z.
