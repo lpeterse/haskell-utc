@@ -38,6 +38,8 @@ class IsTime t where
   -- | Adds an arbitrary count of hours (positive or negative).
   --
   --   * Full days flow over to 'Data.UTC.addDays' if the type is also an instance of 'Data.UTC.Class.IsDate' (this is the case for 'Data.UTC.DateTime').
+  --   * Types not implementing the 'Data.UTC.Class.IsDate' class should just ignore the days part on overflow (like 'Data.UTC.Time' does).
+  --   * Fails if the result cannot be represented by the type (cannot happen for 'Data.UTC.Time' and 'Data.UTC.DateTime').
   addHours              :: (Monad m) => Integer  -> t -> m t
   addHours h t
     = setHour hors t
@@ -48,6 +50,7 @@ class IsTime t where
   -- | Adds an arbitrary count of minutes (positive or negative).
   --
   --   * Full hours flow over to 'addHours'.
+  --   * Fails if the result cannot be represented by the type (cannot happen for 'Data.UTC.Time' and 'Data.UTC.DateTime').
   addMinutes            :: (Monad m) => Integer  -> t -> m t
   addMinutes m t
     = setMinute mins t >>= addHours hors
@@ -59,6 +62,7 @@ class IsTime t where
   -- | Adds an arbitrary count of seconds (positive or negative).
   --
   --   * Full minutes flow over to 'addMinutes'.
+  --   * Fails if the result cannot be represented by the type (cannot happen for 'Data.UTC.Time' and 'Data.UTC.DateTime').
   addSeconds            :: (Monad m) => Integer  -> t -> m t
   addSeconds s t
     = setSecond secs t >>= addMinutes mins
@@ -71,6 +75,7 @@ class IsTime t where
   --
   --   * Full seconds flow over to 'addSeconds'.
   --   * Instances of this class are not required to preserve full precision (although 'Data.UTC.Time' and 'Data.UTC.DateTime' do so).
+  --   * Fails if the result cannot be represented by the type (cannot happen for 'Data.UTC.Time' and 'Data.UTC.DateTime').
   addSecondFractions    :: (Monad m) => Rational -> t -> m t
   addSecondFractions f t
     | f == 0    = return t
