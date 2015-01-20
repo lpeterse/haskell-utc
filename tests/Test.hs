@@ -11,6 +11,7 @@ import Data.String
 import Data.UTC
 
 import Data.UTC.Internal.Test (test)
+import Data.UTC.Class.IsDate.Test (test)
 
 main :: IO ()
 main
@@ -25,6 +26,7 @@ main
      $ testTimeInstance (midnight  :: Time)
 
      , Data.UTC.Internal.Test.test
+     , Data.UTC.Class.IsDate.Test.test
      ]
 
 testTimeInstance :: (IsTime t, Eq t) => t -> [Test]

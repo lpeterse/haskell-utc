@@ -59,7 +59,9 @@ class Epoch t => IsDate t where
   -- > > Just 2001-02-28
   addYears              :: (Monad m) => Integer  -> t -> m t
   addYears ys t
-    = undefined
+    = if isValidDate (year t + ys, month t, day t)
+        then setYear (year t + ys) t
+        else setYear (year t + ys) =<< setDay (day t - 1) t
 
   -- | A /month/ is a relative amount of time.
   -- The function's semantic is equivalent to that of 'addYears'.
@@ -72,7 +74,18 @@ class Epoch t => IsDate t where
   -- > > Just 1968-12-01
   addMonths             :: (Monad m) => Integer  -> t -> m t
   addMonths ms t
-    = undefined
+    = setDay 1 t >>= setYear y >>= setMonth m >>= setDay d
+    where
+      ym = (year t * monthsPerYear)
+         + (month t - 1)
+         + ms
+      y  = ym `div` monthsPerYear
+      m  = (ym `mod` monthsPerYear) + 1
+      d' = day t
+      d  | isValidDate (y, m, d')     = d'
+         | isValidDate (y, m, d' - 1) = d' - 1
+         | isValidDate (y, m, d' - 2) = d' - 2
+         | otherwise                  = d' - 3 -- was 31, now 28
 
   -- | A /day/ is an absolute amount of time. There is no surprise to expect.
   --

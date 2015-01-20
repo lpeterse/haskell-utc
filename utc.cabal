@@ -70,6 +70,7 @@ Test-Suite test
                    , Data.UTC.Class.Epoch
                    , Data.UTC.Class.Midnight
                    , Data.UTC.Class.IsDate
+                   , Data.UTC.Class.IsDate.Test
                    , Data.UTC.Class.IsTime
                    , Data.UTC.Class.IsUnixTime
                    , Data.UTC.Class.HasUnixTime

@@ -109,7 +109,7 @@ import Data.UTC.Format.Rfc3339
 -- rather that future leap seconds are not known in advance and are announced
 -- just a few weeks before they occur.
 -- How should a library deal with this? Changing the function's semantic from version to version whenever
--- a leap second occured? Probably not desireable. To me the only sane answer seems to be: /Not at all!/
+-- a leap second occured? Probably not desireable. The only sane answer seems to be: /Not at all!/
 --
 -- In reality the problem is less severe than it seems: Your system clock is most probably
 -- counting unix seconds and does not know about leap seconds either. So chances are that

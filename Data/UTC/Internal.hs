@@ -10,6 +10,7 @@ module Data.UTC.Internal
   , isValidDate
 
   , secsPerDay, secsPerHour, secsPerMinute, minsPerHour, hoursPerDay
+  , monthsPerYear
   ) where
 
 deltaUnixEpochCommonEpoch :: Rational
@@ -35,6 +36,10 @@ minsPerHour
 hoursPerDay :: Integer
 hoursPerDay
   = 24
+
+monthsPerYear :: Integer
+monthsPerYear
+  = 12
 
 -- | Convert Year-Month-Day to since 0000-01-01 in the Gregorian Calendar
 --
