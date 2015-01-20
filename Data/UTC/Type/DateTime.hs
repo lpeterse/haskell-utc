@@ -217,3 +217,12 @@ instance IsTime (Local DateTime) where
   setSecondFraction h (Local t o@(Just i))
     = do t' <- addSecondFractions i t >>= setSecondFraction h >>= addSecondFractions (negate i)
          return (Local t' o)
+
+  -- This one is necessary to override, because the overflow should
+  -- ripple into the date part.
+  addHours h t
+    = setHour hors t >>= addDays days
+    where
+      h'   = h + (hour t)
+      days = h' `div` hoursPerDay
+      hors = h' `mod` hoursPerDay
