@@ -38,6 +38,9 @@ data DateTime
 instance Show DateTime where
   show = fromMaybe "1970-01-01T00:00:00-00:00" . renderRfc3339 . unknown
 
+instance Show (Local DateTime) where
+  show = fromMaybe "1970-01-01T00:00:00-00:00" . renderRfc3339
+
 instance IsString DateTime where
   fromString = utc . fromMaybe epoch . parseRfc3339
 

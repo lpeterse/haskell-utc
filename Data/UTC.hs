@@ -1,10 +1,10 @@
 module Data.UTC
   ( 
   -- * Introduction
-  -- ** Quickstart
+  -- ** Quick Start
   -- $quickstart
 
-  -- ** General Concept
+  -- ** General Concepts
   -- $concept
 
   -- * Interfaces
@@ -54,8 +54,8 @@ import Data.UTC.Format.Rfc3339
 -- Use the 'DateTime' type! It supports all functions you find below.
 -- Use 'Maybe' for all occurences of 'm'.
 --
--- > utc `fmap` parseRfc3339 "2014-12-24T13:37:00Z" >>= addHours 10 >>= setMonth 1 :: Maybe DateTime
--- > > Just 2014-01-24T23:37:00-00:00
+-- > parseRfc3339 "2014-12-24T13:37:00Z" >>= addHours 10 >>= setMonth 1 :: Maybe (Local DateTime)
+-- > > Just 2014-01-24T23:37:00Z
 
 -- $concept
 -- TODO: describe the library's concept here.

@@ -62,7 +62,6 @@ instance Rfc3339Parser [Char] where
 class Rfc3339Renderer a where
   renderRfc3339 :: (Monad m, IsDate t, IsTime t, Epoch t) => Local t -> m a
 
-
 instance Rfc3339Renderer BS.ByteString where
   renderRfc3339 t
     = renderRfc3339 t     >>= return . BSL.toStrict
