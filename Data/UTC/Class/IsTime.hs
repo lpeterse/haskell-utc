@@ -7,16 +7,37 @@ import Data.Ratio
 
 import Data.UTC.Internal
 
+-- | This class captures the concept of a 24-hour clock time
+-- during a day.
 class IsTime t where
+  -- | Returns values in the range 0 to 23.
   hour                  :: t -> Integer
+  -- | Returns values in the range 0 to 59.
   minute                :: t -> Integer
+  -- | Returns values in the range 0 to 59.
   second                :: t -> Integer
+  -- | Returns values in the range 0.0 <= x < 1.0.
   secondFraction        :: t -> Rational
+  -- | Accepts values in the range 0 to 23.
+  --
+  -- The function fails if the result cannot be represented by the type (cannot happen for 'Data.UTC.Time' and 'Data.UTC.DateTime').
   setHour               :: (Monad m) => Integer  -> t -> m t
+  -- | Accepts values in the range 0 to 59.
+  --
+  -- The function fails if the result cannot be represented by the type (cannot happen for 'Data.UTC.Time' and 'Data.UTC.DateTime').
   setMinute             :: (Monad m) => Integer  -> t -> m t
+  -- | Accepts values in the range 0 to 59.
+  --
+  -- The function fails if the result cannot be represented by the type (cannot happen for 'Data.UTC.Time' and 'Data.UTC.DateTime').
   setSecond             :: (Monad m) => Integer  -> t -> m t
+  -- | Accepts values in the range 0.0 <= x < 1.0.
+  --
+  -- The function fails if the result cannot be represented by the type (cannot happen for 'Data.UTC.Time' and 'Data.UTC.DateTime').
   setSecondFraction     :: (Monad m) => Rational -> t -> m t
 
+  -- | Adds an arbitrary count of hours (positive or negative).
+  --
+  --   * Full days flow over to 'Data.UTC.addDays' if the type is also an instance of 'Data.UTC.Class.IsDate' (this is the case for 'Data.UTC.DateTime').
   addHours              :: (Monad m) => Integer  -> t -> m t
   addHours h t
     = setHour hors t
@@ -24,6 +45,9 @@ class IsTime t where
       h'   = h + (hour t)
       hors = h' `mod` hoursPerDay
 
+  -- | Adds an arbitrary count of minutes (positive or negative).
+  --
+  --   * Full hours flow over to 'addHours'.
   addMinutes            :: (Monad m) => Integer  -> t -> m t
   addMinutes m t
     = setMinute mins t >>= addHours hors
@@ -32,6 +56,9 @@ class IsTime t where
       mins = m' `mod` minsPerHour
       hors = m' `div` minsPerHour
 
+  -- | Adds an arbitrary count of seconds (positive or negative).
+  --
+  --   * Full minutes flow over to 'addMinutes'.
   addSeconds            :: (Monad m) => Integer  -> t -> m t
   addSeconds s t
     = setSecond secs t >>= addMinutes mins
@@ -40,6 +67,10 @@ class IsTime t where
       secs = s' `mod` secsPerMinute
       mins = s' `div` secsPerMinute
 
+  -- | Adds an arbitrary second fraction (positive or negative).
+  --
+  --   * Full seconds flow over to 'addSeconds'.
+  --   * Instances of this class are not required to preserve full precision (although 'Data.UTC.Time' and 'Data.UTC.DateTime' do so).
   addSecondFractions    :: (Monad m) => Rational -> t -> m t
   addSecondFractions f t
     | f == 0    = return t
