@@ -78,7 +78,7 @@ import Data.UTC.Format.Rfc3339
 -- a 'Prelude.Monad' restriction on it. You can always just use 'Prelude.Maybe' and
 -- 'Data.Maybe.fromMaybe' to obtain a plain value:
 --
--- >  fromMaybe epoch (addDays 25 epoch) :: Date
+-- >  fromMaybe epoch (addDays 24 epoch) :: Date
 -- > > 1970-01-25
 --
 -- Using another 'Prelude.Monad' instance might give you additional information in case of failure:
