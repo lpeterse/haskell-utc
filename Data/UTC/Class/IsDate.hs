@@ -76,8 +76,10 @@ class Epoch t => IsDate t where
   --
   -- The function fails if the resulting date is out of the instance type's range (like 'addYears').
   --
-  -- > addDays 400 "1970-01-01" :: Maybe Date
-  -- > > Just 1971-01-05
+  -- > addDays 365 "1970-01-01" :: Maybe Date
+  -- > > Just 1971-01-01
+  -- > addDays 365 "2000-01-01" :: Maybe Date
+  -- > > Just 2000-12-31
   addDays               :: (Monad m) => Integer  -> t -> m t
   addDays ds t
     -- setDay 1 to avoid intermediate generation of invalid dates!
