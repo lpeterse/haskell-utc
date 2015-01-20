@@ -5,10 +5,12 @@ module Data.UTC
   -- $quickstart
 
   -- ** General Concepts
-  -- $concept
 
   -- *** Handling Of Failure
   -- $failure
+
+  -- *** Integer vs. Int
+  -- $integerint
 
   -- *** Leap Seconds
   -- $leapseconds
@@ -63,10 +65,6 @@ import Data.UTC.Format.Rfc3339
 -- > parseRfc3339 "2014-12-24T13:37:00Z" >>= addHours 10 >>= setMonth 1 :: Maybe (Local DateTime)
 -- > > Just 2014-01-24T23:37:00Z
 
--- $concept
---
--- TODO: describe the library's concept here.
-
 -- $failure
 --
 -- The library's main idea is to make it hard to use it wrong. It should
@@ -88,6 +86,21 @@ import Data.UTC.Format.Rfc3339
 -- > setHour 10 midnight >>= setMinute 61 :: IO Time
 -- > > *** Exception: user error (Time.setMinute 61)
 
+-- $integerint
+--
+-- This library uses 'Prelude.Integer' instead of 'Prelude.Int'. This bears the advantage
+-- of easier reasoning about the code's correctness and the ability
+-- to work on date and time with arbitrary range and precision.
+--
+-- One might think that 'Prelude.Integer' is slower, but indeed it uses 'Prelude.Int'
+-- internally unless its range is exceeded. The dispatching should not take more than a
+-- few cycles. Using 'Prelude.Int' in the first place can rightly be considered
+-- /premature optimisation/. If this really is your application's bottle neck
+-- you should first consider creating your own time type (i.e. a newtyped 'Prelude.Int'
+-- representing Unixtime) and making it an instance of the relevant classes.
+-- Do the critical operations on the bare type. If that is not an option consider
+-- using a more specialised library.
+
 -- $leapseconds
 --
 -- As most other date and time libraries this library does __not support__ handling of leap seconds.
@@ -95,7 +108,6 @@ import Data.UTC.Format.Rfc3339
 -- The problem is not so much that this task would be tedious and difficult, but
 -- rather that future leap seconds are not known in advance and are announced
 -- just a few weeks before they occur.
---
 -- How should a library deal with this? Changing the function's semantic from version to version whenever
 -- a leap second occured? Probably not desireable. To me the only sane answer seems to be: /Not at all!/
 --
