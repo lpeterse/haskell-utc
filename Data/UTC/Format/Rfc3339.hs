@@ -24,15 +24,6 @@ import Data.UTC.Type.Local
 import Data.UTC.Format.Rfc3339.Parser
 import Data.UTC.Format.Rfc3339.Builder
 
--- | All method's results are wrapped in 'Control.Monad.Monad' to reflect possible
---   failure of the computation. To easily obtain a plain value just use the 'Data.Maybe.Maybe'
---   instance and supply a replacement value:
---
--- > fromMaybe "Invalid IsDate" (renderRfc3339String (Epoch minBound))
--- > > "Invalid IsDate"
--- > fromMaybe (Epoch 0)   (parseRfc3339String "1970-01-32T00:00:00Z")
--- > > "1970-01-01T00:00:00Z"
-
 class Rfc3339Parser a where
   parseRfc3339 :: (Monad m, IsDate t, IsTime t, Epoch t) => a -> m (Local t)
 

@@ -16,7 +16,7 @@ data Time
      , tMinute         :: Integer
      , tSecond         :: Integer
      , tSecondFraction :: Rational
-     } deriving (Eq, Ord)
+     } deriving (Eq, Ord, Show)
 
 instance Midnight Time where
   midnight

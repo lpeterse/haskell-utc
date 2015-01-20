@@ -17,15 +17,11 @@ import Data.UTC.Type.Local
 import Data.UTC.Format.Rfc3339
 import Data.UTC.Internal
 
--- | A time representation based on years, months, days, hours, minutes and seconds with
---   local offset based on the UTC system. 
---   This representation is very close to RFC3339 (a stricter profile of ISO8601) strings. 
+-- | A time representation based on years, months, days, hours, minutes, seconds and second fractions. 
 --
 --   * The type uses multiprecision integers internally and is able to represent
 --     any UTC date in the past and in the future with arbitrary precision
 --     (apart from the time span within a leap second).
---   * 'Prelude.Eq' and 'Prelude.Ord' are operating on the output of
---     'toSecondsSinceCommonEpoch' and are independant of local offsets.
 --   * The instances for 'Data.String.IsString' and 'Prelude.Show' are only
 --     meant for debugging purposes and default to 'epoch' in case of
 --     failure. Don't rely on their behaviour!
@@ -103,6 +99,57 @@ instance IsTime DateTime where
       h'   = h + (hour t)
       hors = h' `mod` hoursPerDay
       days = h' `div` hoursPerDay
+
+-- assumption: addSecondFractions for DateTime is always successful
+instance IsDate (Local DateTime) where
+  year (Local t Nothing)
+    = year t
+  year (Local t (Just 0))
+    = year t
+  year (Local t (Just o))
+    = year
+    $ fromMaybe undefined $ addSecondFractions o t
+  month (Local t Nothing)
+    = month t
+  month (Local t (Just 0))
+    = month t
+  month (Local t (Just o))
+    = month
+    $ fromMaybe undefined $ addSecondFractions o t
+  day (Local t Nothing)
+    = day t
+  day (Local t (Just 0))
+    = day t
+  day  (Local t (Just o))
+    = day
+    $ fromMaybe undefined $ addSecondFractions o t
+  setYear h (Local t o@Nothing)
+    = do t' <- setYear h t
+         return (Local t' o)
+  setYear h (Local t o@(Just 0))
+    = do t' <- setYear h t
+         return (Local t' o)
+  setYear h (Local t o@(Just i))
+    = do t' <- addSecondFractions i t >>= setYear h >>= addSecondFractions (negate i)
+         return (Local t' o)
+  setMonth h (Local t o@Nothing)
+    = do t' <- setMonth h t
+         return (Local t' o)
+  setMonth h (Local t o@(Just 0))
+    = do t' <- setMonth h t
+         return (Local t' o)
+  setMonth h (Local t o@(Just i))
+    = do t' <- addSecondFractions i t >>= setMonth h >>= addSecondFractions (negate i)
+         return (Local t' o)
+  setDay h (Local t o@Nothing)
+    = do t' <- setDay h t
+         return (Local t' o)
+  setDay h (Local t o@(Just 0))
+    = do t' <- setDay h t
+         return (Local t' o)
+  setDay h (Local t o@(Just i))
+    = do t' <- addSecondFractions i t >>= setDay h >>= addSecondFractions (negate i)
+         return (Local t' o)
 
 -- assumption: addSecondFractions for DateTime is always successful
 instance IsTime (Local DateTime) where

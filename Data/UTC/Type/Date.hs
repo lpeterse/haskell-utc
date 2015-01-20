@@ -14,7 +14,7 @@ data Date
      { dYear           :: Integer
      , dMonth          :: Integer
      , dDay            :: Integer
-     } deriving (Eq, Ord)
+     } deriving (Eq, Ord, Show)
 
 instance Epoch Date where
   epoch

@@ -62,7 +62,7 @@ import Data.UTC.Format.Rfc3339
 -- Use the 'DateTime' type! It supports all functions you find below.
 -- Use 'Maybe' for all occurences of 'm'.
 --
--- > (parseRfc3339 "2014-12-24T13:37:00Z" :: Maybe (Local DateTime)) >>= addHours 25 >>= setMonth 1 >>= renderRfc3339String
+-- > (parseRfc3339 "2014-12-24T13:37:00Z" :: Maybe (Local DateTime)) >>= addHours 25 >>= setMonth 1 >>= renderRfc3339
 -- > > Just "2014-01-25T14:37:00Z"
 
 -- $failure
