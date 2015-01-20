@@ -7,6 +7,9 @@ module Data.UTC
   -- ** General Concepts
   -- $concept
 
+  -- *** Handling Of Failure
+  -- $failure
+
   -- *** Leap Seconds
   -- $leapseconds
 
@@ -63,6 +66,27 @@ import Data.UTC.Format.Rfc3339
 -- $concept
 --
 -- TODO: describe the library's concept here.
+
+-- $failure
+--
+-- The library's main idea is to make it hard to use it wrong. It should
+-- be impossible by the API's design to construct invalid date or time values.
+--
+-- Furthermore, the library is safe in the sense that its functions don't do
+-- anything that is not visible in the functions signature. Escpecially, none of the
+-- functions throw exceptions via 'Prelude.error' or 'Prelude.undefined'.
+--
+-- Whenever a function cannot be total, its result is wrapped in a type variable with
+-- a 'Prelude.Monad' restriction on it. You can always just use 'Prelude.Maybe' and
+-- 'Data.Maybe.fromMaybe' to obtain a plain value:
+--
+-- >  fromMaybe epoch (addDays 25 epoch) :: Date
+-- > > 1970-01-25
+--
+-- Using another 'Prelude.Monad' instance might give you additional information in case of failure:
+--
+-- > setHour 10 midnight >>= setMinute 61 :: IO Time
+-- > > *** Exception: user error (Time.setMinute 61)
 
 -- $leapseconds
 --
