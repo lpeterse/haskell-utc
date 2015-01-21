@@ -22,7 +22,22 @@ data Date
      { dYear           :: Integer
      , dMonth          :: Integer
      , dDay            :: Integer
-     } deriving (Eq, Ord, Show)
+     } deriving (Eq, Ord)
+
+instance Show Date where
+  show (Date yy mm dd)
+    = concat
+        [ if yy < 0
+            then "-"
+            else ""
+        , if abs yy > 9999
+            then show (abs yy)
+            else fixedDecimal 4 (abs yy)
+        , "-"
+        , fixedDecimal 2 mm
+        , "-"
+        , fixedDecimal 2 dd
+        ]
 
 instance Epoch Date where
   epoch
