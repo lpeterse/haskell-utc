@@ -43,6 +43,9 @@ module Data.UTC
   , Rfc3339Parser(..)
   -- *** Rendering
   , Rfc3339Renderer(..)
+  -- ** ISO 8601
+  -- *** Rendering
+  , Iso8601Renderer(..)
   ) where
 
 import Data.UTC.Class.Epoch
@@ -56,6 +59,7 @@ import Data.UTC.Type.Time
 import Data.UTC.Type.DateTime
 import Data.UTC.Type.Local
 import Data.UTC.Format.Rfc3339
+import Data.UTC.Format.Iso8601
 
 -- $quickstart
 --
