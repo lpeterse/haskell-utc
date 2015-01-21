@@ -5,8 +5,6 @@ import Test.Framework (defaultMain, testGroup)
 import Test.Framework (Test)
 import Test.Framework.Providers.QuickCheck2 (testProperty)
 
-import Data.String
-
 import Data.UTC
 
 import Data.UTC.Internal.Test (test)
@@ -125,12 +123,12 @@ testTimeInstance t
          , ("10", setSecondFraction 1.1 t)
          ]
 
-testUnixTimeInstance :: (Show t, IsUnixTime t, IsString t,Eq t) => t -> [Test]
+testUnixTimeInstance :: (Show t, IsUnixTime t, Eq t, IsTime t, IsDate t) => t -> [Test]
 testUnixTimeInstance t
   = (map
        (\(i64,s)->
         testProperty ("fromUnixSeconds " ++ show i64 ++ ") == Just " ++ show s)
-        $  (fromUnixSeconds i64) === Just (fromString s `asTypeOf` t)
+        $  (fromUnixSeconds i64) === (utc `fmap` parseRfc3339 s) `asTypeOf` Just t
        )
        unixEpochMsRfc3339TimeTuples
       )
@@ -138,7 +136,7 @@ testUnixTimeInstance t
       (map
        (\(i64,s)->
         testProperty ("unixSeconds (" ++ show s ++ ") == " ++ show i64)
-        $ unixSeconds (fromString s `asTypeOf` t) === i64
+        $ unixSeconds `fmap` ((utc `fmap` parseRfc3339 s) `asTypeOf` Just t) === Just i64
        )
        unixEpochMsRfc3339TimeTuples
       )

@@ -4,7 +4,6 @@ module Data.UTC.Type.DateTime
     DateTime (..)
   ) where
 
-import Data.String
 import Data.Maybe
 
 import Data.UTC.Class.Epoch
@@ -14,7 +13,6 @@ import Data.UTC.Class.IsUnixTime
 import Data.UTC.Type.Date
 import Data.UTC.Type.Time
 import Data.UTC.Type.Local
-import Data.UTC.Format.Rfc3339
 import Data.UTC.Internal
 
 -- | A time representation based on a 'Data.UTC.Date' and the 'Data.UTC.Time' of the day.
@@ -32,13 +30,8 @@ data DateTime
      } deriving (Eq, Ord)
 
 instance Show DateTime where
-  show = fromMaybe "1970-01-01T00:00:00-00:00" . renderRfc3339 . unknown
-
-instance Show (Local DateTime) where
-  show = fromMaybe "1970-01-01T00:00:00-00:00" . renderRfc3339
-
-instance IsString DateTime where
-  fromString = utc . fromMaybe epoch . parseRfc3339
+  show (DateTime d t)
+    = show d ++ "T" ++ show t
 
 instance Epoch DateTime where
   epoch = DateTime epoch midnight
