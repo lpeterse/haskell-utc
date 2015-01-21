@@ -18,6 +18,9 @@ import Data.UTC.Internal
 --     Use 'Data.UTC.midnight' or a parser to construct values.
 --   * The instance of 'Prelude.Show' is only meant for debugging purposes
 --     and is subject to change.
+--
+-- > > show midnight :: Time
+-- > 00:00:00
 data Time
    = Time
      { tHour           :: Integer

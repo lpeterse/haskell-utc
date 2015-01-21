@@ -17,6 +17,9 @@ import Data.UTC.Internal
 --     Use 'Data.UTC.epoch' or a parser to construct values.
 --   * The instance of 'Prelude.Show' is only meant for debugging purposes
 --     and is subject to change.
+--
+-- > > show epoch :: Date
+-- > 1970-01-01
 data Date
    = Date
      { dYear           :: Integer

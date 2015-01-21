@@ -20,9 +20,11 @@ import Data.UTC.Internal
 --   * The type uses multiprecision integers internally and is able to represent
 --     any UTC date in the past and in the future with arbitrary precision
 --     (apart from the time span within a leap second).
---   * The instances of 'Data.String.IsString' and 'Prelude.Show' are only
---     meant for debugging purposes and default to 'epoch' in case of
---     failure. Don't rely on their behaviour!
+--   * The instance of 'Prelude.Show' is only
+--     meant for debugging purposes. Don't rely on its behaviour!
+--
+-- > > show epoch :: DateTime
+-- > 1970-01-01T00:00:00
 data DateTime
    = DateTime
      { date  :: Date
