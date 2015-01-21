@@ -24,7 +24,18 @@ data Time
      , tMinute         :: Integer
      , tSecond         :: Integer
      , tSecondFraction :: Rational
-     } deriving (Eq, Ord, Show)
+     } deriving (Eq, Ord)
+
+instance Show Time where
+  show (Time hh mm ss ff)
+    = concat
+        [ fixedDecimal 2 hh
+        , ":"
+        , fixedDecimal 2 mm
+        , ":"
+        , fixedDecimal 2 ss
+        , decimalFraction 12 ff
+        ]
 
 instance Midnight Time where
   midnight

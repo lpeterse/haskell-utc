@@ -11,7 +11,12 @@ module Data.UTC.Internal
 
   , secsPerDay, secsPerHour, secsPerMinute, minsPerHour, hoursPerDay
   , monthsPerYear
+
+  , fixedDecimal
+  , decimalFraction
   ) where
+
+import Data.Ratio
 
 deltaUnixEpochCommonEpoch :: Rational
 deltaUnixEpochCommonEpoch
@@ -160,3 +165,28 @@ isValidDate (y,m,d)
       | otherwise                   = False
     isLeapYear
       = (y `mod` 4 == 0) && ((y `mod` 400 == 0) || (y `mod` 100 /= 0))
+
+fixedDecimal :: Integer -> Integer -> String
+fixedDecimal digits i
+  = f digits i []
+  where
+    f n i accum | n <= 0    = accum
+                | otherwise = f (n - 1) (i `div` 10)
+                                ((toEnum $ fromIntegral $ 48 + i `mod` 10):accum)
+
+decimalFraction :: Integer -> Rational -> String
+decimalFraction _     0
+  = ""
+decimalFraction limit r
+  = '.':(df limit r)
+  where
+    df limit 0
+      = ""
+    df 0 _
+      = "..."
+    df limit r
+      = ch:(df (limit - 1) r')
+      where
+        r10 = r * 10
+        ch  = toEnum $ fromIntegral $ 48 + (truncate $ r10) `mod` 10
+        r' = r10 - (truncate r10 % 1)
