@@ -2,6 +2,8 @@ module Data.UTC.Format.Rfc3339.Parser
   ( rfc3339Parser
   ) where
 
+import Control.Monad.Catch
+
 import Data.Ratio
 
 import Data.Attoparsec.ByteString ( Parser, skipWhile, choice, option, satisfy )
@@ -12,7 +14,7 @@ import Data.UTC.Class.IsDate
 import Data.UTC.Class.IsTime
 import Data.UTC.Type.Local
 
-rfc3339Parser :: (IsDate t, IsTime t) => Parser (Local t)
+rfc3339Parser :: (MonadThrow m, IsDate t, IsTime t) => Parser (m (Local t))
 rfc3339Parser 
   = do year'    <- dateFullYear
        _        <- char '-'
@@ -27,15 +29,15 @@ rfc3339Parser
        second'  <- timeSecond
        secfrac' <- option 0 timeSecfrac
        offset'  <- timeOffset
-       datetime <- return epoch
-            >>= setYear                year'
-            >>= setMonth               month'
-            >>= setDay                 day'
-            >>= setHour                hour'
-            >>= setMinute              minute'
-            >>= setSecond              second'
-            >>= setSecondFraction      secfrac'
-       return (Local datetime offset')
+
+       return $ do datetime <- setYear           year' epoch
+                           >>= setMonth          month'
+                           >>= setDay            day'
+                           >>= setHour           hour'
+                           >>= setMinute         minute'
+                           >>= setSecond         second'
+                           >>= setSecondFraction secfrac'
+                   return (Local datetime offset')
   where
     dateFullYear
       = decimal4

@@ -3,6 +3,8 @@ module Data.UTC.Class.IsUnixTime
   ( IsUnixTime(..)
   ) where
 
+import Control.Monad.Catch
+
 -- | This class is for types that have a well-defined
 -- mapping to and from the <https://en.wikipedia.org/wiki/Unix_time Unix Time> system 
 -- (based on <https://en.wikipedia.org/wiki/Coordinated_Universal_Time UTC>).
@@ -18,4 +20,4 @@ module Data.UTC.Class.IsUnixTime
 -- The concrete behaviour of your system clock is implementation dependant.
 class IsUnixTime t where
   unixSeconds      :: t -> Rational
-  fromUnixSeconds  :: Monad m => Rational -> m t
+  fromUnixSeconds  :: MonadThrow m => Rational -> m t

@@ -8,6 +8,8 @@ module Data.UTC.Format.Rfc3339
   , rfc3339Parser, rfc3339Builder
   ) where
 
+import Control.Monad.Catch
+
 import qualified Data.Attoparsec.ByteString as Atto
 import qualified Data.ByteString            as BS
 import qualified Data.ByteString.Lazy       as BSL
@@ -25,12 +27,12 @@ import Data.UTC.Format.Rfc3339.Parser
 import Data.UTC.Format.Rfc3339.Builder
 
 class Rfc3339Parser a where
-  parseRfc3339 :: (Monad m, IsDate t, IsTime t, Epoch t) => a -> m (Local t)
+  parseRfc3339 :: (MonadThrow m, IsDate t, IsTime t, Epoch t) => a -> m (Local t)
 
 instance Rfc3339Parser BS.ByteString where
   parseRfc3339 s
     = case Atto.parseOnly rfc3339Parser s of
-        Right t -> return t
+        Right t -> t
         Left  _ -> fail ""
 
 instance Rfc3339Parser BSL.ByteString where

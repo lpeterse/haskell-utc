@@ -3,6 +3,8 @@ module Data.UTC.Class.IsDate
   ( IsDate (..)
   ) where
 
+import Control.Monad.Catch
+
 import Data.UTC.Internal
 import Data.UTC.Class.Epoch
 
@@ -34,15 +36,15 @@ class Epoch t => IsDate t where
   -- > > Just 2005-02-28
   -- > setYear 2005 "2004-02-29" :: Maybe Date
   -- > > Nothing
-  setYear               :: (Monad m) => Integer  -> t -> m t
+  setYear               :: (MonadThrow m) => Integer  -> t -> m t
   -- | Sets the month of year and fails if the result would be invalid.
   --
   -- The function only accepts input ranging from 1 to 12.
-  setMonth              :: (Monad m) => Integer  -> t -> m t
+  setMonth              :: (MonadThrow m) => Integer  -> t -> m t
   -- | Sets the day of month and fails if the result would be invalid.
   --
   -- The function only accepts input ranging from 1 to 31 (or less depending on month and year).
-  setDay                :: (Monad m) => Integer  -> t -> m t
+  setDay                :: (MonadThrow m) => Integer  -> t -> m t
 
   -- | A /year/ is a relative amount of time.
   -- The function's semantic is a follows:
@@ -57,7 +59,7 @@ class Epoch t => IsDate t where
   -- > > Just 2004-02-29
   -- > addYears 1 "2000-02-29" :: Maybe Date
   -- > > Just 2001-02-28
-  addYears              :: (Monad m) => Integer  -> t -> m t
+  addYears              :: (MonadThrow m) => Integer  -> t -> m t
   addYears ys t
     = if isValidDate (year t + ys, month t, day t)
         then setYear (year t + ys) t
@@ -72,7 +74,7 @@ class Epoch t => IsDate t where
   --
   -- > addMonths (-13) "1970-01-01" :: Maybe Date
   -- > > Just 1968-12-01
-  addMonths             :: (Monad m) => Integer  -> t -> m t
+  addMonths             :: (MonadThrow m) => Integer  -> t -> m t
   addMonths ms t
     = setDay 1 t >>= setYear y >>= setMonth m >>= setDay d
     where
@@ -97,7 +99,7 @@ class Epoch t => IsDate t where
   -- > > Just 1971-01-01
   -- > addDays 365 "2000-01-01" :: Maybe Date
   -- > > Just 2000-12-31
-  addDays               :: (Monad m) => Integer  -> t -> m t
+  addDays               :: (MonadThrow m) => Integer  -> t -> m t
   addDays ds t
     -- setDay 1 to avoid intermediate generation of invalid dates!
     = setDay 1 t >>= setYear y >>= setMonth m >>= setDay d
