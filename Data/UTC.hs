@@ -6,8 +6,8 @@ module Data.UTC
 
   -- ** General Concepts
 
-  -- *** Handling Failure
-  -- $failure
+  -- *** Handling Exceptions
+  -- $exceptions
 
   -- *** Integer vs. Int
   -- $integerint
@@ -36,6 +36,8 @@ module Data.UTC
   , DateTime (..)
   -- ** Local Time
   , Local (..)
+  -- ** Exception
+  , UtcException (..)
 
   -- * Formatting
   -- ** RFC 3339
@@ -58,6 +60,7 @@ import Data.UTC.Type.Date
 import Data.UTC.Type.Time
 import Data.UTC.Type.DateTime
 import Data.UTC.Type.Local
+import Data.UTC.Type.Exception
 import Data.UTC.Format.Rfc3339
 import Data.UTC.Format.Iso8601
 
@@ -73,7 +76,7 @@ import Data.UTC.Format.Iso8601
 -- > Prelude Data.UTC> (parseRfc3339 "2014-12-24T13:37:00Z" :: MT) >>= addHours 25 >>= setMonth 1 >>= renderRfc3339 :: MS
 -- > Just "2014-01-25T14:37:00Z"
 
--- $failure
+-- $exceptions
 --
 -- The library's main idea is to make it hard to use it wrong. It should
 -- be impossible by the API's design to construct invalid date or time values.
@@ -83,16 +86,20 @@ import Data.UTC.Format.Iso8601
 -- functions throw exceptions via 'Prelude.error' or 'Prelude.undefined'.
 --
 -- Whenever a function cannot be total, its result is wrapped in a type variable with
--- a 'Prelude.Monad' restriction on it. You can always just use 'Prelude.Maybe' and
+-- a 'Monad.Control.MonadThrow' restriction on it which works nicely even in complex
+-- monad transformer stacks. You can always just use 'Prelude.Maybe' and
 -- 'Data.Maybe.fromMaybe' to obtain a plain value:
 --
--- >  fromMaybe epoch (addDays 24 epoch) :: Date
+-- > fromMaybe epoch (addDays 24 epoch) :: Date
 -- > > 1970-01-25
 --
--- Using another 'Prelude.Monad' instance might give you additional information in case of failure:
+-- Using another 'Monad.Control.MonadThrow' instance might give you additional information in case of failure:
 --
 -- > setHour 10 midnight >>= setMinute 61 :: IO Time
--- > > *** Exception: user error (Time.setMinute 61)
+-- > > *** Exception: UtcException "Time: setMinute 61 10:00:00"
+-- >
+-- > setHour 10 midnight >>= setMinute 61 :: Either Control.Exception.SomeException Time
+-- > > Left (UtcException "Time: setMinute 61 10:00:00")
 
 -- $integerint
 --

@@ -1,10 +1,13 @@
 {-# LANGUAGE Safe #-}
 module Data.UTC.Class.HasUnixTime where
 
+import Control.Monad.Catch
+
 import Data.Ratio
 import System.Clock as C
 
 import Data.UTC.Class.IsUnixTime
+import Data.UTC.Type.Exception
 
 -- | This class defines an interface for contexts that can be asked for a timestamp.
 --
@@ -40,5 +43,5 @@ instance HasUnixTime IO where
     = do TimeSpec s ns <- C.getTime Realtime
          case fromUnixSeconds ((fromIntegral s) % 1 + (fromIntegral ns) % 1000000000) of
            Just t  -> return t
-           Nothing -> fail "Data.UTC.Class.HasUnixTime.getUnixTime: failed"
+           Nothing -> throwM $ UtcException "HasUnixTime IO: getUnixTime"
 

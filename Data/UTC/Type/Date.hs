@@ -2,12 +2,15 @@ module Data.UTC.Type.Date
   ( Date ()
   ) where
 
+import Control.Monad.Catch
+
 import Data.Ratio
 
 import Data.UTC.Class.Epoch
 import Data.UTC.Class.IsDate
 import Data.UTC.Class.IsUnixTime
 import Data.UTC.Internal
+import Data.UTC.Type.Exception
 
 -- | This type represents dates in the __Proleptic Gregorian Calendar__.
 --
@@ -77,13 +80,13 @@ instance IsDate Date where
   setYear x t
     = if isValidDate (x, month t, day t)
       then return $ t { dYear  = x }
-      else fail   $ "Dated.setYear "  ++ show x
+      else throwM $ UtcException $ "IsDate Date: setYear "  ++ show x ++ " " ++ show t
   setMonth x t
     = if isValidDate (year t, x, day t)
       then return $ t { dMonth = x }
-      else fail   $ "Dated.setMonth " ++ show x
+      else throwM $ UtcException $ "IsDate Date: setMonth " ++ show x ++ " " ++ show t
   setDay x t
     = if isValidDate (year t, month t, x)
       then return $ t { dDay   = x }
-      else fail   $ "Dated.setDay "   ++ show x
+      else throwM $ UtcException $ "IsDate Date: setDay "   ++ show x ++ " " ++ show t
 

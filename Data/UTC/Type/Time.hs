@@ -3,12 +3,15 @@ module Data.UTC.Type.Time
   , midnight
   ) where
 
+import Control.Monad.Catch
+
 import Data.Ratio
 
 import Data.UTC.Class.Midnight
 import Data.UTC.Class.IsTime
 import Data.UTC.Class.IsUnixTime
 import Data.UTC.Internal
+import Data.UTC.Type.Exception
 
 -- | This type represents time instants during a day (__00:00:00 - 23:59:59.999__..)
 --   with arbitrary precision (uses 'Prelude.Integer' internally).
@@ -69,14 +72,14 @@ instance IsTime Time where
     = tSecondFraction
 
   setHour x t
-    | x < 0 || 23 < x = fail   $ "Time.setHour "           ++ show x
+    | x < 0 || 23 < x = throwM $ UtcException $ "Time: setHour "           ++ show x ++ " " ++ show t
     | otherwise       = return $ t { tHour           = x }
   setMinute x t
-    | x < 0 || 59 < x = fail   $ "Time.setMinute "         ++ show x
+    | x < 0 || 59 < x = throwM $ UtcException $ "Time: setMinute "         ++ show x ++ " " ++ show t
     | otherwise       = return $ t { tMinute         = x }
   setSecond x t
-    | x < 0 || 59 < x = fail   $ "Time.setSecond "         ++ show x
+    | x < 0 || 59 < x = throwM $ UtcException $ "Time: setSecond "         ++ show x ++ " " ++ show t
     | otherwise       = return $ t { tSecond         = x }
   setSecondFraction x t
-    | x < 0 || 1 <= x = fail   $ "Time.setSecondFraction " ++ show x
+    | x < 0 || 1 <= x = throwM $ UtcException $ "Time: setSecondFraction " ++ show x ++ " " ++ show t
     | otherwise       = return $ t { tSecondFraction = x }

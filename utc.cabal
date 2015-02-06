@@ -56,6 +56,7 @@ Library
                    , Data.UTC.Type.Time
                    , Data.UTC.Type.DateTime
                    , Data.UTC.Type.Local
+                   , Data.UTC.Type.Exception
                    , Data.UTC.Format.Rfc3339
                    , Data.UTC.Format.Iso8601
                    , Data.UTC.Internal
@@ -81,6 +82,7 @@ Test-Suite test
                    , Data.UTC.Type.Time
                    , Data.UTC.Type.DateTime
                    , Data.UTC.Type.Local
+                   , Data.UTC.Type.Exception
                    , Data.UTC.Format.Rfc3339
                    , Data.UTC.Format.Iso8601
                    -- in library unexposed modules

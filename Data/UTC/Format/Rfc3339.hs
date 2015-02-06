@@ -23,6 +23,7 @@ import Data.UTC.Class.Epoch
 import Data.UTC.Class.IsDate
 import Data.UTC.Class.IsTime
 import Data.UTC.Type.Local
+import Data.UTC.Type.Exception
 import Data.UTC.Format.Rfc3339.Parser
 import Data.UTC.Format.Rfc3339.Builder
 
@@ -33,7 +34,7 @@ instance Rfc3339Parser BS.ByteString where
   parseRfc3339 s
     = case Atto.parseOnly rfc3339Parser s of
         Right t -> t
-        Left  _ -> fail ""
+        Left  _ -> throwM $ UtcException $ "Rfc3339Parser: parseRfc3339 " ++ show s
 
 instance Rfc3339Parser BSL.ByteString where
   parseRfc3339 s
@@ -51,9 +52,8 @@ instance Rfc3339Parser [Char] where
   parseRfc3339 s
     = parseRfc3339 (T.pack s)
 
-
-class Rfc3339Renderer a where
-  renderRfc3339 :: (Monad m, IsDate t, IsTime t, Epoch t) => Local t -> m a
+class Rfc3339Renderer string where
+  renderRfc3339 :: (Monad m, IsDate t, IsTime t, Epoch t) => Local t -> m string
 
 instance Rfc3339Renderer BS.ByteString where
   renderRfc3339 t

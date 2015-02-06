@@ -1,6 +1,8 @@
 {-# LANGUAGE FlexibleInstances #-}
 module Data.UTC.Format.Iso8601 where
 
+import Control.Monad.Catch
+
 import Data.Monoid
 import qualified Data.ByteString            as BS
 import qualified Data.ByteString.Builder    as BS
@@ -12,87 +14,78 @@ import qualified Data.Text.Lazy.Encoding    as TL
 
 import Data.UTC.Class.IsDate
 import Data.UTC.Class.IsTime
+import Data.UTC.Type.Exception
 
 class Iso8601Renderer string where
   -- | __YYYYMMDD__
-  renderIso8601CalendarDate :: (Monad m, IsDate t) => t -> m string
+  renderIso8601CalendarDate  :: (MonadThrow m, IsDate t) => t -> m string
   -- | __YYYY-MM-DD__ (extended format)
-  renderIso8601CalendarDate' :: (Monad m, IsDate t) => t -> m string
+  renderIso8601CalendarDate' :: (MonadThrow m, IsDate t) => t -> m string
 
   -- | __hhmmss__
-  renderIso8601TimeHms    ::(Monad m, IsTime t) => t -> m string
+  renderIso8601TimeHms       :: (MonadThrow m, IsTime t) => t -> m string
   -- | __hh:mm:ss__ (extended format)
-  renderIso8601TimeHms' ::(Monad m, IsTime t) => t -> m string
+  renderIso8601TimeHms'      :: (MonadThrow m, IsTime t) => t -> m string
   -- | __hhmm__
-  renderIso8601TimeHm     ::(Monad m, IsTime t) => t -> m string
+  renderIso8601TimeHm        :: (MonadThrow m, IsTime t) => t -> m string
   -- | __hh:mm__ (extended format)
-  renderIso8601TimeHm'  ::(Monad m, IsTime t) => t -> m string
-  -- | __hh__
-  renderIso8601TimeH      ::(Monad m, IsTime t) => t -> m string
+  renderIso8601TimeHm'       :: (MonadThrow m, IsTime t) => t -> m string
 
 instance Iso8601Renderer BS.ByteString where
   renderIso8601CalendarDate t
     = renderIso8601CalendarDate     t >>= return . BSL.toStrict
   renderIso8601CalendarDate' t
-    = renderIso8601CalendarDate'  t >>= return . BSL.toStrict
+    = renderIso8601CalendarDate'    t >>= return . BSL.toStrict
   renderIso8601TimeHms t
     = renderIso8601TimeHms          t >>= return . BSL.toStrict
   renderIso8601TimeHms' t
-    = renderIso8601TimeHms'       t >>= return . BSL.toStrict
+    = renderIso8601TimeHms'         t >>= return . BSL.toStrict
   renderIso8601TimeHm t
     = renderIso8601TimeHm           t >>= return . BSL.toStrict
   renderIso8601TimeHm' t
-    = renderIso8601TimeHm'        t >>= return . BSL.toStrict
-  renderIso8601TimeH t
-    = renderIso8601TimeH            t >>= return . BSL.toStrict
+    = renderIso8601TimeHm'          t >>= return . BSL.toStrict
 
 instance Iso8601Renderer T.Text where
   renderIso8601CalendarDate t
     = renderIso8601CalendarDate     t >>= return . T.decodeUtf8
   renderIso8601CalendarDate' t
-    = renderIso8601CalendarDate'  t >>= return . T.decodeUtf8
+    = renderIso8601CalendarDate'    t >>= return . T.decodeUtf8
   renderIso8601TimeHms t
     = renderIso8601TimeHms          t >>= return . T.decodeUtf8
   renderIso8601TimeHms' t
-    = renderIso8601TimeHms'       t >>= return . T.decodeUtf8
+    = renderIso8601TimeHms'         t >>= return . T.decodeUtf8
   renderIso8601TimeHm t
     = renderIso8601TimeHm           t >>= return . T.decodeUtf8
   renderIso8601TimeHm' t
-    = renderIso8601TimeHm'        t >>= return . T.decodeUtf8
-  renderIso8601TimeH t
-    = renderIso8601TimeH            t >>= return . T.decodeUtf8
+    = renderIso8601TimeHm'          t >>= return . T.decodeUtf8
 
 instance Iso8601Renderer TL.Text where
   renderIso8601CalendarDate t
     = renderIso8601CalendarDate     t >>= return . TL.decodeUtf8
   renderIso8601CalendarDate' t
-    = renderIso8601CalendarDate'  t >>= return . TL.decodeUtf8
+    = renderIso8601CalendarDate'    t >>= return . TL.decodeUtf8
   renderIso8601TimeHms t
     = renderIso8601TimeHms          t >>= return . TL.decodeUtf8
   renderIso8601TimeHms' t
-    = renderIso8601TimeHms'       t >>= return . TL.decodeUtf8
+    = renderIso8601TimeHms'         t >>= return . TL.decodeUtf8
   renderIso8601TimeHm t
     = renderIso8601TimeHm           t >>= return . TL.decodeUtf8
   renderIso8601TimeHm' t
-    = renderIso8601TimeHm'        t >>= return . TL.decodeUtf8
-  renderIso8601TimeH t
-    = renderIso8601TimeH            t >>= return . TL.decodeUtf8
+    = renderIso8601TimeHm'          t >>= return . TL.decodeUtf8
 
 instance Iso8601Renderer [Char] where
   renderIso8601CalendarDate t 
     = renderIso8601CalendarDate     t >>= return . T.unpack
   renderIso8601CalendarDate' t 
-    = renderIso8601CalendarDate'  t >>= return . T.unpack
+    = renderIso8601CalendarDate'    t >>= return . T.unpack
   renderIso8601TimeHms t
     = renderIso8601TimeHms          t >>= return . T.unpack
   renderIso8601TimeHms' t
-    = renderIso8601TimeHms'       t >>= return . T.unpack
+    = renderIso8601TimeHms'         t >>= return . T.unpack
   renderIso8601TimeHm t
     = renderIso8601TimeHm           t >>= return . T.unpack
   renderIso8601TimeHm' t
-    = renderIso8601TimeHm'        t >>= return . T.unpack
-  renderIso8601TimeH t
-    = renderIso8601TimeH            t >>= return . T.unpack
+    = renderIso8601TimeHm'          t >>= return . T.unpack
 
 instance Iso8601Renderer BSL.ByteString where
   renderIso8601CalendarDate t
@@ -105,7 +98,7 @@ instance Iso8601Renderer BSL.ByteString where
         , BS.word8HexFixed (d1*16 + d0)
         ]
     | otherwise
-    = fail "Data.UTC.Format.Iso8601.renderIso8601CalendarDate: year out of range"
+    = throwM $ UtcException $ "Iso8601: renderIso8601CalendarDate (year " ++ show yyyy ++ " out of range 0-9999)"
     where
       yyyy = year  t
       mm   = month t
@@ -131,7 +124,7 @@ instance Iso8601Renderer BSL.ByteString where
         , BS.word8HexFixed (d1*16 + d0)
         ]
     | otherwise
-    = fail "Data.UTC.Format.Iso8601.renderIso8601CalendarDate': year out of range"
+    = throwM $ UtcException $ "Iso8601: renderIso8601CalendarDate (year " ++ show yyyy ++ " out of range 0-9999)"
     where
       yyyy = year  t
       mm   = month t
@@ -189,16 +182,6 @@ instance Iso8601Renderer BSL.ByteString where
         ]
     where
       (h1,h0,m1,m0,_,_) = timeDigits t
-
-  renderIso8601TimeH t
-    = return
-    $ BS.toLazyByteString
-    $ mconcat
-        [ BS.word8HexFixed (h1*16 + h0)
-        ]
-    where
-      (h1,h0,_,_,_,_) = timeDigits t
-
 
 timeDigits t
   = (h1,h0,m1,m0,s1,s0)
