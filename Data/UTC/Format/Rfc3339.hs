@@ -52,8 +52,16 @@ instance Rfc3339Parser [Char] where
   parseRfc3339 s
     = parseRfc3339 (T.pack s)
 
+-- | > setYear 1987 (epoch :: DateTime) 
+--   >   >>= setMonth 7 
+--   >   >>= setDay 10 
+--   >   >>= setHour 12 
+--   >   >>= setMinute 4 
+--   >   >>= return . (flip Local) (Just 0) 
+--   >   >>= renderRfc3339 :: Maybe String
+--   > > Just "1987-07-10T12:04:00Z"
 class Rfc3339Renderer string where
-  renderRfc3339 :: (Monad m, IsDate t, IsTime t, Epoch t) => Local t -> m string
+  renderRfc3339 :: (MonadThrow m, IsDate t, IsTime t, Epoch t) => Local t -> m string
 
 instance Rfc3339Renderer BS.ByteString where
   renderRfc3339 t
