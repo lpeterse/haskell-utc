@@ -12,7 +12,6 @@ test
   = testGroup "Data.UTC.Internal"
   $ [ testYearMonthDayToDays
     , testYearToDays
-    , testYearToDaysAndDaysToYear
     , testDaysToYearMonthDay
     , testYearMonthDayToDaysAndDaysToYearMonthDay
 
@@ -56,14 +55,6 @@ testYearMonthDayToDays
 
     , testProperty ("yearMonthDayToDays (4,3,3) === 366 + 365 + 365 + 365 + 31 + 29 + 2")
     $ yearMonthDayToDays (4,3,3) === 366 + 365 + 365 + 365 + 31 + 29 + 2
-    ]
-
-testYearToDaysAndDaysToYear :: Test
-testYearToDaysAndDaysToYear
-  = testGroup "yearToDays <-> daysToYear"
-  $ [ testProperty "yearToDays (daysToYear x) - x === 0"
-    $ forAll (choose (0, 146463))
-    $ \x-> (x - yearToDays (daysToYear x)) `div` 366 === 0
     ]
 
 testYearToDays :: Test
