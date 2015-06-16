@@ -11,7 +11,7 @@ import Data.UTC.Class.IsDate
 import Data.UTC.Class.IsTime
 
 rfc3339Builder :: (Monad m, IsDate t, IsTime t) => Local t -> m BS.Builder
-rfc3339Builder (Local t os)
+rfc3339Builder (Local os t)
   = do -- calculate the single digits
        let y3 = fromIntegral $ year t   `div` 1000 `mod` 10
            y2 = fromIntegral $ year t   `div` 100  `mod` 10

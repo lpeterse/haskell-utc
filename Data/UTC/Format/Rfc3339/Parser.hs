@@ -37,7 +37,7 @@ rfc3339Parser
                            >>= setMinute         minute'
                            >>= setSecond         second'
                            >>= setSecondFraction secfrac'
-                   return (Local datetime offset')
+                   return (Local offset' datetime)
   where
     dateFullYear
       = decimal4

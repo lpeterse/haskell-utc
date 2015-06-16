@@ -1,5 +1,5 @@
 name:                utc
-version:             0.1.0.1
+version:             0.2.0.0
 stability:           experimental
 synopsis:            A pragmatic time and date library.
 description:         This library aims to supply you with common
@@ -14,12 +14,6 @@ description:         This library aims to supply you with common
                        * A set of classes that provide interfaces for your own application
                          specific or maybe more efficient time and date types. Implement the
                          interfaces and get all the parsing and rendering functions for free!
-                     .
-                     This is a work in progress!
-                     .
-                     Try it out and play with it. Tell me what you think
-                     about the API design and naming, but __DON'T USE IT
-                     IN PRODUCTION YET!__
                      .
                      Bug reports or (even better) tests are welcome.
 license:             MIT
@@ -44,9 +38,8 @@ Library
   hs-source-dirs:    .
   default-language:  Haskell98
   exposed-modules:   Data.UTC
-                   , Data.UTC.Class
+  other-modules:     Data.UTC.Class
                    , Data.UTC.Class.Epoch
-                   , Data.UTC.Class.Midnight
                    , Data.UTC.Class.IsDate
                    , Data.UTC.Class.IsTime
                    , Data.UTC.Class.IsUnixTime
@@ -60,7 +53,7 @@ Library
                    , Data.UTC.Format.Rfc3339
                    , Data.UTC.Format.Iso8601
                    , Data.UTC.Internal
-  other-modules:     Data.UTC.Format.Rfc3339.Parser
+                   , Data.UTC.Format.Rfc3339.Parser
                    , Data.UTC.Format.Rfc3339.Builder
 
 Test-Suite test
@@ -69,9 +62,9 @@ Test-Suite test
   ghc-options:       -Wall -O2
   hs-source-dirs:    tests .
   other-modules:     Data.UTC
+                   -- in library unexposed modules
                    , Data.UTC.Class
                    , Data.UTC.Class.Epoch
-                   , Data.UTC.Class.Midnight
                    , Data.UTC.Class.IsDate
                    , Data.UTC.Class.IsDate.Test
                    , Data.UTC.Class.IsTime
@@ -85,7 +78,6 @@ Test-Suite test
                    , Data.UTC.Type.Exception
                    , Data.UTC.Format.Rfc3339
                    , Data.UTC.Format.Iso8601
-                   -- in library unexposed modules
                    , Data.UTC.Format.Rfc3339.Parser
                    , Data.UTC.Format.Rfc3339.Builder
                    , Data.UTC.Internal

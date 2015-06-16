@@ -4,11 +4,9 @@ module Data.UTC.Class
   , module Data.UTC.Class.IsUnixTime
   , module Data.UTC.Class.HasUnixTime
   , module Data.UTC.Class.Epoch
-  , module Data.UTC.Class.Midnight
   ) where
 
 import Data.UTC.Class.Epoch
-import Data.UTC.Class.Midnight
 import Data.UTC.Class.IsDate
 import Data.UTC.Class.IsTime
 import Data.UTC.Class.IsUnixTime

@@ -23,7 +23,7 @@ import Data.UTC.Internal
 --   * The instance of 'Prelude.Show' is only
 --     meant for debugging purposes. Don't rely on its behaviour!
 --
--- > > show epoch :: DateTime
+-- > > show (epoch :: DateTime)
 -- > 1970-01-01T00:00:00
 data DateTime
    = DateTime
@@ -36,7 +36,7 @@ instance Show DateTime where
     = show d ++ "T" ++ show t
 
 instance Epoch DateTime where
-  epoch = DateTime epoch midnight
+  epoch = DateTime epoch epoch
 
 instance IsUnixTime DateTime where
   unixSeconds (DateTime d t)
@@ -97,121 +97,100 @@ instance IsTime DateTime where
 
 -- assumption: addSecondFractions for DateTime is always successful
 instance IsDate (Local DateTime) where
-  year (Local t Nothing)
+  year (Local Nothing t)
     = year t
-  year (Local t (Just 0))
+  year (Local (Just 0) t)
     = year t
-  year (Local t (Just o))
+  year (Local (Just o) t)
     = year
     $ fromMaybe undefined $ addSecondFractions o t
-  month (Local t Nothing)
+  month (Local Nothing t)
     = month t
-  month (Local t (Just 0))
+  month (Local (Just 0) t)
     = month t
-  month (Local t (Just o))
+  month (Local (Just o) t)
     = month
     $ fromMaybe undefined $ addSecondFractions o t
-  day (Local t Nothing)
+  day (Local Nothing t)
     = day t
-  day (Local t (Just 0))
+  day (Local (Just 0) t)
     = day t
-  day  (Local t (Just o))
+  day  (Local (Just o) t)
     = day
     $ fromMaybe undefined $ addSecondFractions o t
-  setYear h (Local t o@Nothing)
-    = do t' <- setYear h t
-         return (Local t' o)
-  setYear h (Local t o@(Just 0))
-    = do t' <- setYear h t
-         return (Local t' o)
-  setYear h (Local t o@(Just i))
-    = do t' <- addSecondFractions i t >>= setYear h >>= addSecondFractions (negate i)
-         return (Local t' o)
-  setMonth h (Local t o@Nothing)
-    = do t' <- setMonth h t
-         return (Local t' o)
-  setMonth h (Local t o@(Just 0))
-    = do t' <- setMonth h t
-         return (Local t' o)
-  setMonth h (Local t o@(Just i))
-    = do t' <- addSecondFractions i t >>= setMonth h >>= addSecondFractions (negate i)
-         return (Local t' o)
-  setDay h (Local t o@Nothing)
-    = do t' <- setDay h t
-         return (Local t' o)
-  setDay h (Local t o@(Just 0))
-    = do t' <- setDay h t
-         return (Local t' o)
-  setDay h (Local t o@(Just i))
-    = do t' <- addSecondFractions i t >>= setDay h >>= addSecondFractions (negate i)
-         return (Local t' o)
+  setYear h (Local o@Nothing t)
+    = Local o <$> setYear h t
+  setYear h (Local o@(Just 0) t)
+    = Local o <$> setYear h t
+  setYear h (Local o@(Just i) t)
+    = Local o <$> ( addSecondFractions i t >>= setYear h >>= addSecondFractions (negate i) )
+  setMonth h (Local o@Nothing t)
+    = Local o <$> setMonth h t
+  setMonth h (Local o@(Just 0) t)
+    = Local o <$> setMonth h t
+  setMonth h (Local o@(Just i) t)
+    = Local o <$> ( addSecondFractions i t >>= setMonth h >>= addSecondFractions (negate i) )
+  setDay h (Local o@Nothing t)
+    = Local o <$> setDay h t
+  setDay h (Local o@(Just 0) t)
+    = Local o <$> setDay h t
+  setDay h (Local o@(Just i) t)
+    = Local o <$> ( addSecondFractions i t >>= setDay h >>= addSecondFractions (negate i) )
 
 -- assumption: addSecondFractions for DateTime is always successful
 instance IsTime (Local DateTime) where
-  hour (Local t Nothing)
+  hour (Local Nothing t)
     = hour t
-  hour (Local t (Just 0))
+  hour (Local (Just 0) t)
     = hour t
-  hour (Local t (Just o))
+  hour (Local (Just o) t)
     = hour
     $ fromMaybe undefined $ addSecondFractions o t
-  minute (Local t Nothing)
+  minute (Local Nothing t)
     = minute t
-  minute (Local t (Just 0))
+  minute (Local (Just 0) t)
     = minute t
-  minute (Local t (Just o))
+  minute (Local (Just o) t)
     = minute
     $ fromMaybe undefined $ addSecondFractions o t
-  second (Local t Nothing)
+  second (Local Nothing t)
     = second t
-  second (Local t (Just 0))
+  second (Local (Just 0) t)
     = second t
-  second  (Local t (Just o))
+  second  (Local (Just o) t)
     = second
     $ fromMaybe undefined $ addSecondFractions o t
-  secondFraction (Local t Nothing)
+  secondFraction (Local Nothing t)
     = secondFraction t
-  secondFraction (Local t (Just 0))
+  secondFraction (Local (Just 0) t)
     = secondFraction t
-  secondFraction (Local t (Just o))
+  secondFraction (Local (Just o) t)
     = secondFraction
     $ fromMaybe undefined $ addSecondFractions o t
-  setHour h (Local t o@Nothing)
-    = do t' <- setHour h t
-         return (Local t' o)
-  setHour h (Local t o@(Just 0))
-    = do t' <- setHour h t
-         return (Local t' o)
-  setHour h (Local t o@(Just i))
-    = do t' <- addSecondFractions i t >>= setHour h >>= addSecondFractions (negate i)
-         return (Local t' o)
-  setMinute h (Local t o@Nothing)
-    = do t' <- setMinute h t
-         return (Local t' o)
-  setMinute h (Local t o@(Just 0))
-    = do t' <- setMinute h t
-         return (Local t' o)
-  setMinute h (Local t o@(Just i))
-    = do t' <- addSecondFractions i t >>= setMinute h >>= addSecondFractions (negate i)
-         return (Local t' o)
-  setSecond h (Local t o@Nothing)
-    = do t' <- setSecond h t
-         return (Local t' o)
-  setSecond h (Local t o@(Just 0))
-    = do t' <- setSecond h t
-         return (Local t' o)
-  setSecond h (Local t o@(Just i))
-    = do t' <- addSecondFractions i t >>= setSecond h >>= addSecondFractions (negate i)
-         return (Local t' o)
-  setSecondFraction h (Local t o@Nothing)
-    = do t' <- setSecondFraction h t
-         return (Local t' o)
-  setSecondFraction h (Local t o@(Just 0))
-    = do t' <- setSecondFraction h t
-         return (Local t' o)
-  setSecondFraction h (Local t o@(Just i))
-    = do t' <- addSecondFractions i t >>= setSecondFraction h >>= addSecondFractions (negate i)
-         return (Local t' o)
+  setHour h (Local o@Nothing t)
+    = Local o <$> setHour h t
+  setHour h (Local o@(Just 0) t)
+    = Local o <$> setHour h t
+  setHour h (Local o@(Just i) t)
+    = Local o <$> ( addSecondFractions i t >>= setHour h >>= addSecondFractions (negate i) )
+  setMinute h (Local o@Nothing t)
+    = Local o <$> setMinute h t
+  setMinute h (Local o@(Just 0) t)
+    = Local o <$> setMinute h t
+  setMinute h (Local o@(Just i) t)
+    = Local o <$> ( addSecondFractions i t >>= setMinute h >>= addSecondFractions (negate i) )
+  setSecond h (Local o@Nothing t)
+    = Local o <$> setSecond h t
+  setSecond h (Local o@(Just 0) t)
+    = Local o <$> setSecond h t
+  setSecond h (Local o@(Just i) t)
+    = Local o <$> ( addSecondFractions i t >>= setSecond h >>= addSecondFractions (negate i) )
+  setSecondFraction h (Local o@Nothing t)
+    = Local o <$> setSecondFraction h t
+  setSecondFraction h (Local o@(Just 0) t)
+    = Local o <$> setSecondFraction h t
+  setSecondFraction h (Local o@(Just i) t)
+    = Local o <$> ( addSecondFractions i t >>= setSecondFraction h >>= addSecondFractions (negate i) )
 
   -- This one is necessary to override, because the overflow should
   -- ripple into the date part.

@@ -20,7 +20,7 @@ main
      , testGroup "instance Time DateTime"
      $ testTimeInstance (epoch     :: DateTime)
      , testGroup "instance Time Time"
-     $ testTimeInstance (midnight  :: Time)
+     $ testTimeInstance (epoch  :: Time)
 
      , Data.UTC.Internal.Test.test
      , Data.UTC.Class.IsDate.Test.test

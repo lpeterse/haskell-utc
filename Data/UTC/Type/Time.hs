@@ -1,13 +1,12 @@
 module Data.UTC.Type.Time
   ( Time ()
-  , midnight
   ) where
 
 import Control.Monad.Catch
 
 import Data.Ratio
 
-import Data.UTC.Class.Midnight
+import Data.UTC.Class.Epoch
 import Data.UTC.Class.IsTime
 import Data.UTC.Class.IsUnixTime
 import Data.UTC.Internal
@@ -18,11 +17,11 @@ import Data.UTC.Type.Exception
 --
 --   * The internal structure is not exposed to avoid the creation of
 --     invalid values.
---     Use 'Data.UTC.midnight' or a parser to construct values.
+--     Use 'Data.UTC.epoch' or a parser to construct values.
 --   * The instance of 'Prelude.Show' is only meant for debugging purposes
 --     and is subject to change.
 --
--- > > show midnight :: Time
+-- > > show (epoch :: Time)
 -- > 00:00:00
 data Time
    = Time
@@ -43,8 +42,8 @@ instance Show Time where
         , decimalFraction 12 ff
         ]
 
-instance Midnight Time where
-  midnight
+instance Epoch Time where
+  epoch
     = Time 0 0 0 0
 
 instance IsUnixTime Time where

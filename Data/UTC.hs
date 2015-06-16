@@ -22,9 +22,8 @@ module Data.UTC
   , IsTime (..)
   -- ** Unix Time
   , IsUnixTime(..)
-  -- ** Epoch / Midnight
+  -- ** Epoch
   , Epoch(..)
-  , Midnight(..)
     -- ** Getting (Current) Timestamps
   , HasUnixTime (..)
   -- * Generic Date/Time Types
@@ -51,7 +50,6 @@ module Data.UTC
   ) where
 
 import Data.UTC.Class.Epoch
-import Data.UTC.Class.Midnight
 import Data.UTC.Class.IsDate
 import Data.UTC.Class.IsTime
 import Data.UTC.Class.IsUnixTime
@@ -70,7 +68,7 @@ import Data.UTC.Format.Iso8601
 -- It supports all functions you'll find below.
 -- Use 'Maybe' for all occurences of 'm'.
 --
--- > Prelude> :m +Data.UTC
+-- > Prelude> import Data.UTC
 -- > Prelude Data.UTC> type MT = Maybe (Local DateTime)
 -- > Prelude Data.UTC> type MS = Maybe String
 -- > Prelude Data.UTC> (parseRfc3339 "2014-12-24T13:37:00Z" :: MT) >>= addHours 25 >>= setMonth 1 >>= renderRfc3339 :: MS
@@ -95,10 +93,10 @@ import Data.UTC.Format.Iso8601
 --
 -- Using another 'Monad.Control.MonadThrow' instance might give you additional information in case of failure:
 --
--- > setHour 10 midnight >>= setMinute 61 :: IO Time
+-- > setHour 10 epoch >>= setMinute 61 :: IO Time
 -- > > *** Exception: UtcException "Time: setMinute 61 10:00:00"
 -- >
--- > setHour 10 midnight >>= setMinute 61 :: Either Control.Exception.SomeException Time
+-- > setHour 10 epoch >>= setMinute 61 :: Either Control.Exception.SomeException Time
 -- > > Left (UtcException "Time: setMinute 61 10:00:00")
 
 -- $integerint

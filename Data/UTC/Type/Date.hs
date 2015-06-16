@@ -21,7 +21,7 @@ import Data.UTC.Type.Exception
 --   * The instance of 'Prelude.Show' is only meant for debugging purposes
 --     and is subject to change.
 --
--- > > show epoch :: Date
+-- > > show (epoch :: Date)
 -- > 1970-01-01
 data Date
    = Date
