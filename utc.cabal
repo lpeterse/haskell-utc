@@ -1,5 +1,5 @@
 name:                utc
-version:             0.1.0.0
+version:             0.1.0.1
 stability:           experimental
 synopsis:            A pragmatic time and date library.
 description:         This library aims to supply you with common
