@@ -167,8 +167,8 @@ isValidDate (y,m,d)
       = (y `mod` 4 == 0) && ((y `mod` 400 == 0) || (y `mod` 100 /= 0))
 
 fixedDecimal :: Integer -> Integer -> String
-fixedDecimal digits i
-  = f digits i []
+fixedDecimal digits j
+  = f digits j []
   where
     f n i accum | n <= 0    = accum
                 | otherwise = f (n - 1) (i `div` 10)
@@ -180,13 +180,13 @@ decimalFraction _     0
 decimalFraction limit r
   = '.':(df limit r)
   where
-    df limit 0
+    df _ 0
       = ""
     df 0 _
       = "..."
-    df limit r
-      = ch:(df (limit - 1) r')
+    df limit' r'
+      = ch:(df (limit' - 1) s)
       where
-        r10 = r * 10
-        ch  = toEnum $ fromIntegral $ 48 + (truncate $ r10) `mod` 10
-        r' = r10 - (truncate r10 % 1)
+        r10 = r' * 10
+        ch  = toEnum $ fromIntegral $ 48 + (truncate $ r10) `mod` (10 :: Integer)
+        s   = r10 - (truncate r10 % 1)

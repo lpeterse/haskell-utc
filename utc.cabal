@@ -1,5 +1,5 @@
 name:                utc
-version:             0.2.0.0
+version:             0.2.0.1
 stability:           experimental
 synopsis:            A pragmatic time and date library.
 description:         This library aims to supply you with common
@@ -15,7 +15,7 @@ description:         This library aims to supply you with common
                          specific or maybe more efficient time and date types. Implement the
                          interfaces and get all the parsing and rendering functions for free!
                      .
-                     Bug reports or (even better) tests are welcome.
+                     Bug reports or (even better) tests are appreciated.
 license:             MIT
 license-file:        LICENSE
 author:              Lars Petersen

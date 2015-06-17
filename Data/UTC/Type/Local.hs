@@ -77,26 +77,26 @@ instance IsTime (Local Time) where
     = secondFraction
     $ fromMaybe undefined $ addSecondFractions o t
   setHour h (Local o@Nothing t)
-    = Local o <$> setHour h t
+    = setHour h t >>= return . Local o
   setHour h (Local o@(Just 0) t)
-    = Local o <$> setHour h t
+    = setHour h t >>= return . Local o
   setHour h (Local o@(Just i) t)
-    = Local o <$> ( addSecondFractions i t >>= setHour h >>= addSecondFractions (negate i) )
+    = addSecondFractions i t >>= setHour h >>= addSecondFractions (negate i) >>= return . Local o
   setMinute h (Local o@Nothing t)
-    = Local o <$> setMinute h t
+    = setMinute h t >>= return . Local o
   setMinute h (Local o@(Just 0) t)
-    = Local o <$> setMinute h t
+    = setMinute h t >>= return . Local o
   setMinute h (Local o@(Just i) t)
-    = Local o <$> ( addSecondFractions i t >>= setMinute h >>= addSecondFractions (negate i) )
+    = addSecondFractions i t >>= setMinute h >>= addSecondFractions (negate i) >>= return . Local o
   setSecond h (Local o@Nothing t)
-    = Local o <$> setSecond h t
+    = setSecond h t >>= return . Local o
   setSecond h (Local o@(Just 0) t)
-    = Local o <$> setSecond h t
+    = setSecond h t >>= return . Local o
   setSecond h (Local o@(Just i) t)
-    = Local o <$> ( addSecondFractions i t >>= setSecond h >>= addSecondFractions (negate i) )
+    = addSecondFractions i t >>= setSecond h >>= addSecondFractions (negate i) >>= return . Local o
   setSecondFraction h (Local o@Nothing t)
-    = Local o <$> setSecondFraction h t
+    = setSecondFraction h t >>= return . Local o
   setSecondFraction h (Local o@(Just 0) t)
-    = Local o <$> setSecondFraction h t
+    = setSecondFraction h t >>= return . Local o
   setSecondFraction h (Local o@(Just i) t)
-    = Local o <$> ( addSecondFractions i t >>= setSecondFraction h >>= addSecondFractions (negate i) )
+    = addSecondFractions i t >>= setSecondFraction h >>= addSecondFractions (negate i) >>= return . Local o
