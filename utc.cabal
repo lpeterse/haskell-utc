@@ -86,7 +86,7 @@ Test-Suite test
                    , text
                    , bytestring >= 0.10.4.0
                    , attoparsec
-                   , clock >= 0.3 && < 0.5
+                   , clock >= 0.3 && < 1
                    , exceptions >= 0.4
                    -- additional deps for testing
                    , Cabal
