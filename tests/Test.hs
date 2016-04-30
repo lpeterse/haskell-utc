@@ -9,6 +9,7 @@ import Data.UTC
 
 import Data.UTC.Internal.Test (test)
 import Data.UTC.Class.IsDate.Test (test)
+import Data.UTC.Literals.Test (test)
 
 main :: IO ()
 main
@@ -24,6 +25,7 @@ main
 
      , Data.UTC.Internal.Test.test
      , Data.UTC.Class.IsDate.Test.test
+     , Data.UTC.Literals.Test.test
 
      , testProperty "(parseRfc3339 \"2014-12-24T13:37:00Z\" :: Maybe (Local DateTime)) >>= addHours 25 >>= setMonth 1 >>= renderRfc3339"
      $ ((parseRfc3339 "2014-12-24T13:37:00Z" :: Maybe (Local DateTime)) >>= addHours 25 >>= setMonth 1 >>= renderRfc3339)
