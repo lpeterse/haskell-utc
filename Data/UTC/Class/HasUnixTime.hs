@@ -1,4 +1,7 @@
 {-# LANGUAGE Safe #-}
+{-# LANGUAGE ConstrainedClassMethods #-}
+
+
 module Data.UTC.Class.HasUnixTime where
 
 import Control.Monad.Catch
