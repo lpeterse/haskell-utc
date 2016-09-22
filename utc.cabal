@@ -1,5 +1,5 @@
 name:                utc
-version:             0.2.0.1
+version:             0.2.0.2
 stability:           experimental
 synopsis:            A pragmatic time and date library.
 description:         This library aims to supply you with common
@@ -55,6 +55,7 @@ Library
                    , Data.UTC.Internal
                    , Data.UTC.Format.Rfc3339.Parser
                    , Data.UTC.Format.Rfc3339.Builder
+                   , Data.UTC.Literals
 
 Test-Suite test
   type:              exitcode-stdio-1.0
@@ -82,6 +83,8 @@ Test-Suite test
                    , Data.UTC.Format.Rfc3339.Builder
                    , Data.UTC.Internal
                    , Data.UTC.Internal.Test
+                   , Data.UTC.Literals
+                   , Data.UTC.Literals.Test
   build-depends:     base < 5
                    , text
                    , bytestring >= 0.10.4.0

@@ -61,6 +61,8 @@ import Data.UTC.Type.Local
 import Data.UTC.Type.Exception
 import Data.UTC.Format.Rfc3339
 import Data.UTC.Format.Iso8601
+import Data.UTC.Format.Iso8601
+import Data.UTC.Literals ()
 
 -- $quickstart
 --
