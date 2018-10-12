@@ -1,3 +1,4 @@
+{-# LANGUAGE Safe #-}
 {-# LANGUAGE DeriveDataTypeable #-}
 module Data.UTC.Type.Exception where
 

@@ -1,3 +1,4 @@
+{-# LANGUAGE Safe #-}
 {-# LANGUAGE FlexibleInstances #-}
 module Data.UTC.Type.DateTime
   ( -- * Type
@@ -86,7 +87,7 @@ instance IsTime DateTime where
     = do tm <- setSecondFraction y (time t)
          return $ t { time = tm }
 
-  -- The default implementation of addHours fails whena day flows over. 
+  -- The default implementation of addHours fails whena day flows over.
   -- For DateTimes we can let it ripple into the days.
   addHours h t
     = setHour hors t >>= addDays days

@@ -1,4 +1,5 @@
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE Safe #-}
 module Data.UTC.Format.Iso8601 where
 
 import Control.Monad.Catch
@@ -74,9 +75,9 @@ instance Iso8601Renderer TL.Text where
     = renderIso8601TimeHm'          t >>= return . TL.decodeUtf8
 
 instance Iso8601Renderer [Char] where
-  renderIso8601CalendarDate t 
+  renderIso8601CalendarDate t
     = renderIso8601CalendarDate     t >>= return . T.unpack
-  renderIso8601CalendarDate' t 
+  renderIso8601CalendarDate' t
     = renderIso8601CalendarDate'    t >>= return . T.unpack
   renderIso8601TimeHms t
     = renderIso8601TimeHms          t >>= return . T.unpack
@@ -195,4 +196,3 @@ timeDigits t
     m0   = fromIntegral $ mm `div` 1    `mod` 10
     s1   = fromIntegral $ ss `div` 10   `mod` 10
     s0   = fromIntegral $ ss `div` 1    `mod` 10
-
