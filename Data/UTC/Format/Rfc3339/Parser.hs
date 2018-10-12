@@ -1,3 +1,4 @@
+{-# LANGUAGE Safe #-}
 module Data.UTC.Format.Rfc3339.Parser
   ( rfc3339Parser
   ) where
@@ -15,7 +16,7 @@ import Data.UTC.Class.IsTime
 import Data.UTC.Type.Local
 
 rfc3339Parser :: (MonadThrow m, IsDate t, IsTime t) => Parser (m (Local t))
-rfc3339Parser 
+rfc3339Parser
   = do year'    <- dateFullYear
        _        <- char '-'
        month'   <- dateMonth

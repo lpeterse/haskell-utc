@@ -1,3 +1,4 @@
+{-# LANGUAGE Safe #-}
 module Data.UTC.Class
   ( module Data.UTC.Class.IsDate
   , module Data.UTC.Class.IsTime

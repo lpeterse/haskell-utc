@@ -1,4 +1,5 @@
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE Safe #-}
 module Data.UTC.Format.Rfc3339
   ( -- * Parsing
     Rfc3339Parser(..)
@@ -52,12 +53,12 @@ instance Rfc3339Parser [Char] where
   parseRfc3339 s
     = parseRfc3339 (T.pack s)
 
--- | > setYear 1987 (epoch :: DateTime) 
---   >   >>= setMonth 7 
---   >   >>= setDay 10 
---   >   >>= setHour 12 
---   >   >>= setMinute 4 
---   >   >>= return . (flip Local) (Just 0) 
+-- | > setYear 1987 (epoch :: DateTime)
+--   >   >>= setMonth 7
+--   >   >>= setDay 10
+--   >   >>= setHour 12
+--   >   >>= setMinute 4
+--   >   >>= return . (flip Local) (Just 0)
 --   >   >>= renderRfc3339 :: Maybe String
 --   > > Just "1987-07-10T12:04:00Z"
 class Rfc3339Renderer string where
@@ -80,5 +81,5 @@ instance Rfc3339Renderer TL.Text where
     = renderRfc3339     t >>= return . TL.decodeUtf8
 
 instance Rfc3339Renderer [Char] where
-  renderRfc3339 t 
+  renderRfc3339 t
     = renderRfc3339     t >>= return . T.unpack

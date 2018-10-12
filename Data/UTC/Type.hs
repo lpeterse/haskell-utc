@@ -1,3 +1,4 @@
+{-# LANGUAGE Safe #-}
 module Data.UTC.Type
   ( module Data.UTC.Type.Date
   , module Data.UTC.Type.Time

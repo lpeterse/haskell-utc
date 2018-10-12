@@ -1,3 +1,4 @@
+{-# LANGUAGE Safe #-}
 module Data.UTC.Type.Time
   ( Time ()
   ) where

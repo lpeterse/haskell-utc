@@ -122,7 +122,7 @@ testYearToDays
 testDaysToYearMonthDay :: Test
 testDaysToYearMonthDay
   = testGroup "daysToYearMonthDay"
-  $ [ 
+  $ [
       testProperty "daysToYearMonthDay 366 === (1,1,1)"
     $ daysToYearMonthDay 366 === (1,1,1)
 

@@ -1,3 +1,8 @@
+0.2.0.2 Lars Petersen <info@lars-petersen.net> 2018-10-12
+
+  * Resolved error about constrained class methods.
+  * Added more annotation about SafeHaskell.
+
 0.2.0.1 Lars Petersen <info@lars-petersen.net> 2015-06-17
 
   * Resolved issue with Monad/Applicative/Functor (affected only older base).
@@ -9,5 +14,5 @@
   * Removed `Midnight` in favour of `Epoch`.
   * Only expose module `Data.UTC` as it contains everything anyway.
   * Added functions for rendering according to ISO8601.
-  * Use `MonadThrow` and `UtcException` instead of `Monad.fail` 
+  * Use `MonadThrow` and `UtcException` instead of `Monad.fail`
     (`fail` is just for pattern-match fail as I learned).

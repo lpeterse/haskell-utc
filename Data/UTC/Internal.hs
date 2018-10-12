@@ -1,3 +1,4 @@
+{-# LANGUAGE Safe #-}
 module Data.UTC.Internal
   ( daysToYearMonthDay
   , yearMonthDayToDays
@@ -120,7 +121,7 @@ daysToYearMonthDay d'
                         ((year `mod` 400 == 0)
                       || (year `mod` 100 /= 0)) then (1+) else id
     doy             = d - yearToDays year
-    (month,day) 
+    (month,day)
      | doy <     31 = ( 1, doy          + 1)
      | doy < ld  59 = ( 2, doy -     31 + 1)
      | doy < ld  90 = ( 3, doy - ld  59 + 1)

@@ -76,7 +76,7 @@ test
              , (month `fmap` d) === Just 2
              , (day   `fmap` d) === Just 29
              ]
-      ] 
+      ]
     , testGroup "addDays"
       [ testProperty "addDays 366 '2000-01-01'"
       $ let d = setYear 2000 (epoch :: Date) >>= setMonth 1 >>= setDay 1 >>= addDays 366

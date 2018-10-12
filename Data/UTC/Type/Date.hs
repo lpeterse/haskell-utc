@@ -1,3 +1,4 @@
+{-# LANGUAGE Safe #-}
 module Data.UTC.Type.Date
   ( Date ()
   ) where
@@ -89,4 +90,3 @@ instance IsDate Date where
     = if isValidDate (year t, month t, x)
       then return $ t { dDay   = x }
       else throwM $ UtcException $ "IsDate Date: setDay "   ++ show x ++ " " ++ show t
-

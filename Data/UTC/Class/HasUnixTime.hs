@@ -1,6 +1,5 @@
 {-# LANGUAGE Safe #-}
-{-# LANGUAGE ConstrainedClassMethods #-}
-
+{-# OPTIONS_GHC -XConstrainedClassMethods #-}
 
 module Data.UTC.Class.HasUnixTime where
 
@@ -34,7 +33,7 @@ class HasUnixTime m where
   -- /Example:/
   --
   -- > import Data.UTC
-  -- > 
+  -- >
   -- > printCurrentYear :: IO ()
   -- > printCurrentYear
   -- >   = do now <- getUnixTime :: IO DateTime
@@ -47,4 +46,3 @@ instance HasUnixTime IO where
          case fromUnixSeconds ((fromIntegral s) % 1 + (fromIntegral ns) % 1000000000) of
            Just t  -> return t
            Nothing -> throwM $ UtcException "HasUnixTime IO: getUnixTime"
-

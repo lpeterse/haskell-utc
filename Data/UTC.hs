@@ -1,5 +1,6 @@
+{-# LANGUAGE Safe #-}
 module Data.UTC
-  ( 
+  (
   -- * Introduction
   -- ** Quick Start
   -- $quickstart
@@ -64,7 +65,7 @@ import Data.UTC.Format.Iso8601
 
 -- $quickstart
 --
--- Just import the main module and use the 'DateTime' type! 
+-- Just import the main module and use the 'DateTime' type!
 -- It supports all functions you'll find below.
 -- Use 'Maybe' for all occurences of 'm'.
 --
