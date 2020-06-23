@@ -82,6 +82,7 @@ class IsTime t where
   addSecondFractions f t
     | f == 0    = return t
     | f >= 0    = setSecondFraction frcs t         >>= addSeconds secs
+    | frcs == 0 = setSecondFraction 0 t            >>= addSeconds secs
     | otherwise = setSecondFraction (frcs + 1.0) t >>= addSeconds (secs - 1)
     where
       f'   = f + (secondFraction t)

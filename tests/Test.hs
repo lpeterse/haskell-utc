@@ -105,6 +105,8 @@ testTimeInstance t
         (addSecondFractions (-0.001) t >>= return . minute)         == Just 59 &&
         (addSecondFractions (-0.001) t >>= return . second)         == Just 59 &&
         (addSecondFractions (-0.001) t >>= return . secondFraction) == Just 0.999
+      , testProperty ("Subtracting 1.0s as fraction should result in -1 seconds")
+      $ (addSecondFractions (-1.0) t == addSeconds (-1) t `asTypeOf` Just t)
       ]
     ]
   where
