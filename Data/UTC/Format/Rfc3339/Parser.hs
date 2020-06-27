@@ -9,6 +9,8 @@ import Data.Ratio
 import Data.Attoparsec.ByteString ( Parser, skipWhile, choice, option, satisfy )
 import Data.Attoparsec.ByteString.Char8 ( char, isDigit_w8 )
 
+import Data.Maybe (fromMaybe)
+
 import Data.UTC.Class.Epoch
 import Data.UTC.Class.IsDate
 import Data.UTC.Class.IsTime
@@ -37,6 +39,7 @@ rfc3339Parser
                            >>= setMinute         minute'
                            >>= setSecond         second'
                            >>= setSecondFraction secfrac'
+                           >>= addSecondFractions (-1 * fromMaybe 0 offset')
                    return (Local offset' datetime)
   where
     dateFullYear
