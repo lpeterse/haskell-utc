@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE Safe #-}
 module Data.UTC.Format.Rfc3339.Builder
   ( rfc3339Builder
@@ -11,8 +12,8 @@ import Data.UTC.Type.Local
 import Data.UTC.Class.IsDate
 import Data.UTC.Class.IsTime
 
-rfc3339Builder :: (MonadThrow m, IsDate t, IsTime t) => Local t -> m BS.Builder
-rfc3339Builder (Local os t) =
+rfc3339Builder :: (MonadThrow m, IsDate (Local t), IsTime (Local t)) => Local t -> m BS.Builder
+rfc3339Builder t =
     -- calculate the single digits
     let y3 = fromIntegral $ year t   `div` 1000 `mod` 10
         y2 = fromIntegral $ year t   `div` 100  `mod` 10
@@ -53,7 +54,7 @@ rfc3339Builder (Local os t) =
             ]
   -- prepend dateTime part of the string to the timezone part which might fail
   in  fmap (dateTime <>) $
-          case os of
+          case offset t of
             Nothing -> return $ BS.string7 "-00:00"
             Just 0  -> return $ BS.char7 'Z'
             Just o  -> if ((abs (truncate o)) `rem` 60 :: Integer) /= 0

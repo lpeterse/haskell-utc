@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE FlexibleInstances #-}
 module Data.UTC.Format.Rfc3339
   ( -- * Parsing
@@ -61,7 +62,7 @@ instance Rfc3339Parser [Char] where
 --   >   >>= renderRfc3339 :: Maybe String
 --   > > Just "1987-07-10T12:04:00Z"
 class Rfc3339Renderer string where
-  renderRfc3339 :: (MonadThrow m, IsDate t, IsTime t, Epoch t) => Local t -> m string
+  renderRfc3339 :: (MonadThrow m, IsDate (Local t), IsTime (Local t)) => Local t -> m string
 
 instance Rfc3339Renderer BS.ByteString where
   renderRfc3339 t
